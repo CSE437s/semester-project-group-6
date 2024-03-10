@@ -1,13 +1,16 @@
-import { useState, useMemo, useCallback, useRef } from "react";
 import {
+  Circle,
+  DirectionsRenderer,
   GoogleMap,
   Marker,
-  DirectionsRenderer,
-  Circle,
   MarkerClusterer,
 } from "@react-google-maps/api";
-import Places from "../components/places";
+import { useRouter } from "next/router";
+import { useCallback, useMemo, useRef, useState } from "react";
 import Distance from "../components/distance";
+import Places from "../components/places";
+import { Review } from "../components/Review"
+
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
@@ -18,7 +21,7 @@ export default function Map() {
   const [directions, setDirections] = useState<DirectionsResult>();
   const mapRef = useRef<GoogleMap>();
   const center = useMemo<LatLngLiteral>(
-    () => ({ lat: 38.62, lng: -90.2 }),
+    () => ({ lat: 40.71, lng: 74.0 }),
     []
   );
   const options = useMemo<MapOptions>(
@@ -147,8 +150,16 @@ const farOptions = {
   fillColor: "#FF5252",
 };
 
+
+// Add the lat long 
 const generateHouses = (position: LatLngLiteral) => {
   const _houses: Array<LatLngLiteral> = [];
+
+  Review.ac
+  
+  
+  
+  
   for (let i = 0; i < 100; i++) {
     const direction = Math.random() < 0.5 ? -2 : 2;
     _houses.push({

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Button, imageListItemBarClasses, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
+import { useState } from "react";
+import { ActivityInfo } from '../CustomTypes';
 import Review from "./Review";
-import {ActivityInfo } from '../CustomTypes'
-
 
 
 type Props = {
@@ -21,6 +20,8 @@ const SearchBar = ({ trip_destination, trip_id}: Props) => {
       url: business.url,
       review_count: business.review_count,
       rating: business.rating,
+      latitude: business.latitude,
+      longitude: business.longitude
     }));
   };
 
@@ -69,7 +70,6 @@ const SearchBar = ({ trip_destination, trip_id}: Props) => {
           key={index}
           activity={activity}
           tripId={trip_id}
-          
         />
       ))}
 

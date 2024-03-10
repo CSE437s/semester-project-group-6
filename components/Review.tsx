@@ -11,7 +11,7 @@ type Props = {
   activity: ActivityInfo;
   tripId: string;
 };
-const Review: React.FC<Props> = ({ activity, tripId }) => {
+export const Review: React.FC<Props> = ({ activity, tripId }) => {
   const [isVisible, setIsVisible] = useState(true); // State to control visibility
   const activitiesRef = ref(db, "trips/" + tripId + "/activities");
 
@@ -70,3 +70,4 @@ const Review: React.FC<Props> = ({ activity, tripId }) => {
 };
 
 export default Review;
+
