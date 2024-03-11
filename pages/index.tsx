@@ -41,7 +41,8 @@ export default function Home() {
   };
   
   return(
-    <> 
+    
+    <>
         <Head>
           <title>Tripify</title>
           <link rel="icon" href="/favicon.ico" />

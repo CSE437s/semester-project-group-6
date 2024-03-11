@@ -20,8 +20,7 @@ const SearchBar = ({ trip_destination, trip_id}: Props) => {
       url: business.url,
       review_count: business.review_count,
       rating: business.rating,
-      latitude: business.latitude,
-      longitude: business.longitude
+      location: business.location,
     }));
   };
 

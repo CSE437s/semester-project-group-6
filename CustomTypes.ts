@@ -9,8 +9,7 @@ export type Participant = {
     review_count: number;
     image_url: string;
     url: string;  
-    latitude: number;
-    longitude: number;
+    location: object;
   }
 
 export type TripCardData = {
