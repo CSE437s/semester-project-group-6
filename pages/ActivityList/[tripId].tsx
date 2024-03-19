@@ -43,7 +43,7 @@ export const ActivityList: React.FC = () => {
 
   return (
     <div className={styles.Container}>
-      {curTripData && <TripCard key={tripId?.toString()} {...curTripData} />}
+      {curTripData && (<TripCard key={tripId?.toString()} {...curTripData} trip_id = {tripId}/>)}
       {curTripData && (
         <SearchBar
           trip_destination={curTripData.trip_dest}

@@ -1,12 +1,8 @@
-const express = require("express");
-const fetch = require("node-fetch");
-const cors = require("cors")
-const app = express();
-const PORT = 3001;
+const express = require('express');
+const router = express.Router();
 
-app.use(cors())
 
-app.get("/search-yelp", async (req, res) => {
+router.get("/search-yelp", async (req, res) => {
   const apiKey =
     "nyP-ph8WigzME5C6Yglre7YnuObZvrrTIwnnuq8elph9qYBpP-xdSRe6qxbF_GxrSYRngSJxfcnjuX1nwHQykIzgykJ5F9m8xn55qH-GjH5mnDlNp4l34UzHC1jdZXYx";
   const url = `https://api.yelp.com/v3/businesses/search?location=${req.query.location}&term=${req.query.term}&sort_by=best_match&limit=10`;
@@ -37,4 +33,4 @@ app.get("/search-yelp", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = router;

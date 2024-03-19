@@ -1,45 +1,105 @@
 // TripCard.tsx
-import React from 'react';
-import styles from './TripCard.module.css';
-import stockImage from '../public/a1.png';
-import stockImage2 from '../public/f1.png';
-import Image from 'next/image';
-import { Button } from '@mui/material';
-
+import React from "react";
+import styles from "./TripCard.module.css";
+import stockImage from "../public/a1.png";
+import stockImage2 from "../public/f1.png";
+import Image from "next/image";
+import { Button, Dialog, DialogTitle, TextField } from "@mui/material";
+import { ref, getDatabase, push } from "firebase/database";
+import { TripCardData } from "../CustomTypes";
+import { useState } from "react";
+import { auth } from "../firebase/firebase";
+import { getAuth, TwitterAuthProvider } from "firebase/auth";
 
 type Participant = {
   imageURL: string;
   id: string;
 };
 
-type TripCardData = {
-  trip_name: string;
-  trip_owner: string;
-  trip_dest: string;
-  start_date: string;
-  end_date: string;
-  participants: Participant[];
+const TripCard: React.FC<TripCardData & { trip_id: string }> = ({
+  trip_name,
+  trip_owner,
+  start_date,
+  end_date,
+  participants,
+  trip_id
+}) => {
+  const [openDialog, setOpenDialog] = useState(false);
+  const [inviteUser, setInviteUser] = useState("");
 
-};
+  const addParticipant = () => {
+    setOpenDialog(!openDialog);
+  };
 
+  const sendInvite = async () => {
+    //fetch user info from firebase auth database by searching by email
 
-const TripCard: React.FC<TripCardData> = ({ trip_name, trip_owner, start_date, end_date, participants}) => {
+    const response = await fetch(
+      `http://localhost:3001/firebase/addParticipant`,
+      {
+        method: "POST",
+        body: JSON.stringify({ 
+          userEmail: inviteUser,
+          trip_id: trip_id
+         }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.log("Error:", response.statusText);
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  };
+
   return (
     <div className={styles.tripCard}>
-      <img src={stockImage.src} alt="Trip Location" className={styles.tripImage} />
+      <img
+        src={stockImage.src}
+        alt="Trip Location"
+        className={styles.tripImage}
+      />
       <div className={styles.tripInfo}>
         <h2 className={styles.tripTitle}>{trip_name}</h2>
-        <p className={styles.tripDate}>{start_date} - {end_date}</p>
+        <p className={styles.tripDate}>
+          {start_date} - {end_date}
+        </p>
         <div className={styles.participants}>
-          <Button> Add a Participant</Button>
+          <Button onClick={addParticipant}> Add a Participant</Button>
+
+          <Dialog open={openDialog} onClose={addParticipant}>
+            <DialogTitle> Send Invitation to User</DialogTitle>
+            <TextField
+              value={inviteUser}
+              onChange={(e) => {
+                setInviteUser(e.target.value);
+              }}
+              type="email"
+              label="Destination"
+              variant="filled"
+              required={true}
+            ></TextField>
+            <Button variant="contained" onClick={sendInvite}>
+              {" "}
+              send invitation
+            </Button>
+          </Dialog>
+
           {participants.map((participant, index) => (
-            <Image key={index} src={stockImage2.src} alt={participant.id} className={styles.participant} width={70}
-            height={70} />
+            <Image
+              key={index}
+              src={stockImage2.src}
+              alt={participant.id}
+              className={styles.participant}
+              width={70}
+              height={70}
+            />
           ))}
         </div>
       </div>
     </div>
-    
   );
 };
 

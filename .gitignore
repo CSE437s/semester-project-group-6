@@ -32,3 +32,8 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+#private key
+/node/tripify-93d9a-firebase-adminsdk-utxmm-d231b34b0b.json
+
+.env

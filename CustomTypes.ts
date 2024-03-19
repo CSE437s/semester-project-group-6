@@ -20,6 +20,6 @@ export type TripCardData = {
     trip_dest: string;
     start_date: string;
     end_date: string;
-    participants: Participant[];
+    participants: string;
     activities: ActivityInfo[];
   };
