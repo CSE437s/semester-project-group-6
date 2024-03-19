@@ -82,7 +82,7 @@ export const ActivityList: React.FC = () => {
       </button>
       
       {activities.map(activity => (
-        <ActivityCard key={activity.id} {...activity} />
+        <ActivityCard name={''} rating={0} review_count={0} image_url={''} url={''} latitude={0} longitude={0} key={activity.id} {...activity} />
       ))}
       
       <Modal show={showModal} onClose={handleCloseModal}>

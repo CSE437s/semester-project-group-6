@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Button, imageListItemBarClasses, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
+import { useState } from "react";
+import { ActivityInfo } from '../CustomTypes';
 import Review from "./Review";
-import { ActivityInfo } from "../CustomTypes";
 
 type Props = {
   trip_destination: string | undefined;
@@ -19,6 +19,7 @@ const SearchBar = ({ trip_destination, trip_id }: Props) => {
       url: business.url,
       review_count: business.review_count,
       rating: business.rating,
+      location: business.location,
     }));
   };
 
@@ -67,7 +68,12 @@ const SearchBar = ({ trip_destination, trip_id }: Props) => {
         Button{" "}
       </Button>
       {searchResults.map((activity, index) => (
-        <Review key={index} activity={activity} tripId={trip_id} />
+        <Review
+          key={index}
+          activity={activity}
+          tripId={trip_id}
+          
+        />
       ))}
     </>
   );

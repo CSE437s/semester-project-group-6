@@ -3,43 +3,41 @@ import TripCard from "../../components/TripCard";
 import ActivityCard from "../../components/ActivityCard";
 import { useRouter } from "next/router";
 import styles from "../ActivityList.module.css";
-import { useAuth } from "../../firebase/auth";
 import {
   ref,
-  getDatabase,
-  push,
   get,
-  orderByChild,
-  child,
 } from "firebase/database";
 import { db } from "../../firebase/firebase";
 import SearchBar from "../../components/SearchBarYelp";
 import { TripCardData, ActivityInfo } from "../../CustomTypes";
+import Link from 'next/link';
 
 export const ActivityList: React.FC = () => {
   const router = useRouter();
   const { tripId } = router.query as { tripId: string };
   const [curTripData, setTripData] = useState<TripCardData>();
-
+  
   useEffect(() => {
-    const tripDatabaseRef = ref(db, "trips/" + tripId);
-    const fetchTripData = async () => {
-      try {
-        const tripSnapshot = await get(tripDatabaseRef);
-        if (tripSnapshot.exists()) {
-          setTripData(tripSnapshot.val());
-        } else {
-          console.error(`Trip with ID ${tripId} not found.`);
-        }
-      } catch (error) {
-        console.error("Error fetching trip data:", error);
-      }
-    };
-
     if (tripId) {
+      const tripDatabaseRef = ref(db, "trips/" + tripId);
+      const fetchTripData = async () => {
+        try {
+          const tripSnapshot = await get(tripDatabaseRef);
+          if (tripSnapshot.exists()) {
+            setTripData(tripSnapshot.val());
+          } else {
+            console.error(`Trip with ID ${tripId} not found.`);
+          }
+        } catch (error) {
+          console.error("Error fetching trip data:", error);
+        }
+      };
+
       fetchTripData();
     }
-  }, [tripId]); // Add router.query.tripId to the dependency array
+  }, [tripId]);
+
+
 
   return (
     <div className={styles.Container}>
@@ -53,8 +51,13 @@ export const ActivityList: React.FC = () => {
       {curTripData?.activities && Object.values(curTripData.activities).map((activity, index) => (
         <ActivityCard key={index} {...activity} />
       ))}
+      <Link href={`/map?tripId=${tripId}`} passHref>
+        <button type="button">View Map</button>
+      </Link>
     </div>
   );
 };
 
 export default ActivityList;
+
+

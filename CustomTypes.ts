@@ -3,16 +3,14 @@ export type Participant = {
     id: string;
   };
 
-
-  
-
   export type ActivityInfo = {
     name: string;
     rating: number;
     review_count: number;
     image_url: string;
-    url: string;
-}
+    url: string;  
+    location: object;
+  }
 
 export type TripCardData = {
     trip_name: string;

@@ -30,9 +30,6 @@ export default function Dashboard() {
             <Profile/>
             <Trips/>
             <Trending/>
-            <Link href={'/map'}>
-              <button>Open Maps</button>
-            </Link>
         </main>
         </>
     )
