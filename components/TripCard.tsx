@@ -77,7 +77,7 @@ const TripCard: React.FC<TripCardData & { trip_id: string }> = ({
                 setInviteUser(e.target.value);
               }}
               type="email"
-              label="Destination"
+              label="Input User Email"
               variant="filled"
               required={true}
             ></TextField>
@@ -86,8 +86,8 @@ const TripCard: React.FC<TripCardData & { trip_id: string }> = ({
               send invitation
             </Button>
           </Dialog>
-
-          {participants.map((participant, index) => (
+          
+          {/* {participants.map((participant, index) => (
             <Image
               key={index}
               src={stockImage2.src}
@@ -96,7 +96,7 @@ const TripCard: React.FC<TripCardData & { trip_id: string }> = ({
               width={70}
               height={70}
             />
-          ))}
+          ))} */}
         </div>
       </div>
     </div>
