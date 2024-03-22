@@ -12,7 +12,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { ref, getDatabase, push } from "firebase/database";
 import { auth } from "../firebase/firebase";
 import { useAuth } from "../firebase/auth";
-import stockPhoto from "../public/f1.png"
+import stockPhoto from "../public/f1.png";
+import Places from "../components/places";
 
 export default function Trips() {
   const [tripTitle, setTripTitle] = useState("");
@@ -90,6 +91,13 @@ export default function Trips() {
               onChange={(newValue) => {
                 setEndDate(newValue);
               }}
+            />
+
+            <Places
+            setOffice={(position) => {
+              setOffice(position);
+              mapRef.current?.panTo(position);
+            }}
             />
 
             <TextField

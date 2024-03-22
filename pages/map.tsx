@@ -30,6 +30,9 @@ import {
   RequestType,
 } from "react-geocode";
 
+import Review from '../components/Review';
+import styles from './ReviewsPage.module.css';
+
 setKey("AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0");
 setLanguage("en");
 setRegion("es");
@@ -38,16 +41,44 @@ type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 
+const ActivityCard = ({ activity }) => {
+  return (
+    <div className="activity-card">
+      <img src={activity.image_url} alt={activity.name} />
+      <h3>{activity.name}</h3>
+      <p>Rating: {activity.rating}</p>
+      <p>Review Count: {activity.review_count}</p>
+      <a href={activity.url}>View on Yelp</a>
+    </div>
+  );
+};
+
 
 export default function Map() {
   const router = useRouter();
   const { tripId } = router.query;
   const trip_id = tripId as string; 
+  const [mapCenter, setMapCenter] = useState<LatLngLiteral | null>(null);  
+  
+
+
 
   useEffect(() => {
     console.log("Using tripId in Map:", trip_id);
-   
+     
   }, [trip_id]);
+
+  useEffect(() => {
+    const fetchMapCenter = async () => {
+      const center = await getTripDestination(trip_id);
+      setMapCenter(center); // This will be `null` or the {lat, lng} object
+    };
+
+    if (trip_id) {
+      fetchMapCenter();
+    }
+  }, [trip_id]);
+
   
   const [office, setOffice] = useState<LatLngLiteral>();
   const [directions, setDirections] = useState<DirectionsResult>();
@@ -55,14 +86,14 @@ export default function Map() {
 
   const mapRef = useRef<GoogleMap>();
   const center = useMemo<LatLngLiteral>(
-    () => ({ lat: 40.73, lng: -73.93 }),
-    []
+    () => mapCenter ?{lat: mapCenter.lat, lng: mapCenter.lng} : { lat: 38.63, lng: -90.2},
+    [mapCenter]
   );
   
  
   const options = useMemo<MapOptions>(
     () => ({
-      mapId: "b181cac70f27f5e6",
+      // mapId: "b181cac70f27f5e6",
       disableDefaultUI: true,
       clickableIcons: false,
     }),
@@ -81,8 +112,6 @@ export default function Map() {
       fetchHouses();
     }
   }, [center]);
-
-  //const places = useMemo(() => generateHouses(center, trip_id), [center]);
 
   const fetchDirections = (house: LatLngLiteral) => {
     if (!office) return;
@@ -105,7 +134,7 @@ export default function Map() {
   return (
     <div className="container">
       <div className="controls">
-        <h1>Where is your place? </h1>
+        <h1>Where are you staying?</h1>
         <Places
           setOffice={(position) => {
             setOffice(position);
@@ -114,6 +143,15 @@ export default function Map() {
         />
         {!office && <p>Enter an address.</p>}
         {directions && <Distance leg={directions.routes[0].legs[0]} />}
+
+        
+        <br></br>
+        List of Activities:
+        
+        
+
+
+
       </div>
       <div className="map">
         <GoogleMap
@@ -140,7 +178,7 @@ export default function Map() {
             <>
               <Marker
                 position={office}
-                icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+                icon="https://maps.google.com/mapfiles/kml/shapes/ranger_station.png"
               />
 
               <MarkerClusterer>
@@ -149,6 +187,7 @@ export default function Map() {
                     {houses.map((house, index) => (
                       <Marker
                         key={index}
+                        icon = "https://maps.google.com/mapfiles/kml/paddle/red-stars.png"
                         position={house}
                         clusterer={clusterer}
                         onClick={() => fetchDirections(house)}
@@ -231,3 +270,26 @@ const generateHouses = async (position: LatLngLiteral, trip_id: string): Promise
     return [];
   }
 };
+
+
+const getTripDestination = async (trip_id: string): Promise<LatLngLiteral | null> => {
+  try {
+    const locationRef = ref(db, 'trips/${trip_id}/trip_dest');
+    const snapshot = await get(locationRef);
+
+    if (snapshot.exists()) {
+      const tripDestinationCity = snapshot.val(); 
+
+      const { results } = await fromAddress(tripDestinationCity);
+      if (results.length > 0) {
+        const { lat, lng } = results[0].geometry.location;
+        return { lat, lng };
+      }
+    }
+    return null; // No destination found or no results
+  } catch (error) {
+    console.error(error);
+    return null; // Handle errors by returning null
+  }
+};
+
