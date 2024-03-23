@@ -10,7 +10,6 @@ import {
   ComboboxOption,
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
-import styles from './places.module.css'; 
 
 type PlacesProps = {
   setOffice: (position: google.maps.LatLngLiteral) => void;
@@ -43,7 +42,7 @@ export default function Places({ setOffice }: PlacesProps) {
         className="combobox-input"
         placeholder="Search your trip"
       />
-      <ComboboxPopover className={styles.comboboxPopover}>
+      <ComboboxPopover>
         <ComboboxList>
           {status === "OK" &&
             data.map(({ place_id, description }) => (

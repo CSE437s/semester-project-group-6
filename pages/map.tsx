@@ -41,18 +41,6 @@ type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 
-const ActivityCard = ({ activity }) => {
-  return (
-    <div className="activity-card">
-      <img src={activity.image_url} alt={activity.name} />
-      <h3>{activity.name}</h3>
-      <p>Rating: {activity.rating}</p>
-      <p>Review Count: {activity.review_count}</p>
-      <a href={activity.url}>View on Yelp</a>
-    </div>
-  );
-};
-
 
 export default function Map() {
   const router = useRouter();

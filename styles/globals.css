@@ -186,3 +186,31 @@ body {
   flex-direction: column;
 }
 
+.combobox-input {
+  width: 100%;
+  padding: 0.5rem;
+  z-index: 10000000;
+  position: absolute;
+}
+
+.combobox-popover {
+  background-color: white; /* Set the background color to white */
+  list-style-type: none; /* Remove bullet points */
+  border: 1px solid #ccc; /* Optional: adds a light border */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Optional: adds a slight shadow to make it stand out */
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  position: absolute; /* Position it directly relative to the parent */
+  z-index: 10000000; /* Ensure it's on top of other elements */
+  width: 100%; /* Match the width to the input field */
+}
+
+.combobox-option {
+  padding: 8px; /* Add some padding to each option */
+  list-style: none; /* Ensure no list marker */
+  cursor: pointer; /* Change cursor to pointer to indicate clickable */
+}
+
+.combobox-option:hover {
+  background-color: #f0f0f0; /* Add a hover effect */
+}
