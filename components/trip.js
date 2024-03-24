@@ -154,10 +154,7 @@ export default function Trips() {
                     {status === "OK" && 
                       data.map(({place_id, description}) => (
                       <ComboboxOption className="combobox-option" key = {place_id} value={description} onClick={() => handleSelect(description, place_id)}/>
-                      ))}
-
-
-                      
+                      ))}  
                   </ComboboxList>
                 </ComboboxPopover>
             </Combobox>

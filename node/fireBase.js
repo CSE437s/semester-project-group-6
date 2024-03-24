@@ -7,7 +7,7 @@ const { ref, push } = require("firebase/database");
 
 var admin = require("firebase-admin");
 
-var serviceAccount = require("/tripify-93d9a-firebase-adminsdk-utxmm-d231b34b0b.json");
+var serviceAccount = require("./tripify-93d9a-firebase-adminsdk-utxmm-d231b34b0b.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
