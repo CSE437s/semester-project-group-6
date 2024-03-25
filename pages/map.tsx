@@ -104,7 +104,7 @@ export default function Map() {
   
   return (
     <div className="container">
-      <div className="controls">
+      {/* <div className="controls">
         <h1>Where is your place? </h1>
         <Places
           setOffice={(position) => {
@@ -114,7 +114,7 @@ export default function Map() {
         />
         {!office && <p>Enter an address.</p>}
         {directions && <Distance leg={directions.routes[0].legs[0]} />}
-      </div>
+      </div> */}
       <div className="map">
         <GoogleMap
           zoom={10}

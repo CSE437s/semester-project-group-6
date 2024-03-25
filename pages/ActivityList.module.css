@@ -35,8 +35,44 @@
   }
 
   .Container {
+    margin-top: -40px;
     display: flex;
-    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
     align-items: center;
   }
   
+  .sidebar {
+    margin-top: 150px;
+    padding-left: 80px;
+    width: 55vw; /* Adjust the width accordingly */
+    margin-right: 0.01%; /* Provides some space between the columns */
+  }
+
+  @media (max-width: 900px) {
+    .sidebar {
+      align-items: center;
+      width: 100%; /* Adjust the width accordingly */
+    }
+    .Container {
+      margin-top: 100px;
+      margin-left: auto;
+    }
+  }
+
+
+  .mainContent {
+    width: 63%; /* Adjust the width accordingly */
+  }
+  
+  .mapContainer {
+    width: 700px;
+    height: 400px; /* Set a fixed height or adjust as needed */
+    
+  }
+
+  .activities{
+    position: relative;
+    padding-right:100px;
+
+  }

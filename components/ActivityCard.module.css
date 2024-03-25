@@ -1,35 +1,83 @@
+/* ActivityCard.module.css */
 .activityCard {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    margin: 10px;
-  }
-  
-  .activityImage{
-    width: 100%;
-    display: block;
-    object-fit: cover;
-    height: 80px; /* Adjust height as needed */
-  }
+  position: relative;
+  width: 250px; /* Adjust width as needed */
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.activityImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.activityInfo {
+  padding: 10px;
+  background-color: #fff; /* Adjust background color as needed */
+  cursor: pointer;
+}
+
+.activityTitle {
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.filledStar {
+  /* Styles for filled star */
+}
+
+.emptyStar {
+  /* Styles for empty star */
+}
+
+.reviewCount {
+  margin-left: 5px;
+}
+
+.details {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5em;
+}
+
+.price {
+  /* Styles for price */
+}
+
+.categories {
+  /* Styles for categories */
+}
+
+.favoriteIcon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* Add styles for favorite icon */
+}
 
 
-  .activityInfo {
-    padding: 8px; /* Adjust padding as necessary */
-    background-color: white; /* Or any color as per the design */
-  }
-  
-  .activityTitle {
-    font-size: 1.2em; /* Adjust font size as necessary */
-    margin: 0;
-    color: #333; /* Adjust font color as necessary */
-  }
-  
-  .activityDate {
-    font-size: 1em; /* Adjust font size as necessary */
-    margin: 0;
-    color: #666; /* Adjust font color as necessary */
-  }
-  
+.favorite{
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  width: 45px;
+  height: 45px; 
+  border: 1px solid lightgrey;
+  border-radius: 50%;
+  background-color: #f0f0f0; /* Light grey background */
+  margin: 10px 5px; /* Spacing between the boxes */
+  min-width: 0;
+}
+
+.favorite:hover{
+  background-color: rgb(197, 197, 197); /* Light grey background */
+
+}

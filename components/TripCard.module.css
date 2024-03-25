@@ -1,52 +1,110 @@
-/* TripCard.module.css */
 .tripCard {
-    width: 90%;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    margin-bottom: 20px;
-    
-  }
-  
-  .tripImage {
-    width: 100%;
-    display: block;
-    object-fit: cover;
-    height: 150px; /* Adjust height as needed */
-  }
-  
-  .tripInfo {
-    padding: 1rem;
-    background: #fff; /* Assuming a white background for the text info */
-    position: relative;
-  }
-  
-  .tripTitle {
-    margin: 0;
-    font-size: 1.5rem;
-    color: #333;
-  }
-  
-  .tripDate {
-    font-size: 1rem;
-    color: #666;
-  }
-  
-  .participants {
-    display: flex;
-    justify-content: flex-end;
-    position: absolute;
-    right: 1rem;
-    bottom: -1rem;
-    width: 50px
-  }
-  
-  .participant {
-    width: 50px; /* Adjust as needed */
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid #fff; /* White border to create overlap effect */
-    margin-left: -10px;
-  }
+  position: relative;
+  justify-content: center;
+  align-self: center;
+  height: 280px;
+  max-width: 100%; /* Set the max-width as per your layout needs */
+  border-radius: 10px; /* Rounded corners for the card */
+  overflow: hidden;/* Ensures the image and content respect the border-radius */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* A subtle shadow for depth */
+  margin-bottom: 20px; /* Space below the card */
+  margin-right: 0px;
+  margin-left: -50px;
+}
 
-  
+.tripImage {
+  width: 100%; /* Ensure the image covers the full width of the card */
+  height: 100%; /* Maintain the aspect ratio */
+  object-fit: cover; /* Ensure the image covers the area nicely */
+  object-position: center; /* Center the image */
+}
+
+.tripInfo {
+  position: absolute; /* Position the info over the image */
+  bottom: 0; /* Align it to the bottom of the image */
+  left: 0; /* Align it to the left of the card */
+  width: 100%; /* Ensure it spans the width of the card */
+  height: 100%;
+  background: linear-gradient(
+    to top, 
+    rgba(0, 0, 0, 0.4) 0%, /* more opaque at bottom */
+    rgba(0, 0, 0, 0.05) 100% /* more transparent at top */
+  );
+  color: white; /* Light text color for visibility */
+  padding: 20px; /* Padding around the text */
+
+}
+
+.tripTitle {
+  position: absolute;
+  bottom: 50px;
+  left: 30px;
+  font-size: 36px; /* Larger text for the title */
+  margin-bottom: 5px; /* A bit of margin below the title */
+}
+
+.tripDate {
+  font-size: 16px; /* Smaller text for the date */
+  margin-bottom: 10px; /* Space before the participants section */
+}
+
+.participants {
+  /* Style for the participants area */
+  display: flex; /* For layout of participant images */
+  align-items: center; /* Center items vertically */
+  gap: 10px; /* Space between participant images */
+}
+
+.participant {
+  display: inline-block; /* For inline positioning */
+  border-radius: 50%; /* Circular images for participants */
+  border: 2px solid white; /* White border around the participant images */
+}
+
+.invite{
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  background-color: #ffffff; /* white background */
+  border-radius: 30px; /* rounded corners */
+  padding: 7px 18px; 
+  display: inline-flex; /* aligns icon and text inline */
+  align-items: center; /* centers items vertically */
+  cursor: pointer; /* changes cursor to pointer on hover */
+  font-size: 14px; /* font size of the button text */
+  color: #000000; /* font color - blue */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* slight shadow for depth */
+  outline: none; /* removes the default focus outline */
+  text-transform: lowercase;
+  transition: background-color 0.3s ease;
+}
+
+.invite:hover {
+  background-color: #cccccc; /* Change to the grey color you prefer */
+}
+
+.tripDest{
+  position: absolute;
+  bottom: 20px;
+  left: 30px;
+  font-size: 18px; /* Larger text for the title */
+  margin-bottom: 5px; /* A bit of margin below the title */
+  font-weight: 500;
+}
+
+
+@media (max-width: 900px) {
+  .tripCard {
+    justify-content: center;
+    align-self: center;
+    height: 280px;
+    max-width: 100%; /* Set the max-width as per your layout needs */
+    border-radius: 10px; /* Rounded corners for the card */
+     /* Ensures the image and content respect the border-radius */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* A subtle shadow for depth */
+    overflow: hidden;
+    margin-bottom: 20px; /* Space below the card */
+    margin-right: 0px;
+    margin-left: -50px;
+  }
+}

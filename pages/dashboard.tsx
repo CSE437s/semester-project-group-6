@@ -4,12 +4,12 @@ import Image from 'next/image';
 import Profile from '../components/profile';
 import Trips from '../components/trip'
 import useAuth from '../firebase/auth'
-import { useEffect } from 'react';
 import useFirebaseAuth from '../firebase/auth';
 import router from 'next/router';
 import Trending from '../components/Trending'
 import Chat from '../components/Chat';
-
+import React, { useEffect, useState } from "react";
+import AppAppBar from '../components/AppAppBar';
 
 export default function Dashboard() {
     const {authUser, isLoading} = useAuth();
@@ -27,7 +27,9 @@ export default function Dashboard() {
         </Head>
 
         <main>
-            <Profile/>
+            <AppAppBar mode={'light'} toggleColorMode={function (): void {
+                    throw new Error('Function not implemented.');
+            } }/>
             <Trips/>
             <Trending/>
         </main>

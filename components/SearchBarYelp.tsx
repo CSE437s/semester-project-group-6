@@ -2,6 +2,8 @@ import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { ActivityInfo } from '../CustomTypes';
 import Review from "./Review";
+import React from 'react';
+
 
 type Props = {
   trip_destination: string | undefined;
@@ -54,28 +56,45 @@ const SearchBar = ({ trip_destination, trip_id }: Props) => {
 
   return (
     <>
-      <TextField
-        id="outlined-basic"
-        label="Search"
-        variant="outlined"
-        value={searchTerm}
-        onChange={(e) => {
-          setSearchTerm(e.target.value);
-        }}
-      />
-      <Button variant="contained" onClick={searchYelp}>
-        {" "}
-        Button{" "}
-      </Button>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <TextField
+          id="outlined-basic"
+          label= "Search"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              searchYelp(); // Call your search function
+            }
+          }}
+          sx={{
+            width: '25vw', // Wider search box, adjust as needed or use fixed value like '500px'
+            '& .MuiOutlinedInput-root': {
+              height: '40px', // Thinner search box, adjust as needed
+              borderRadius: '20px', // Keep the rounded corners
+              '& .MuiOutlinedInput-input': {
+                padding: '10px 14px ', // Reduce vertical padding to make it thinner
+              },
+              '& .MuiInputLabel-outlined': {
+                lineHeight: '40px', // Adjust label line height if necessary
+                transform: 'translate(14px, 14px) scale(1)', // Adjust label position
+              },
+              '& .MuiInputLabel-shrink': {
+                transform: 'translate(14px, -6px) scale(0.75)', // Adjust label position on focus
+              },
+            },
+          }}
+        />
+      </div>
       {searchResults.map((activity, index) => (
         <Review
           key={index}
           activity={activity}
           tripId={trip_id}
-          
         />
-      ))}
-    </>
+          ))}
+        </>
   );
 };
 export default SearchBar;

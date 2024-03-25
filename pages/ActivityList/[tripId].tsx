@@ -11,6 +11,17 @@ import { db } from "../../firebase/firebase";
 import SearchBar from "../../components/SearchBarYelp";
 import { TripCardData, ActivityInfo } from "../../CustomTypes";
 import Link from 'next/link';
+import NavBar from '../../components/AppAppBar';
+import Map from '../../pages/map';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
 
 export const ActivityList: React.FC = () => {
   const router = useRouter();
@@ -37,24 +48,76 @@ export const ActivityList: React.FC = () => {
     }
   }, [tripId]);
 
+  function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            {children}
+          </Box>
+        )}
+      </div>
+    );
+  }
+  
+  const [value, setValue] = React.useState(0);
+  const activitiesArray = Object.values(curTripData?.activities || {});
+  const numberOfActivities = activitiesArray.length;
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
 
   return (
-    <div className={styles.Container}>
-      {curTripData && (<TripCard key={tripId?.toString()} {...curTripData} trip_id = {tripId}/>)}
-      {curTripData && (
-        <SearchBar
-          trip_destination={curTripData.trip_dest}
-          trip_id={tripId}
-        ></SearchBar>
-      )}
-      {curTripData?.activities && Object.values(curTripData.activities).map((activity, index) => (
-        <ActivityCard key={index} {...activity} />
-      ))}
-      <Link href={`/map?tripId=${tripId}`} passHref>
-        <button type="button">View Map</button>
-      </Link>
-    </div>
+    <>
+      <NavBar mode="light" toggleColorMode={() => { throw new Error("Function not implemented."); }} />
+      
+      <div className={styles.Container}>
+        <div className={styles.sidebar}>
+          {curTripData && <TripCard key={tripId?.toString()} {...curTripData} trip_id={tripId} />}
+          
+          <div className={styles.activities}>
+            <Box sx={{ width: '100%'}}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                  <Tab label="Favorites" />
+                  <Tab label="For you" />
+                  <Tab label="Members" />
+                </Tabs>
+              </Box>
+              <TabPanel value={value} index={0}>
+                {numberOfActivities} item
+              </TabPanel>
+              <TabPanel value={value} index={1}>
+                {numberOfActivities} item
+              </TabPanel>
+              <TabPanel value={value} index={2}>
+                {numberOfActivities} item
+              </TabPanel>
+            </Box>
+          </div>
+
+          {curTripData?.activities && Object.values(curTripData.activities).map((activity, index) => (
+            <ActivityCard key={index} {...activity} />
+          ))}
+
+        </div>
+        
+        <div className={styles.mainContent}>
+          <div className={styles.mapContainer}>
+            <Map />
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 // TripCard.tsx
 import React from "react";
 import styles from "./TripCard.module.css";
-import stockImage from "../public/a1.png";
+import stockImage from "../public/trip-stock-photo.jpg";
 import stockImage2 from "../public/f1.png";
 import Image from "next/image";
 import { Button, Dialog, DialogTitle, TextField } from "@mui/material";
@@ -10,6 +10,8 @@ import { TripCardData } from "../CustomTypes";
 import { useState } from "react";
 import { auth } from "../firebase/firebase";
 import { getAuth, TwitterAuthProvider } from "firebase/auth";
+import addPerson from "../public/person-add.svg";
+import pin from "../public/pin.svg";
 
 type Participant = {
   imageURL: string;
@@ -22,6 +24,7 @@ const TripCard: React.FC<TripCardData & { trip_id: string }> = ({
   start_date,
   end_date,
   participants,
+  trip_dest,
   trip_id
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -63,12 +66,14 @@ const TripCard: React.FC<TripCardData & { trip_id: string }> = ({
       />
       <div className={styles.tripInfo}>
         <h2 className={styles.tripTitle}>{trip_name}</h2>
-        <p className={styles.tripDate}>
-          {start_date} - {end_date}
-        </p>
+        <h2 className={styles.tripDest}>📍{trip_dest}</h2>
+        
         <div className={styles.participants}>
-          <Button onClick={addParticipant}> Add a Participant</Button>
-
+          <Button onClick={addParticipant} className={styles.invite}> 
+            <img src={addPerson.src}/>lnvite
+          </Button>
+      
+          
           <Dialog open={openDialog} onClose={addParticipant}>
             <DialogTitle> Send Invitation to User</DialogTitle>
             <TextField

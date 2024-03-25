@@ -1,0 +1,46 @@
+.profileDropdownContainer {
+    position: relative;
+  }
+  
+  .profileImage {
+    cursor: pointer;
+    /* Adjust size if needed */
+  }
+  
+  .dropdown {
+    position: absolute;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdownProfile {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    
+  }
+  
+  .dropdownProfileName {
+    margin-left: 10px;
+  }
+  
+  .dropdownNav {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dropdownNavItem {
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    display: block;
+    font-weight: 500;
+  }
+  
+  .dropdownNavItem:hover {
+    background-color: #f6f6f6;
+  }
+  
