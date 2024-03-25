@@ -49,7 +49,7 @@
     margin-right: 0.01%; /* Provides some space between the columns */
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 600px) {
     .sidebar {
       align-items: center;
       width: 100%; /* Adjust the width accordingly */

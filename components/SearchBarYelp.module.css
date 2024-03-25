@@ -1,0 +1,37 @@
+/* SearchBarYelp.module.css */
+
+/* SearchBarYelp.module.css */
+.autocompleteDropdownContainer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  width: 140%; /* This should match the width of the search bar */
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+  
+  .dropdownItem {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.2s;
+  }
+  
+  .dropdownItem:last-child {
+    border-bottom: none;
+  }
+  
+  .dropdownItem:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .dropdownItemImage {
+    width: 100px; /* Fixed width for image */
+    object-fit: cover;
+  }
+  

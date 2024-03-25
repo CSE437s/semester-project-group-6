@@ -12,6 +12,7 @@ import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import ToggleColorMode from './ToggleColorMode';
 
+
 import ProfileSidebar from './profile';
 import { useAuth } from '../firebase/auth';
 import { EmailAuthProvider, GoogleAuthProvider } from 'firebase/auth';
@@ -26,6 +27,9 @@ import {
 } from "firebase/database";
 import { db } from "../firebase/firebase";
 import SearchBar from "./SearchBarYelp";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+
 
 const logoStyle = {
   width: '140px',
@@ -43,6 +47,9 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
   const { authUser, isLoading } = useAuth();
   const [login, setLogin] = useState(false);
   
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const uiConfig = {
     signInFlow: 'popup',
     signInSuccessUrl: '/dashboard',
@@ -112,6 +119,7 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              flexWrap: 'wrap',
               flexShrink: 0,
               borderRadius: '999px',
               bgcolor:
@@ -130,7 +138,7 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
           >
             <Box
               sx={{
-                flexGrow: 0.8,
+                flexGrow: 0.4,
                 display: 'flex',
                 alignItems: 'center',
                 ml: '10px',
@@ -149,13 +157,30 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 ml: '40px',
                 px: 0,
                 }}
-              >{curTripData && <SearchBar trip_destination={curTripData.trip_dest} trip_id={tripId} />}
+              >
+                
+                {curTripData && (
+                  <SearchBar
+                    trip_destination={curTripData.trip_dest}
+                    trip_id={tripId}
+                    isMobile={isMobile}
+                    sx={{
+                      flexGrow: 1, // Allow search bar to grow and fill available space
+                      maxWidth: '100%', // Ensure it does not exceed the container width
+                    }}
+                  />
+                )}
+                
               </Box>
-              <Box sx={{ 
-                display: { flexGrow: 1,
-                    display: 'flex',
-                    justifyContent: 'center', // Center the menu items horizontally
-                    alignItems: 'center',} }}>
+                {!isMobile && (
+                  <>
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      display: 'flex',
+                      justifyContent: 'flex-end', // Align menu items to the right
+                    }}
+    >
                 <MenuItem
                   onClick={() => scrollToSection('discover')}
                   sx={{ py: '6px', px: '12px' }}
@@ -170,14 +195,6 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 >
                   <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
                     Trips
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('review')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
-                    Review
                   </Typography>
                 </MenuItem>
                 
@@ -198,7 +215,10 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                     FAQ
                   </Typography>
                 </MenuItem>
-              </Box>
+                </Box>
+                </>
+              )}
+             
             </Box>
             <Box
               sx={{
@@ -265,23 +285,35 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                       flexGrow: 1,
                     }}
                   >
-                    <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
                   </Box>
-                  <MenuItem onClick={() => scrollToSection('features')}>
-                    Features
+                  <MenuItem onClick={() => scrollToSection('discover')}>
+                    Discover
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('testimonials')}>
-                    Testimonials
+                  <MenuItem onClick={() => scrollToSection('trips')}>
+                    Trips
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('highlights')}>
-                    Highlights
-                  </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('pricing')}>
-                    Pricing
+                  <MenuItem onClick={() => scrollToSection('resturants')}>
+                    Resturants
                   </MenuItem>
                   <MenuItem onClick={() => scrollToSection('faq')}>FAQ</MenuItem>
                   <Divider />
-                  <MenuItem>
+                  {!isLoading && authUser ? (
+                // User is logged in, show the ProfileSidebar component
+                <ProfileSidebar />
+              ) : (
+                // User is not logged in, show SIGN IN and SIGN UP buttons
+                <>
+                  <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
+                  <Button
+                      color="primary"
+                      variant="outlined"
+                      component="a"
+                      href="/material-ui/getting-started/templates/sign-in/"
+                      target="_blank"
+                      sx={{ width: '100%' }}
+                    >
+                      Sign in
+                    </Button>
                     <Button
                       color="primary"
                       variant="contained"
@@ -292,19 +324,8 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                     >
                       Sign up
                     </Button>
-                  </MenuItem>
-                  <MenuItem>
-                    <Button
-                      color="primary"
-                      variant="outlined"
-                      component="a"
-                      href="/material-ui/getting-started/templates/sign-in/"
-                      target="_blank"
-                      sx={{ width: '100%' }}
-                    >
-                      Sign in
-                    </Button>
-                  </MenuItem>
+                </>
+              )}
                 </Box>
               </Drawer>
             </Box>

@@ -2,14 +2,19 @@
 .activityCard {
   position: relative;
   width: 250px; /* Adjust width as needed */
+  height: 250px;
   border-radius: 10px;
-  overflow: hidden;
+  overflow: auto;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .activityImage {
   width: 100%;
-  height: auto;
+  height: 150px; /* Example fixed height */
   object-fit: cover;
 }
 
@@ -17,6 +22,8 @@
   padding: 10px;
   background-color: #fff; /* Adjust background color as needed */
   cursor: pointer;
+  flex-grow: 0; /* Do not allow the info section to grow */
+  flex-shrink: 0;
 }
 
 .activityTitle {
@@ -46,6 +53,7 @@
   display: flex;
   justify-content: space-between;
   margin-top: 0.5em;
+  overflow: hidden;
 }
 
 .price {

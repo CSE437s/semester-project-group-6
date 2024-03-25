@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-
 router.get("/search-yelp", async (req, res) => {
   const apiKey =
     "nyP-ph8WigzME5C6Yglre7YnuObZvrrTIwnnuq8elph9qYBpP-xdSRe6qxbF_GxrSYRngSJxfcnjuX1nwHQykIzgykJ5F9m8xn55qH-GjH5mnDlNp4l34UzHC1jdZXYx";

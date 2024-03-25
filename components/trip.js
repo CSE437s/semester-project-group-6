@@ -109,7 +109,6 @@ export default function Trips() {
                 className="combobox-option" 
                 key={place_id} 
                 value={description} 
-                
                 />
               ))}
           </ComboboxList>
