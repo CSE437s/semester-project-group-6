@@ -14,8 +14,6 @@ admin.initializeApp({
   databaseURL: "https://tripify-93d9a-default-rtdb.firebaseio.com",
 });
 
-const uid = "kOsovdj2cFVtgSByCwSCRpGtvYc2";
-
 router.post("/addParticipant", async (req, res) => {
   const { userEmail, trip_id } = req.body;
 

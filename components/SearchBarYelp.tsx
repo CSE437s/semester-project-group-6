@@ -86,15 +86,16 @@ const SearchBar = ({ trip_destination, trip_id }: Props) => {
             },
           }}
         />
-      </div>
-      {searchResults.map((activity, index) => (
+        {searchResults.map((activity, index) => (
         <Review
           key={index}
           activity={activity}
           tripId={trip_id}
         />
           ))}
-        </>
+        
+      </div>
+      </>
   );
 };
 export default SearchBar;
