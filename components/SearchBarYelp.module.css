@@ -1,4 +1,4 @@
-/* SearchBarYelp.module.css */
+
 
 /* SearchBarYelp.module.css */
 .autocompleteDropdownContainer {
@@ -7,11 +7,12 @@
   left: 0;
   right: 0;
   max-height: 300px;
-  width: 140%; /* This should match the width of the search bar */
+  width: 120%; /* This should match the width of the search bar */
   overflow-y: auto;
   z-index: 1000;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background-color: #fff;
+  border-radius: 5px;
 }
 
   
@@ -34,4 +35,110 @@
     width: 100px; /* Fixed width for image */
     object-fit: cover;
   }
-  
+
+
+.favoriteIcon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* Add styles for favorite icon */
+}
+
+
+.favorite{
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  width: 45px;
+  height: 45px; 
+  border: 1px solid lightgrey;
+  border-radius: 50%;
+  background-color: #f0f0f0; /* Light grey background */
+  margin: 10px 5px; /* Spacing between the boxes */
+  min-width: 0;
+}
+
+.favorite:hover{
+  background-color: rgb(197, 197, 197); /* Light grey background */
+
+}
+
+
+
+
+
+.container {
+  width: 40%;
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0; /* Grey background */
+  padding: 16px;
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.image {
+  width: 80px; /* Set the image size */
+  height: auto;
+  margin-right: 16px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.content {
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.stars {
+  color: #ffbf00; /* Gold color for stars */
+  font-size: 1rem; /* Adjust size as needed */
+  margin-right: 8px;
+}
+
+.filledStar {
+  /* Styles for filled star */
+}
+
+.emptyStar {
+  color: #ccc; /* Grey color for empty stars */
+}
+
+.reviewCount {
+  font-size: 0.875rem; /* Adjust size as needed */
+}
+
+.yelpIcon {
+  width: 70px;
+  height: auto;
+
+}
+
+.button {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  }
+
+  .button:hover {
+    background-color: rgb(68, 68, 68);
+  }

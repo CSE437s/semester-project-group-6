@@ -78,7 +78,10 @@ export const ActivityList: React.FC = () => {
 
   return (
     <>
-      <NavBar mode="light" toggleColorMode={() => { throw new Error("Function not implemented."); }} />
+      <NavBar 
+        mode="light" 
+        toggleColorMode={() => { throw new Error("Function not implemented."); }}
+        />
       
       <div className={styles.Container}>
         <div className={styles.sidebar}>
