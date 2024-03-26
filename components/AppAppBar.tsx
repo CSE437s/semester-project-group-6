@@ -147,7 +147,7 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                   px: 0,
                 }}
               >
-                {curTripData && (
+                {tripId && curTripData && (
                   <>
                     <SearchBar
                       trip_destination={curTripData.trip_dest}
