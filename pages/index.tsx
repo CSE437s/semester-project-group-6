@@ -61,7 +61,7 @@ export default function Home() {
             />
           </div>
           <div className={styles.textContainer}>
-            <h1>&quot;Tripify&quot;</h1>
+            <h1>Tripify</h1>
             <p style={{ fontFamily: "'Roboto', sans-serif", fontSize: "25px", fontWeight: "400" }}>don’t let your plans die in the chat</p>
             <div className={styles.buttons}>
               <Button onClick = {() => setLogin(true)} variant="contained" size="large"> Login</Button>
