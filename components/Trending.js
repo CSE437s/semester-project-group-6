@@ -70,17 +70,17 @@ export default function Trending() {
             <div key={trip.tripId} className={styles.card}>
               
               <div className={styles.cardHeader}>
+              <div className={styles.cardOverlay}></div>
+              <h3 className={styles.cardTitle}>{trip.trip_name}</h3>
+              <p className={styles.cardLocation}>📍 {trip.trip_dest}</p>
                 <Image
                   src={TripStockPhoto}
                   alt={trip.trip_name}
                   className={styles.cardImg}
                 />
-                <h3 className={styles.cardTitle}>{trip.name}</h3>
-                <p className={styles.cardLocation}>{trip.location}</p>
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.cardInfo}>
-                  <span>{trip.trip_dest}</span>
                   <span>{formatDate(trip.start_date)}</span>
                   <span>to</span>
                   <span>{formatDate(trip.end_date)}</span>

@@ -15,9 +15,13 @@
     justify-content: center;
     gap: 1rem;
     padding-top: 80px;
+    width: 100%;
+    
   }
   
   .card {
+    display:inline-block;
+    margin: 0 20px 0 20px;
     width: 300px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -27,20 +31,41 @@
   
   .cardHeader {
     position: relative;
-    
   }
   
   .cardImg {
     width: 100%;
     height: auto;
+    z-index: 1;
   }
-  
+  .cardOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.5) 90%);
+  }
+
+
   .cardTitle {
-    font-size: 100px;
+    position: absolute;
+    top: 10px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    color: white; /* Adjust color as needed */
+    font-size: 20px; /* Adjust font size as needed */
+    text-align: center;
   }
   
   .cardLocation {
-    color: #888; /* Example color - replace with your own variable or color code */
+    position: absolute;
+    bottom: 10px; /* Adjust as needed */
+    left: 10px; /* Adjust as needed */
+    z-index: 3;
+    color: white; /* Adjust color as needed */
     font-size: 0.875rem;
   }
   
