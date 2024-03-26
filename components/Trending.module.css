@@ -38,6 +38,7 @@
     height: auto;
     z-index: 1;
   }
+
   .cardOverlay {
     position: absolute;
     top: 0;
@@ -51,24 +52,34 @@
 
   .cardTitle {
     position: absolute;
-    top: 10px; /* Adjust as needed */
+    top: 50px; /* Adjust so it's above the .cardLocation */
     left: 50%;
     transform: translateX(-50%);
     z-index: 3;
     color: white; /* Adjust color as needed */
-    font-size: 20px; /* Adjust font size as needed */
+    font-size: 1.5rem; /* Adjust font size as needed */
     text-align: center;
+    max-width: 90%; /* Prevents the title from being too wide */
+    padding: 5px; /* Padding around the text */
+    border-radius: 4px; 
   }
   
   .cardLocation {
     position: absolute;
-    bottom: 10px; /* Adjust as needed */
+    bottom: 20px; /* Adjust as needed */
     left: 10px; /* Adjust as needed */
     z-index: 3;
     color: white; /* Adjust color as needed */
     font-size: 0.875rem;
   }
   
+  .cardButtonLink {
+    position: absolute;
+    right: 10px; /* Adjust as needed */
+    bottom: 10px; /* Adjust as needed */
+    z-index: 4; /* Higher than the image and overlay */
+  }
+
   .cardBody {
     padding: 1rem;
   }
@@ -85,11 +96,11 @@
   }
   
   .cardButton {
-    background-color: black;
-    color: white;
+    background-color: white;
+    font-weight: 550;
+    color: black;
     border: none;
-    padding: 0.75rem 1.5rem;
-    margin-bottom: 1rem;
+    padding: 0.75rem 1.2rem;
     cursor: pointer;
     transition: background-color 0.3s;
     border-radius: 10px;
@@ -97,5 +108,16 @@
   
   .cardButton:hover {
     background-color: grey;
+  }
+  .cardMonth {
+    position: absolute;
+    top: 10px; /* Adjust as needed */
+    left: 10px; /* Adjust as needed */
+    z-index: 3;
+    color: white; /* Adjust color as needed */
+    font-size: 1rem; /* Adjust font size as needed */
+    
+    padding: 5px; /* Padding around the text */
+    border-radius: 4px; /* Optional, for rounded corners */
   }
   

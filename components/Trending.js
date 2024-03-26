@@ -13,6 +13,7 @@ import TripStockPhoto from "../public/trip-stock-photo.jpg";
 import Link from "next/link";
 import Image from "next/image";
 import Trips from "./trip";
+import Enter from "../public/enter.png";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -70,7 +71,11 @@ export default function Trending() {
             <div key={trip.tripId} className={styles.card}>
               
               <div className={styles.cardHeader}>
+              <Link href={`/ActivityList/${trip.tripId}`} className={styles.cardButtonLink}>
+                <button className={styles.cardButton}>Enter</button>
+              </Link>
               <div className={styles.cardOverlay}></div>
+              <div className={styles.cardMonth}>{formatDate(trip.start_date)}</div>
               <h3 className={styles.cardTitle}>{trip.trip_name}</h3>
               <p className={styles.cardLocation}>📍 {trip.trip_dest}</p>
                 <Image
@@ -79,17 +84,6 @@ export default function Trending() {
                   className={styles.cardImg}
                 />
               </div>
-              <div className={styles.cardBody}>
-                <div className={styles.cardInfo}>
-                  <span>{formatDate(trip.start_date)}</span>
-                  <span>to</span>
-                  <span>{formatDate(trip.end_date)}</span>
-                </div>
-              </div>
-              <Link href={`/ActivityList/${trip.tripId}`}>
-                <button className={styles.cardButton}>Enter</button>
-              </Link>
-              
             </div>
           )
           )}
