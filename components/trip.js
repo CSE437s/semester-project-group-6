@@ -81,52 +81,6 @@ export default function Trips() {
     setstartDate(null)
     setEndDate(null)
   };
-  
-
-  // const PlacesAutocomplete = ({ setSelected }) => {
-  //   const {
-  //     ready,
-  //     value,
-  //     setValue,
-  //     suggestions: { status, data },
-  //     clearSuggestions,
-  //   } = usePlacesAutocomplete();
-  
-  //   const handleSelect = async (address) => {
-  //     setValue(address, false);
-  //     setTripDestination(address);
-  //     alert(address);
-  //     clearSuggestions();
-  
-  //     const results = await getGeocode({ address });
-  //   };
-  
-  //   return (
-  //     <Combobox onSelect={handleSelect}>
-  //       <ComboboxInput
-  //         value={value}
-  //         onChange={(e) => setValue(e.target.value)}
-  //         disabled={!ready}
-  //         className="combobox-input"
-  //         placeholder="Search an address"
-  //       />
-  //       <ComboboxPopover classname="combobox-popover">
-  //         <ComboboxList>
-  //           {status === "OK" &&
-  //             data.map(({ place_id, description }) => (
-  //               <ComboboxOption 
-  //               className="combobox-option" 
-  //               key={place_id} 
-  //               value={description} 
-                
-  //               />
-  //             ))}
-  //         </ComboboxList>
-  //       </ComboboxPopover>
-  //     </Combobox>
-  //   );
-  // };
-
 
 
   return (
@@ -177,7 +131,7 @@ export default function Trips() {
 
             <PlacesAutocomplete tripDestination={tripDestination} setTripDestination={setTripDestination}></PlacesAutocomplete>
             
-            <Button variant="contained" size="large" onClick={handleAddTrip}>
+            <Button variant= "contained" size="large" onClick={handleAddTrip}>
               Add Trip
             </Button>
 
