@@ -132,11 +132,22 @@ export default function Trips() {
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}> 
-        <Button variant="outlined" onClick={openTripModal} size = 
-        "large">
+        <div style={{ marginTop: '40px' }}>
+        <Button variant="contained" 
+            onClick={openTripModal} 
+            size="large"
+            sx={{ 
+              backgroundColor: 'black', 
+              color: 'white', 
+              '&:hover': {
+                backgroundColor: 'darkgrey',
+              },
+              padding: '10px 20px',
+              fontSize: '1rem',
+            }}>
           Add Trip
         </Button>
-
+        </div>
         <Dialog open={isTripModalOpen} onClose={openTripModal}>
           <DialogTitle> Create New Trip</DialogTitle>
           <div className="Trip-Container">
