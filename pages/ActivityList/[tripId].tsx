@@ -29,7 +29,9 @@ export const ActivityList: React.FC = () => {
   const router = useRouter();
   const { tripId } = router.query as { tripId: string };
   const [curTripData, setTripData] = useState<TripCardData>();
-  
+  const [office, setOffice] = useState<LatLngLiteral | null>({} as LatLngLiteral);
+  const [directions, setDirections] = useState<DirectionsResult | null>({} as DirectionsResult);
+
   useEffect(() => {
     if (tripId) {
       
@@ -103,10 +105,10 @@ export const ActivityList: React.FC = () => {
               
               </TabPanel>
 
-              {/* <TabPanel value={value} index={1}>
+              <TabPanel value={value} index={1}>
                  {!office}
-                 {directions && <Distance leg={directions.routes[0].legs[0]} />}
-              </TabPanel> */}
+                 {directions && directions.routes && <Distance leg={directions.routes[0].legs[0]} />}
+              </TabPanel>
 
 
               <TabPanel value={value} index={2}>
@@ -123,10 +125,10 @@ export const ActivityList: React.FC = () => {
             <MapLoader apiKey ={"AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0"}>
               <Map 
                 tripDest = {curTripData ? curTripData.trip_dest: "New York"}
-                // setOffice={setOffice} 
-                // office={office} 
-                // directions = {directions}
-                // setDirections={setDirections}
+                setOffice={setOffice} 
+                office={office} 
+                directions = {directions}
+                setDirections={setDirections}
               />
             </MapLoader>
             

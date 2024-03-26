@@ -8,6 +8,7 @@ const { ref, push } = require("firebase/database");
 var admin = require("firebase-admin");
 
 var serviceAccount = require("./tripify-93d9a-firebase-adminsdk-utxmm-d231b34b0b.json");
+const { resolve } = require("path");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -35,6 +36,7 @@ router.post("/addParticipant", async (req, res) => {
       res.json(userRecord);
     })
     .catch((error) => {
+      res.status(404).json({ error: error.message });
       console.log("Error fetching user data:", error);
     });
 });
