@@ -9,7 +9,7 @@ import { Theme } from '@mui/material/styles';
 import emptyFav from '../public/favorite.png';
 import filledFav from '../public/favorite1.png';
 import { db } from "../firebase/firebase";
-import { push, set, ref } from "firebase/database";
+import { push, set, ref, remove } from "firebase/database";
 
 type Props = {
   trip_destination: string | undefined;
@@ -22,16 +22,46 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<ActivityInfo[]>([]);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [favorites, setFavorites] = useState<{ [key: string]: string }>({});
 
-  const addActivity = (activity: ActivityInfo) => {
-    const activitiesRef = ref(db, "trips/" + trip_id + "/activities");
-    push(activitiesRef, activity)
-      .then((newActivityRef) => {
-        console.log("New activity added with key:", newActivityRef.key);
-      })
-      .catch((error) => {
-        console.error("Error adding new activity:", error);
+  const renderStars = (rating:number) => {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        stars += '★'; // Full star
+      } else if (i - 0.5 === rating) {
+        stars += '☆'; // Half star - you may want to use a half-star character or icon
+      } else {
+        stars += '☆'; // Empty star
+      }
+    }
+    return <>{stars}</>;
+  };
+
+  const addActivity = async (activity: ActivityInfo): Promise<string> => {
+    const newActivityRef = await push(ref(db, "trips/" + trip_id + "/activities"), activity);
+    return newActivityRef.key as string;
+  };
+
+  const deleteActivity = async (key: string) => {
+    await remove(ref(db, "trips/" + trip_id + "/activities/" + key));
+  };
+
+  const toggleFavorite = async (activity: ActivityInfo) => {
+    // Check if the activity is already favorited
+    if (favorites[activity.name]) {
+      // Activity is favorited, delete it
+      await deleteActivity(favorites[activity.name]);
+      setFavorites((prev) => {
+        const updated = { ...prev };
+        delete updated[activity.name]; // Remove from favorites
+        return updated;
       });
+    } else {
+      // Activity is not favorited, add it
+      const key = await addActivity(activity);
+      setFavorites((prev) => ({ ...prev, [activity.name]: key })); // Add to favorites
+    }
   };
 
   const mapApiResponseToSearchResults = (apiResponse: any): ActivityInfo[] => {
@@ -43,12 +73,13 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
       rating: business.rating,
       location: business.location,
     }));
+
+    
   };
   
   useEffect(() => {
     console.log(searchResults); // This will log when searchResults updates
   }, [searchResults]);
-
 
   const searchYelp = async () => {
     try {
@@ -90,10 +121,7 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
   };
 
   const handleBlur = () => {
-    // Timeout to allow click on dropdown items before hiding
-    setTimeout(() => {
-      setDropdownVisible(false);
-    }, 100);
+    
   };
   const openLinkInNewTab = (url: string) => {
     const newTab = window.open(url, "_blank");
@@ -101,10 +129,6 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
       newTab.focus();
     }
   };
-  const [currentImage, setCurrentImage] = useState(emptyFav);
-  const toggleImage = () => {
-    setCurrentImage(currentImage === emptyFav ? filledFav : emptyFav);
-  }
 
   return (
     <>
@@ -143,29 +167,53 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
           }}
         />
         {isDropdownVisible && (
-          <Box className={styles.autocompleteDropdownContainer}>
+          <Box className={styles.autocompleteDropdownContainer} sx={{ width: '120%' }}>
           {searchResults.slice(0, 5).map((activity, index) => (
-            <div
+            <Box
               key={index}
-              className={styles.container} // Use the container class from Review.module.css
+              className={styles.dropdownItem}
               onClick={() => addActivity(activity)}
+              sx={{ position: 'relative', display: 'flex', alignItems: 'center', padding: '10px' }}
             >
-              <img
-                src={activity.image_url}
-                alt={activity.name}
-                className={styles.image} // Use the image class from Review.module.css
-              />{activity.name}
-              <div className={styles.content}> 
-                <h2 className={styles.title}>{activity.name}</h2> 
-                <div className={styles.rating}> 
-                  {"fk"}
-                </div>
-                <img src="/yelp.svg" alt="Yelp" className={styles.yelpIcon} />
-                <div className={styles.reviewCount}>
-                  Based on {activity.review_count} reviews
-                </div>
+              <Card
+                key={index}
+                className={styles.dropdownItem} 
+                onClick={() => addActivity(activity)}
+                sx={{ display: 'flex', alignItems: 'center', padding: '10px' }}
+              >
+                <CardMedia
+                  component="img"
+                  image={activity.image_url}
+                  alt={activity.name}
+                  className={styles.dropdownItemImage}
+                  sx={{ width: 80, height: 80, borderRadius: '4px', objectFit: 'cover' }}
+                />
+                <Box sx={{ marginLeft: '10px', flexGrow: 1 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    {activity.name}
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body2" sx={{ color: '#ffbf00', display: 'flex' }}>
+                      {renderStars(activity.rating)}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ marginLeft: '5px' }}>
+                      {activity.review_count} reviews
+                  </Typography>
+                  {/* <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '5px' }}>
+                    <img src="/yelp.svg" alt="Yelp" style={{ width: '20px', height: 'auto', marginRight: '5px' }} />
+                  </Box> */}
+                </Box>
+              </Card>
+              <div className={styles.favoriteIcon}>
+                <Button onClick={(e) => {
+                  e.stopPropagation(); // Prevent the addActivity from being called
+                  toggleFavorite(activity);
+                }} className={styles.favorite}>
+                  <img src={favorites[activity.name] ? filledFav.src : emptyFav.src} alt="Favorite"/>
+                </Button>
               </div>
-            </div>
+            </Box>
           ))}
         </Box>
         )}

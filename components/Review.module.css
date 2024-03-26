@@ -1,5 +1,5 @@
 .container {
-  width: 40%;
+  width: 100%;
   display: flex;
   align-items: center;
   background-color: #f0f0f0; /* Grey background */
@@ -9,7 +9,7 @@
 }
 
 .image {
-  width: 80px; /* Set the image size */
+  width: 100px; /* Set the image size */
   height: auto;
   margin-right: 16px;
   object-fit: cover;

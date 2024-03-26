@@ -22,7 +22,7 @@ export default function Distance({ leg }: DistanceProps) {
     <div>
       <p>
         This activity is <span className="highlight">{leg.distance.text}</span> away
-        from your place. That would take{" "}
+        from your place! That would take{" "}
         <span className="highlight">{leg.duration.text}</span> each direction.
       </p>
   

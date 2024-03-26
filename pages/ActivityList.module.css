@@ -5,9 +5,12 @@
     padding: 20px;
     width: 80%;
     height: 80px; 
-    
   }
-  
+  .tripCard{
+    padding-left: 100px;
+
+  }
+
   .addButton {
     background-color: #000;
     color: #fff;
@@ -35,44 +38,62 @@
   }
 
   .Container {
-    margin-top: -40px;
     display: flex;
-    margin-left: auto;
-    margin-right: auto;
-    align-items: center;
+    justify-content: space-between; /* Adjusts items on the main axis */
+    margin-top: 100px;
+    align-items: flex-start; /* Aligns items at the start of the cross axis */
   }
   
   .sidebar {
-    margin-top: 150px;
-    padding-left: 80px;
+    margin-top: 0px;
+    padding-left: 0; /* Adjust or remove padding */
+    margin-left: 0;
     width: 55vw; /* Adjust the width accordingly */
-    margin-right: 0.01%; /* Provides some space between the columns */
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 1020px) {
     .sidebar {
       align-items: center;
-      width: 100%; /* Adjust the width accordingly */
+      width: 100%; /* This makes the sidebar use the full width available */
+      padding-left: 0px; /* Adjust the padding as needed for smaller screens */
+      padding-right: 0px; /* Ensures content doesn't touch the screen edges */
     }
+  
+    .mainContent {
+      display: none; /* This hides the main content area, including the map */
+    }
+  
     .Container {
+      flex-direction: column; /* Stack sidebar and mainContent vertically, if you decide to show mainContent for any reason */
       margin-top: 100px;
-      margin-left: auto;
+      align-items: center; /* This centers the sidebar when it's the only visible element */
+      
     }
+  
+    .tripCard{
+      padding-left: 100px;
+    }
+    
   }
 
-
   .mainContent {
-    width: 63%; /* Adjust the width accordingly */
+    width: 45vw; /* Adjust based on your preference */
+    position: relative; 
   }
   
   .mapContainer {
+    position: fixed;
     width: 700px;
     height: 400px; /* Set a fixed height or adjust as needed */
     
   }
 
-  .activities{
-    position: relative;
-    padding-right:100px;
-
+  .activities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Adjust the space between cards as needed */
+  }
+  
+  .activities > div { /* Assuming each activity card is wrapped in a div */
+    flex: 1 1 calc(50% - 20px); /* Adjust the subtraction value based on your gap */
   }

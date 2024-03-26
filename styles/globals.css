@@ -39,7 +39,7 @@ a {
   height: 70vh;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1020px) {
   .map-container {
     display: none;
   }

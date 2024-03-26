@@ -1,5 +1,6 @@
 .profileDropdownContainer {
     position: relative;
+    width: 100px;
   }
   
   .profileImage {
@@ -37,7 +38,7 @@
     text-decoration: none;
     color: black;
     display: block;
-    font-weight: 500;
+    font-weight: 550;
   }
   
   .dropdownNavItem:hover {

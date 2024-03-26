@@ -29,7 +29,7 @@ import { db } from "../firebase/firebase";
 import SearchBar from "./SearchBarYelp";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-
+import Link from 'next/link';
 
 const logoStyle = {
   width: '140px',
@@ -145,6 +145,7 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 px: 0,
               }}
             >
+            <Link href="/dashboard" passHref>
               <img
                 src={logo.src}
                 style={logoStyle}
@@ -153,6 +154,7 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                   router.push('/dashboard');
                 }}
               />
+              </Link>
               <Box
                 sx={{
                 display: 'flex',
@@ -183,33 +185,37 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                       display: 'flex',
                       justifyContent: 'flex-end', // Align menu items to the right
                     }}
-    >
+                    >
+                <Link href="/discover" passHref>
                 <MenuItem
-                  onClick={() => scrollToSection('discover')}
                   sx={{ py: '6px', px: '12px' }}
                 >
                   <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
                     Discover
                   </Typography>
                 </MenuItem>
+                </Link>
+                <Link href="/dashboard" passHref>
                 <MenuItem
-                  onClick={() => scrollToSection('trips')}
                   sx={{ py: '6px', px: '12px' }}
                 >
                   <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
                     Trips
                   </Typography>
                 </MenuItem>
+                </Link>
                 
+                <Link href="/restaurants" passHref>
                 <MenuItem
-                  onClick={() => scrollToSection('resturants')}
                   sx={{ py: '6px', px: '12px' }}
                 >
                   <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
                     Resturants
                   </Typography>
                 </MenuItem>
+                </Link>
 
+                <Link href="/faq" passHref>
                 <MenuItem
                   onClick={() => scrollToSection('faq')}
                   sx={{ py: '6px', px: '12px' }}
@@ -218,6 +224,7 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                     FAQ
                   </Typography>
                 </MenuItem>
+                </Link>
                 </Box>
                 </>
               )}
@@ -286,19 +293,28 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                       flexDirection: 'column',
                       alignItems: 'end',
                       flexGrow: 1,
+                    
                     }}
                   >
                   </Box>
-                  <MenuItem onClick={() => scrollToSection('discover')}>
+                  <Link href="/discover" passHref>
+                  <MenuItem>
                     Discover
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('trips')}>
+                  </Link>
+                  <Link href="/dashboard" passHref>
+                  <MenuItem>
                     Trips
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('resturants')}>
+                  </Link>
+                  <Link href="/resturants" passHref>
+                  <MenuItem>
                     Resturants
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('faq')}>FAQ</MenuItem>
+                  </Link>
+                  <Link href="/faq" passHref>
+                  <MenuItem >FAQ</MenuItem>
+                  </Link>
                   <Divider />
                   {!isLoading && authUser ? (
                 // User is logged in, show the ProfileSidebar component

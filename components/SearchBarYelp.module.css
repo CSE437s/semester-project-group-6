@@ -7,41 +7,45 @@
   left: 0;
   right: 0;
   max-height: 300px;
-  width: 120%; /* This should match the width of the search bar */
+  width: 120%; /* Adjusted to match the width of the search bar */
   overflow-y: auto;
   z-index: 1000;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background-color: #fff;
   border-radius: 5px;
+  
 }
 
-  
-  .dropdownItem {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.2s;
-  }
-  
-  .dropdownItem:last-child {
-    border-bottom: none;
-  }
-  
-  .dropdownItem:hover {
-    background-color: #f9f9f9;
-  }
-  
-  .dropdownItemImage {
-    width: 100px; /* Fixed width for image */
-    object-fit: cover;
-  }
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.2s;
+  position: relative;
+  width: 100%;
+}
+
+.dropdownItem:last-child {
+  border-bottom: none;
+}
+
+.dropdownItemImage {
+  flex-shrink: 0;
+  border-radius: 4px;
+  margin-right: 10px;
+  width: 100px;
+  height: 80px;
+  object-fit: cover;
+}
+
+/* Rest of your existing CSS */
 
 
 .favoriteIcon {
   position: absolute;
-  top: 0;
-  right: 0;
-  /* Add styles for favorite icon */
+  max-width: 5px;
+  height: 5px; 
 }
 
 
@@ -49,12 +53,13 @@
   align-items: center;
   justify-content: center;
   display: flex;
-  width: 45px;
-  height: 45px; 
+  width: 35px;
+  height: 35px; 
   border: 1px solid lightgrey;
   border-radius: 50%;
   background-color: #f0f0f0; /* Light grey background */
-  margin: 10px 5px; /* Spacing between the boxes */
+  margin-left: 10px;
+  margin-bottom: 10px;
   min-width: 0;
 }
 
@@ -78,8 +83,8 @@
 }
 
 .image {
-  width: 80px; /* Set the image size */
-  height: auto;
+  width: 100px; /* Set the image size */
+  height: 80px;
   margin-right: 16px;
   object-fit: cover;
   border-radius: 4px;

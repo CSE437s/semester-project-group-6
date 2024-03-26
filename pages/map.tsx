@@ -38,8 +38,14 @@ type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 
+type Props = {
+  office: LatLngLiteral;
+  setOffice: React.Dispatch<React.SetStateAction<LatLngLiteral | null>>;
+  setDirections: React.Dispatch<React.SetStateAction<DirectionsResult | null>>;
+  directions: DirectionsResult | null;
+};
 
-export default function Map() {
+export default function  Map({ directions ,office, setOffice, setDirections }: Props) {
   const router = useRouter();
   const { tripId } = router.query;
   const trip_id = tripId as string; 
@@ -49,20 +55,18 @@ export default function Map() {
    
   }, [trip_id]);
   
-  const [office, setOffice] = useState<LatLngLiteral>();
-  const [directions, setDirections] = useState<DirectionsResult>();
+
   const [houses, setHouses] = useState<Array<LatLngLiteral>>([]);
 
   const mapRef = useRef<GoogleMap>();
-  const center = useMemo<LatLngLiteral>(
-    () => ({ lat: 40.73, lng: -73.93 }),
-    []
-  );
-  
+  const center = useMemo<LatLngLiteral>(() => ({
+    lat: office?.lat,
+    lng: office?.lng,
+  }), [office]);
  
   const options = useMemo<MapOptions>(
     () => ({
-      mapId: "b181cac70f27f5e6",
+      // mapId: "b181cac70f27f5e6",
       disableDefaultUI: true,
       clickableIcons: false,
     }),
@@ -144,6 +148,7 @@ export default function Map() {
                     position={house}
                     clusterer={clusterer}
                     onClick={() => fetchDirections(house)}
+                    icon="https://maps.google.com/mapfiles/kml/paddle/pink-stars.png"
                   />
                 ))}
               </>
@@ -153,12 +158,12 @@ export default function Map() {
             <>
               <Marker
                 position={office}
-                icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+                icon="https://maps.google.com/mapfiles/kml/paddle/grn-circle.png"
               />
 
-              <Circle center={office} radius={15000} options={closeOptions} />
+              {/* <Circle center={office} radius={15000} options={closeOptions} />
               <Circle center={office} radius={30000} options={middleOptions} />
-              <Circle center={office} radius={45000} options={farOptions} />
+              <Circle center={office} radius={45000} options={farOptions} /> */}
             </>
           )}
         </GoogleMap>

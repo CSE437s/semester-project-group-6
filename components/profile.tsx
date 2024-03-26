@@ -15,8 +15,8 @@ const ProfileSidebar: React.FC = () => {
   const { signOut, isLoading, authUser } = useAuth();
 
   const sidebarItems = [
-    { name: 'Homepage', href: '/', icon: '🏠' },
-    { name: 'Trips', href: '/Trips', icon: '👫' },
+    { name: 'View Profile', href: '/profile', icon: '🏠' },
+    { name: 'Trips', href: '/dashboard', icon: '👫' },
     { name: 'Friends', href: '/friends', icon: '👫' },
     // Add other sidebar items as needed
   ];
