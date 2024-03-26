@@ -12,7 +12,7 @@ const ProfileSidebar: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { signOut } = useAuth();
+  const { signOut, isLoading, authUser } = useAuth();
 
   const sidebarItems = [
     { name: 'Homepage', href: '/', icon: '🏠' },
@@ -20,13 +20,14 @@ const ProfileSidebar: React.FC = () => {
     { name: 'Friends', href: '/friends', icon: '👫' },
     // Add other sidebar items as needed
   ];
-
-  useEffect(() => {
+    useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => { // Type the event parameter as a MouseEvent
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
     };
+
+    
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -34,6 +35,12 @@ const ProfileSidebar: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && !authUser) {
+      router.push('/');
+    }
+  }, [authUser, isLoading]);
 
   return (
     <div className={styles.profileDropdownContainer} ref={dropdownRef}>
@@ -66,7 +73,12 @@ const ProfileSidebar: React.FC = () => {
             ))}
             {/* Logout item */}
             <div 
-              onClick={() => { signOut(); setShowDropdown(false); }} 
+              onClick={() => { 
+                signOut(); 
+                router.push('/');
+                setShowDropdown(false); 
+                
+              }} 
               className={styles.dropdownNavItem}
             >
               Logout

@@ -17,8 +17,8 @@ import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
-import { Combobox, ComboboxInput, ComboboxOption, ComboboxPopover, ComboboxList } from "@reach/combobox";
 import { useLoadScript } from "@react-google-maps/api";
+import PlacesAutocomplete from "./placesAutocomplete"
 
 
 
@@ -36,23 +36,31 @@ export default function Trips() {
     setTripModal(!isTripModalOpen);
   };
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0',
-    libraries: ["places"],
-  })
+  // const { isLoaded } = useLoadScript({
+  //   googleMapsApiKey: 'AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0',
+  //   libraries: ["places"],
+  // })
 
 
   const handleAddTrip = () => {
     if (!tripTitle.trim()) {
       alert("Please enter a valid trip title");
       return;
+      
+    }
+    if (!startDate || !endDate) {
+      alert("Please select start and end dates");
+      return;
+    }
+  
+    if (endDate.isBefore(startDate)) {
+      alert("End date must be after start date");
+      return;
     }
 
     const startDateObj = startDate.format("YYYY-MM-DD");
     const endDateObj = startDate.format("YYYY-MM-DD");
 
-    console.log(startDateObj);
-    console.log(tripDestination);
 
     // Use the push method to generate a unique key for the new trip
     const newTripRef = push(tripDatabaseRef, {
@@ -74,49 +82,50 @@ export default function Trips() {
     setEndDate(null)
   };
   
-  const PlacesAutocomplete = ({ setSelected }) => {
-    const {
-      ready,
-      value,
-      setValue,
-      suggestions: { status, data },
-      clearSuggestions,
-    } = usePlacesAutocomplete();
+
+  // const PlacesAutocomplete = ({ setSelected }) => {
+  //   const {
+  //     ready,
+  //     value,
+  //     setValue,
+  //     suggestions: { status, data },
+  //     clearSuggestions,
+  //   } = usePlacesAutocomplete();
   
-    const handleSelect = async (address) => {
-      setValue(address, false);
-      setTripDestination(address);
-      alert(address);
-      clearSuggestions();
+  //   const handleSelect = async (address) => {
+  //     setValue(address, false);
+  //     setTripDestination(address);
+  //     alert(address);
+  //     clearSuggestions();
   
-      const results = await getGeocode({ address });
-    };
+  //     const results = await getGeocode({ address });
+  //   };
   
-    return (
-      <Combobox onSelect={handleSelect}>
-        <ComboboxInput
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          disabled={!ready}
-          className="combobox-input"
-          placeholder="Search an address"
-        />
-        <ComboboxPopover classname="combobox-popover">
-          <ComboboxList>
-            {status === "OK" &&
-              data.map(({ place_id, description }) => (
-                <ComboboxOption 
-                className="combobox-option" 
-                key={place_id} 
-                value={description} 
+  //   return (
+  //     <Combobox onSelect={handleSelect}>
+  //       <ComboboxInput
+  //         value={value}
+  //         onChange={(e) => setValue(e.target.value)}
+  //         disabled={!ready}
+  //         className="combobox-input"
+  //         placeholder="Search an address"
+  //       />
+  //       <ComboboxPopover classname="combobox-popover">
+  //         <ComboboxList>
+  //           {status === "OK" &&
+  //             data.map(({ place_id, description }) => (
+  //               <ComboboxOption 
+  //               className="combobox-option" 
+  //               key={place_id} 
+  //               value={description} 
                 
-                />
-              ))}
-          </ComboboxList>
-        </ComboboxPopover>
-      </Combobox>
-    );
-  };
+  //               />
+  //             ))}
+  //         </ComboboxList>
+  //       </ComboboxPopover>
+  //     </Combobox>
+  //   );
+  // };
 
 
 
@@ -130,11 +139,12 @@ export default function Trips() {
         <Dialog open={isTripModalOpen} onClose={openTripModal}>
           <DialogTitle> Create New Trip</DialogTitle>
           <div className="Trip-Container">
-            <input
+            <TextField
               value={tripTitle}
               onChange={(e) => setTripTitle(e.target.value)}
               placeholder="Trip Title"
               className="trip-title-input"
+              required
             />
             <DatePicker
               value={startDate}
@@ -152,12 +162,15 @@ export default function Trips() {
                 setEndDate(newValue);
               }}
             />
-            
-            <PlacesAutocomplete/>
 
+            <PlacesAutocomplete tripDestination={tripDestination} setTripDestination={setTripDestination}></PlacesAutocomplete>
+            
             <Button variant="contained" size="large" onClick={handleAddTrip}>
               Add Trip
             </Button>
+
+            
+
           </div>
         </Dialog>
       </LocalizationProvider>
