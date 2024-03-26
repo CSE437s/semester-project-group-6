@@ -14,6 +14,12 @@ import Link from "next/link";
 import Image from "next/image";
 import Trips from "./trip";
 
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
+}
+
 export default function Trending() {
   const { authUser } = useAuth();
   const [userTrips, setUserTrips] = useState([]);
@@ -64,19 +70,20 @@ export default function Trending() {
             <div key={trip.tripId} className={styles.card}>
               
               <div className={styles.cardHeader}>
+              <div className={styles.cardOverlay}></div>
+              <h3 className={styles.cardTitle}>{trip.trip_name}</h3>
+              <p className={styles.cardLocation}>📍 {trip.trip_dest}</p>
                 <Image
                   src={TripStockPhoto}
                   alt={trip.trip_name}
                   className={styles.cardImg}
                 />
-                <h3 className={styles.cardTitle}>{trip.name}</h3>
-                <p className={styles.cardLocation}>{trip.location}</p>
               </div>
               <div className={styles.cardBody}>
                 <div className={styles.cardInfo}>
-                  <span>Destination: {trip.trip_dest}</span>
-                  <span>Start Date: {trip.start_date}</span>
-                  <span>End: {trip.end_date}</span>
+                  <span>{formatDate(trip.start_date)}</span>
+                  <span>to</span>
+                  <span>{formatDate(trip.end_date)}</span>
                 </div>
               </div>
               <Link href={`/ActivityList/${trip.tripId}`}>
