@@ -23,9 +23,9 @@ import { TripCardData } from "../CustomTypes";
 import { ref, get } from "firebase/database";
 import { db } from "../firebase/firebase";
 import SearchBar from "./SearchBarYelp";
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
-import Link from 'next/link';
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import Link from "next/link";
 
 const logoStyle = {
   width: "140px",
@@ -36,9 +36,12 @@ const logoStyle = {
 interface AppAppBarProps {
   mode: PaletteMode;
   toggleColorMode: () => void;
+  curTripData: TripCardData | undefined;
+  setTripData: React.Dispatch<React.SetStateAction<TripCardData | undefined>>;
+  fetchTripData: (tripId: string) => Promise<void>;
 }
 
-function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
+function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripData }: AppAppBarProps) {
   const [open, setOpen] = React.useState(false);
   const { authUser, isLoading } = useAuth();
   const [login, setLogin] = useState(false);
@@ -75,27 +78,13 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
 
   const router = useRouter();
   const { tripId } = router.query as { tripId: string };
-  const [curTripData, setTripData] = useState<TripCardData>();
 
   useEffect(() => {
     if (tripId) {
-      const tripDatabaseRef = ref(db, "trips/" + tripId);
-      const fetchTripData = async () => {
-        try {
-          const tripSnapshot = await get(tripDatabaseRef);
-          if (tripSnapshot.exists()) {
-            setTripData(tripSnapshot.val());
-          } else {
-            console.error(`Trip with ID ${tripId} not found.`);
-          }
-        } catch (error) {
-          console.error("Error fetching trip data:", error);
-        }
-      };
-
-      fetchTripData();
+      fetchTripData(tripId);
     }
   }, [tripId]);
+
 
   return (
     <div>
@@ -141,21 +130,20 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 px: 0,
               }}
             >
-            <Link href="/dashboard" passHref>
-              <img
-                src={logo.src}
-                style={logoStyle}
-                alt="logo of tripify"
-                onClick={() => {
-                  router.push("/dashboard");
-                }}
-              />
+              <Link href="/dashboard" passHref>
+                <img
+                  src={logo.src}
+                  style={logoStyle}
+                  alt="logo of tripify"
+                  onClick={() => {
+                    router.push("/dashboard");
+                  }}
+                />
               </Link>
               <Box
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  ml: "40px",
+                  display: "inline-block",
+                  ml: "30px",
                   px: 0,
                 }}
               >
@@ -165,21 +153,18 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                       trip_destination={curTripData.trip_dest}
                       trip_id={tripId}
                       isMobile={isMobile}
+                      curTripData = {curTripData}
+                      setTripData = {setTripData}
+                      fetchTripData = {fetchTripData}
                       sx={{
                         flexGrow: 1, // Allow search bar to grow and fill available space
                         maxWidth: "100%", // Ensure it does not exceed the container width
                       }}
                     />
-                    <Button variant="contained" sx={{ 
-                      bgcolor: "#010101",
-                      margin: "0px 50px 0px 50px"
-                  }}>
-                      
-                      GO
-                    </Button>
                   </>
                 )}
               </Box>
+             
               {!isMobile && (
                 <>
                   <Box
@@ -188,47 +173,57 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                       display: "flex",
                       justifyContent: "flex-end", // Align menu items to the right
                     }}
-                    >
-                <Link href="/discover" passHref>
-                <MenuItem
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
-                    Discover
-                  </Typography>
-                </MenuItem>
-                </Link>
-                <Link href="/dashboard" passHref>
-                <MenuItem
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
-                    Trips
-                  </Typography>
-                </MenuItem>
-                </Link>
-                
-                <Link href="/restaurants" passHref>
-                <MenuItem
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
-                    Resturants
-                  </Typography>
-                </MenuItem>
-                </Link>
+                  >
+                    {/* <Link href="/discover" passHref>
+                      <MenuItem sx={{ py: "6px", px: "12px" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          Discover
+                        </Typography>
+                      </MenuItem>
+                    </Link> */}
+                    {/* <Link href="/dashboard" passHref>
+                      <MenuItem sx={{ py: "6px", px: "12px" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          Trips
+                        </Typography>
+                      </MenuItem>
+                    </Link> */}
 
-                <Link href="/faq" passHref>
-                <MenuItem
-                  onClick={() => scrollToSection('faq')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
-                    FAQ
-                  </Typography>
-                </MenuItem>
-                </Link>
-                </Box>
+                    {/* <Link href="/restaurants" passHref>
+                      <MenuItem sx={{ py: "6px", px: "12px" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          Resturants
+                        </Typography>
+                      </MenuItem>
+                    </Link> */}
+
+                    <Link href="/faq" passHref>
+                      <MenuItem
+                        onClick={() => scrollToSection("faq")}
+                        sx={{ py: "6px", px: "12px" }}
+                      >
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          FAQ
+                        </Typography>
+                      </MenuItem>
+                    </Link>
+                  </Box>
                 </>
               )}
             </Box>
@@ -297,27 +292,19 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                       flexDirection: "column",
                       alignItems: "end",
                       flexGrow: 1,
-                    
                     }}
-                  >
-                  </Box>
+                  ></Box>
                   <Link href="/discover" passHref>
-                  <MenuItem>
-                    Discover
-                  </MenuItem>
+                    <MenuItem>Discover</MenuItem>
                   </Link>
                   <Link href="/dashboard" passHref>
-                  <MenuItem>
-                    Trips
-                  </MenuItem>
+                    <MenuItem>Trips</MenuItem>
                   </Link>
                   <Link href="/resturants" passHref>
-                  <MenuItem>
-                    Resturants
-                  </MenuItem>
+                    <MenuItem>Resturants</MenuItem>
                   </Link>
                   <Link href="/faq" passHref>
-                  <MenuItem >FAQ</MenuItem>
+                    <MenuItem>FAQ</MenuItem>
                   </Link>
                   <Divider />
                   {!isLoading && authUser ? (

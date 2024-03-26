@@ -32,23 +32,24 @@ export const ActivityList: React.FC = () => {
   
   useEffect(() => {
     if (tripId) {
-      const tripDatabaseRef = ref(db, "trips/" + tripId);
-      const fetchTripData = async () => {
-        try {
-          const tripSnapshot = await get(tripDatabaseRef);
-          if (tripSnapshot.exists()) {
-            setTripData(tripSnapshot.val());
-          } else {
-            console.error(`Trip with ID ${tripId} not found.`);
-          }
-        } catch (error) {
-          console.error("Error fetching trip data:", error);
-        }
-      };
-
+      
       fetchTripData();
     }
   }, [tripId]);
+
+  const fetchTripData = async () => {
+    try {
+      const tripDatabaseRef = ref(db, "trips/" + tripId);
+      const tripSnapshot = await get(tripDatabaseRef);
+      if (tripSnapshot.exists()) {
+        setTripData(tripSnapshot.val());
+      } else {
+        console.error(`Trip with ID ${tripId} not found.`);
+      }
+    } catch (error) {
+      console.error("Error fetching trip data:", error);
+    }
+  };
 
   function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
@@ -77,7 +78,7 @@ export const ActivityList: React.FC = () => {
 
   return (
     <>
-      <NavBar mode="light" toggleColorMode={() => {}} />
+      <NavBar fetchTripData={fetchTripData} curTripData={curTripData} setTripData={setTripData} mode="light" toggleColorMode={() => {}} />
 
       <div className={styles.Container}>
         <div className={styles.sidebar}>

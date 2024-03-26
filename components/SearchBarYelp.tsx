@@ -1,45 +1,59 @@
-import { Button, TextField, Box, Card, CardMedia, Typography } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Box,
+  Card,
+  CardMedia,
+  Typography,
+} from "@mui/material";
 import { useState, useEffect } from "react";
-import { ActivityInfo } from '../CustomTypes';
+import { ActivityInfo } from "../CustomTypes";
 import Review from "./Review";
-import React from 'react';
-import styles from './SearchBarYelp.module.css';
-import { SxProps } from '@mui/system';
-import { Theme } from '@mui/material/styles';
-import emptyFav from '../public/favorite.png';
-import filledFav from '../public/favorite1.png';
+import React from "react";
+import styles from "./SearchBarYelp.module.css";
+import { SxProps } from "@mui/system";
+import { Theme } from "@mui/material/styles";
+import emptyFav from "../public/favorite.png";
+import filledFav from "../public/favorite1.png";
 import { db } from "../firebase/firebase";
 import { push, set, ref, remove } from "firebase/database";
+import { TripCardData } from "../CustomTypes";
 
 type Props = {
   trip_destination: string | undefined;
   trip_id: string;
   isMobile: boolean;
   sx?: SxProps<Theme>;
+  curTripData: TripCardData | undefined;
+  setTripData: React.Dispatch<React.SetStateAction<TripCardData | undefined>>;
+  fetchTripData: (tripId: string) => Promise<void>;
 };
 
-const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
+const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTripData, fetchTripData }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<ActivityInfo[]>([]);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [favorites, setFavorites] = useState<{ [key: string]: string }>({});
 
-  const renderStars = (rating:number) => {
-    let stars = '';
+  const renderStars = (rating: number) => {
+    let stars = "";
     for (let i = 1; i <= 5; i++) {
       if (i <= rating) {
-        stars += '★'; // Full star
+        stars += "★"; // Full star
       } else if (i - 0.5 === rating) {
-        stars += '☆'; // Half star - you may want to use a half-star character or icon
+        stars += "☆"; // Half star - you may want to use a half-star character or icon
       } else {
-        stars += '☆'; // Empty star
+        stars += "☆"; // Empty star
       }
     }
     return <>{stars}</>;
   };
 
   const addActivity = async (activity: ActivityInfo): Promise<string> => {
-    const newActivityRef = await push(ref(db, "trips/" + trip_id + "/activities"), activity);
+    const newActivityRef = await push(
+      ref(db, "trips/" + trip_id + "/activities"),
+      activity
+    );
     return newActivityRef.key as string;
   };
 
@@ -73,10 +87,8 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
       rating: business.rating,
       location: business.location,
     }));
-
-    
   };
-  
+
   useEffect(() => {
     console.log(searchResults); // This will log when searchResults updates
   }, [searchResults]);
@@ -120,9 +132,8 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
     }
   };
 
-  const handleBlur = () => {
-    
-  };
+  const handleBlur = () => {};
+
   const openLinkInNewTab = (url: string) => {
     const newTab = window.open(url, "_blank");
     if (newTab) {
@@ -132,7 +143,7 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
 
   return (
     <>
-      <Box sx={{ position: 'relative' , ...sx}}>
+      <Box sx={{ position: "relative", ...sx }}>
         <TextField
           id="outlined-basic"
           label="Search"
@@ -140,82 +151,111 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
           value={searchTerm}
           onChange={handleSearchChange}
           onBlur={handleBlur}
-          
           autoComplete="off"
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               e.preventDefault(); // prevent the default action
               searchYelp(); // call your search function
             }
           }}
           sx={{
-            width: isMobile ? '120%' : '120%', // Wider search box, adjust as needed or use fixed value like '500px'
-            '& .MuiOutlinedInput-root': {
-              height: '40px', // Thinner search box, adjust as needed
-              borderRadius: '20px', // Keep the rounded corners
-              '& .MuiOutlinedInput-input': {
-                padding: '10px 14px ', // Reduce vertical padding to make it thinner
+            width: isMobile ? "120%" : "150%",
+            "& .MuiOutlinedInput-root": {
+              height: "40px", //
+              borderRadius: "20px",
+              "& .MuiOutlinedInput-input": {
+                padding: "10px 14px ",
               },
-              '& .MuiInputLabel-outlined': {
-                lineHeight: '40px', // Adjust label line height if necessary
-                transform: 'translate(14px, 14px) scale(1)', // Adjust label position
+              "& .MuiInputLabel-outlined": {
+                lineHeight: "40px",
+                transform: "translate(14px, 14px) scale(1)", // Adjust label position
               },
-              '& .MuiInputLabel-shrink': {
-                transform: 'translate(14px, -6px) scale(0.75)', // Adjust label position on focus
+              "& .MuiInputLabel-shrink": {
+                transform: "translate(14px, -6px) scale(0.75)", // Adjust label position on focus
               },
             },
           }}
         />
+        
         {isDropdownVisible && (
-          <Box className={styles.autocompleteDropdownContainer} sx={{ width: '120%' }}>
-          {searchResults.slice(0, 5).map((activity, index) => (
-            <Box
-              key={index}
-              className={styles.dropdownItem}
-              onClick={() => addActivity(activity)}
-              sx={{ position: 'relative', display: 'flex', alignItems: 'center', padding: '10px' }}
-            >
-              <Card
+          <Box
+            className={styles.autocompleteDropdownContainer}
+            sx={{ width: "150%" }}
+          >
+            {searchResults.slice(0, 5).map((activity, index) => (
+              <Box
                 key={index}
-                className={styles.dropdownItem} 
-                onClick={() => addActivity(activity)}
-                sx={{ display: 'flex', alignItems: 'center', padding: '10px' }}
+                className={styles.dropdownItem}
+                // onClick={() => addActivity(activity)} * removing this so that it only adds if you press like
+                sx={{
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "10px",
+                }}
               >
-                <CardMedia
-                  component="img"
-                  image={activity.image_url}
-                  alt={activity.name}
-                  className={styles.dropdownItemImage}
-                  sx={{ width: 80, height: 80, borderRadius: '4px', objectFit: 'cover' }}
-                />
-                <Box sx={{ marginLeft: '10px', flexGrow: 1 }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                    {activity.name}
-                  </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography variant="body2" sx={{ color: '#ffbf00', display: 'flex' }}>
-                      {renderStars(activity.rating)}
+                <Card
+                  key={index}
+                  className={styles.dropdownItem}
+                  onClick={() => openLinkInNewTab(activity.url)}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "10px",
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    image={activity.image_url}
+                    alt={activity.name}
+                    className={styles.dropdownItemImage}
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "4px",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <Box sx={{ marginLeft: "10px", flexGrow: 1 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                      {activity.name}
                     </Typography>
-                  </Box>
-                  <Typography variant="body2" sx={{ marginLeft: '5px' }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "#ffbf00", display: "flex" }}
+                      >
+                        {renderStars(activity.rating)}
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2" sx={{ marginLeft: "5px" }}>
                       {activity.review_count} reviews
-                  </Typography>
-                  {/* <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '5px' }}>
+                    </Typography>
+                    {/* <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '5px' }}>
                     <img src="/yelp.svg" alt="Yelp" style={{ width: '20px', height: 'auto', marginRight: '5px' }} />
                   </Box> */}
-                </Box>
-              </Card>
-              <div className={styles.favoriteIcon}>
-                <Button onClick={(e) => {
-                  e.stopPropagation(); // Prevent the addActivity from being called
-                  toggleFavorite(activity);
-                }} className={styles.favorite}>
-                  <img src={favorites[activity.name] ? filledFav.src : emptyFav.src} alt="Favorite"/>
-                </Button>
-              </div>
-            </Box>
-          ))}
-        </Box>
+                  </Box>
+                </Card>
+                <div className={styles.favoriteIcon}>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent the addActivity from being called
+                      toggleFavorite(activity);
+                      fetchTripData(trip_id);
+                    }}
+                    className={styles.favorite}
+                  >
+                    <img
+                      src={
+                        favorites[activity.name] ? filledFav.src : emptyFav.src
+                      }
+                      alt="Favorite"
+                    />
+                  </Button>
+                </div>
+              </Box>
+            ))}
+          </Box>
         )}
       </Box>
     </>
