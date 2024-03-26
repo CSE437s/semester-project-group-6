@@ -10,6 +10,7 @@ import Trending from '../components/Trending'
 import Chat from '../components/Chat';
 import React, { useEffect, useState } from "react";
 import AppAppBar from '../components/AppAppBar';
+import { ActivityInfo, TripCardData } from '../CustomTypes';
 
 export default function Dashboard() {
     const {authUser, isLoading} = useAuth();
@@ -27,7 +28,7 @@ export default function Dashboard() {
         </Head>
 
         <main>
-            <AppAppBar mode={'light'} toggleColorMode={function (): void {
+            <AppAppBar fetchTripData={{} as (tripId: string) => Promise<void>} setTripData={{} as React.Dispatch<React.SetStateAction<TripCardData | undefined>>} curTripData={{} as TripCardData} mode={'light'} toggleColorMode={function (): void {
                     throw new Error('Function not implemented.');
             } }/>
             <Trending/>
