@@ -31,8 +31,6 @@ router.post("/addParticipant", async (req, res) => {
         id: userRecord.uid,
       });
 
-      console.log(dbref);
-      console.log(`Successfully fetched user data: ${userRecord.uid}`);
 
       res.json(userRecord);
     })

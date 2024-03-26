@@ -29,23 +29,25 @@ import {
   geocode,
   RequestType,
 } from "react-geocode";
+import { off } from "process";
 
-// setKey("AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0");
-// setLanguage("en");
-// setRegion("es");
+setKey("AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0");
+setLanguage("en");
+setRegion("es");
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 
-type Props = {
-  office: LatLngLiteral;
-  setOffice: React.Dispatch<React.SetStateAction<LatLngLiteral | null>>;
-  setDirections: React.Dispatch<React.SetStateAction<DirectionsResult | null>>;
-  directions: DirectionsResult | null;
-};
+// type Props = {
+//   office: LatLngLiteral | null;
+//   setOffice: React.Dispatch<React.SetStateAction<LatLngLiteral | null>>;
+//   setDirections: React.Dispatch<React.SetStateAction<DirectionsResult | null>>;
+//   directions: DirectionsResult | null;
+// };
 
-export default function  Map({ directions ,office, setOffice, setDirections }: Props) {
+
+export default function  Map({ tripDest }: { tripDest: string }) {
   const router = useRouter();
   const { tripId } = router.query;
   const trip_id = tripId as string; 
@@ -53,16 +55,54 @@ export default function  Map({ directions ,office, setOffice, setDirections }: P
   
 
   const [houses, setHouses] = useState<Array<LatLngLiteral>>([]);
+  const [office, setOffice] = useState<LatLngLiteral | null>({} as LatLngLiteral);
+  const [directions, setDirections] = useState<DirectionsResult | null>({} as DirectionsResult);
+
+
+
+  useEffect(() => {
+    const fetchTripDest = async () => {
+      if (!tripId) return;
+  
+      const tripDestRef = ref(db, `trips/${tripId}/trip_dest`);
+      try {
+        const tripDestSnapshot = await get(tripDestRef);
+        if (tripDestSnapshot.exists()) {
+          const tripDestAddress = tripDestSnapshot.val();
+          // Correctly calling the geocode function with "address" as the request type
+          geocode("address", tripDestAddress).then((response) => {
+            const results = response.results;
+            if (results && results.length > 0) {
+              const { lat, lng } = results[0].geometry.location;
+              setOffice({ lat, lng });
+            } else {
+              console.error("Geocode was not successful for the following reason: " + response.status);
+            }
+          }).catch((error) => {
+            console.error("Geocoding error: ", error);
+          });
+        } else {
+          console.error(`Trip destination with ID ${tripId} not found.`);
+        }
+      } catch (error) {
+        console.error("Error fetching trip destination:", error);
+      }
+    };
+  
+    fetchTripDest();
+  }, [tripId]);
+
+
 
   const mapRef = useRef<GoogleMap>();
   const center = useMemo<LatLngLiteral>(() => ({
-    lat: office?.lat,
-    lng: office?.lng,
+    lat: office ? office.lat :  40.73,
+    lng: office ? office.lng :  -73.93
   }), [office]);
  
   const options = useMemo<MapOptions>(
     () => ({
-      // mapId: "b181cac70f27f5e6",
+      mapId: "b181cac70f27f5e6",
       disableDefaultUI: true,
       clickableIcons: false,
     }),

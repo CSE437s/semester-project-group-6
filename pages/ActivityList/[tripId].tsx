@@ -15,6 +15,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Distance from "../../components/distance";
 import { geocode } from "react-geocode";
+import MapLoader from "../../components/mapLoader"
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -28,8 +29,6 @@ export const ActivityList: React.FC = () => {
   const router = useRouter();
   const { tripId } = router.query as { tripId: string };
   const [curTripData, setTripData] = useState<TripCardData>();
-  const [office, setOffice] = useState<LatLngLiteral>();
-  const [directions, setDirections] = useState<DirectionsResult | null>(null);
   
   useEffect(() => {
     if (tripId) {
@@ -74,38 +73,7 @@ export const ActivityList: React.FC = () => {
     setValue(newValue);
   };
 
-    useEffect(() => {
-      const fetchTripDest = async () => {
-        if (!tripId) return;
-    
-        const tripDestRef = ref(db, `trips/${tripId}/trip_dest`);
-        try {
-          const tripDestSnapshot = await get(tripDestRef);
-          if (tripDestSnapshot.exists()) {
-            const tripDestAddress = tripDestSnapshot.val();
-            // Correctly calling the geocode function with "address" as the request type
-            geocode("address", tripDestAddress).then((response) => {
-              const results = response.results;
-              if (results && results.length > 0) {
-                const { lat, lng } = results[0].geometry.location;
-                setOffice({ lat, lng });
-              } else {
-                console.error("Geocode was not successful for the following reason: " + response.status);
-              }
-            }).catch((error) => {
-              console.error("Geocoding error: ", error);
-            });
-          } else {
-            console.error(`Trip destination with ID ${tripId} not found.`);
-          }
-        } catch (error) {
-          console.error("Error fetching trip destination:", error);
-        }
-      };
-    
-      fetchTripDest();
-    }, [tripId]);
-    
+        
 
   return (
     <>
@@ -134,10 +102,10 @@ export const ActivityList: React.FC = () => {
               
               </TabPanel>
 
-              <TabPanel value={value} index={1}>
+              {/* <TabPanel value={value} index={1}>
                  {!office}
                  {directions && <Distance leg={directions.routes[0].legs[0]} />}
-              </TabPanel>
+              </TabPanel> */}
 
 
               <TabPanel value={value} index={2}>
@@ -151,12 +119,16 @@ export const ActivityList: React.FC = () => {
 
         <div className={styles.mainContent}>
           <div className={styles.mapContainer}>
-            <Map 
-              setOffice={setOffice} 
-              office={office} 
-              directions = {directions}
-              setDirections={setDirections}
-            />
+            <MapLoader apiKey ={"AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0"}>
+              <Map 
+                tripDest = {curTripData ? curTripData.trip_dest: "New York"}
+                // setOffice={setOffice} 
+                // office={office} 
+                // directions = {directions}
+                // setDirections={setDirections}
+              />
+            </MapLoader>
+            
           </div>
         </div>
       </div>
