@@ -12,6 +12,7 @@ import { useAuth } from "../firebase/auth";
 import TripStockPhoto from "../public/trip-stock-photo.jpg";
 import Link from "next/link";
 import Image from "next/image";
+import Trips from "./trip";
 
 export default function Trending() {
   const { authUser } = useAuth();
@@ -49,36 +50,45 @@ export default function Trending() {
   console.log(userTrips);
 
   return (
-    <section className={styles.trending}>
-      <div className={styles.heading}>
-        <h2>Your Trips</h2>
-        <p>Description</p>
-      </div>
       <div className={styles.wrapper}>
-        {userTrips.map((trip) => (
-          <div key={trip.tripId} className={styles.card}>
-            <div className={styles.cardHeader}>
-              <Image
-                src={TripStockPhoto}
-                alt={trip.trip_name}
-                className={styles.cardImg}
-              />
-              <h3 className={styles.cardTitle}>{trip.name}</h3>
-              <p className={styles.cardLocation}>{trip.location}</p>
-            </div>
-            <div className={styles.cardBody}>
-              <div className={styles.cardInfo}>
-                <span>Destination: {trip.trip_dest}</span>
-                <span>Start Date: {trip.start_date}</span>
-                <span>End: {trip.end_date}</span>
-              </div>
-            </div>
-            <Link href={`/ActivityList/${trip.tripId}`}>
-              <button className={styles.cardButton}>Enter</button>
-            </Link>
+        {userTrips.length === 0 && (
+          <div className={styles.heading}>
+            
+            <div>no trips yet? Start your jouney now</div>
           </div>
-        ))}
+        )}
+
+      
+        <div className ={styles.trending}>
+         {userTrips.map((trip) => (
+            <div key={trip.tripId} className={styles.card}>
+              
+              <div className={styles.cardHeader}>
+                <Image
+                  src={TripStockPhoto}
+                  alt={trip.trip_name}
+                  className={styles.cardImg}
+                />
+                <h3 className={styles.cardTitle}>{trip.name}</h3>
+                <p className={styles.cardLocation}>{trip.location}</p>
+              </div>
+              <div className={styles.cardBody}>
+                <div className={styles.cardInfo}>
+                  <span>Destination: {trip.trip_dest}</span>
+                  <span>Start Date: {trip.start_date}</span>
+                  <span>End: {trip.end_date}</span>
+                </div>
+              </div>
+              <Link href={`/ActivityList/${trip.tripId}`}>
+                <button className={styles.cardButton}>Enter</button>
+              </Link>
+              
+            </div>
+          )
+          )}
+          <Trips></Trips>
+          </div>
       </div>
-    </section>
+
   );
 }

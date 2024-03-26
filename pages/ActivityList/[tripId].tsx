@@ -3,10 +3,7 @@ import TripCard from "../../components/TripCard";
 import ActivityCard from "../../components/ActivityCard";
 import { useRouter } from "next/router";
 import styles from "../ActivityList.module.css";
-import {
-  ref,
-  get,
-} from "firebase/database";
+import { ref, get } from "firebase/database";
 import { db } from "../../firebase/firebase";
 import SearchBar from "../../components/SearchBarYelp";
 import { TripCardData, ActivityInfo } from "../../CustomTypes";
@@ -56,7 +53,7 @@ export const ActivityList: React.FC = () => {
 
   function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
-  
+
     return (
       <div
         role="tabpanel"
@@ -65,15 +62,11 @@ export const ActivityList: React.FC = () => {
         aria-labelledby={`simple-tab-${index}`}
         {...other}
       >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            {children}
-          </Box>
-        )}
+        {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
       </div>
     );
   }
-  
+
   const [value, setValue] = React.useState(0);
   const activitiesArray = Object.values(curTripData?.activities || {});
   const numberOfActivities = activitiesArray.length;
@@ -117,7 +110,7 @@ export const ActivityList: React.FC = () => {
   return (
     <>
       <NavBar mode="light" toggleColorMode={() => {}} />
-      
+
       <div className={styles.Container}>
         <div className={styles.sidebar}>
           <div className={styles.tripCard}>
@@ -155,7 +148,7 @@ export const ActivityList: React.FC = () => {
           
 
         </div>
-        
+
         <div className={styles.mainContent}>
           <div className={styles.mapContainer}>
             <Map 
@@ -172,5 +165,3 @@ export const ActivityList: React.FC = () => {
 };
 
 export default ActivityList;
-
-
