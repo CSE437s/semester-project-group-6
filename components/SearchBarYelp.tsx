@@ -6,7 +6,10 @@ import React from 'react';
 import styles from './SearchBarYelp.module.css';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
-
+import emptyFav from '../public/favorite.png';
+import filledFav from '../public/favorite1.png';
+import { db } from "../firebase/firebase";
+import { push, set, ref } from "firebase/database";
 
 type Props = {
   trip_destination: string | undefined;
@@ -19,6 +22,17 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<ActivityInfo[]>([]);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+
+  const addActivity = (activity: ActivityInfo) => {
+    const activitiesRef = ref(db, "trips/" + trip_id + "/activities");
+    push(activitiesRef, activity)
+      .then((newActivityRef) => {
+        console.log("New activity added with key:", newActivityRef.key);
+      })
+      .catch((error) => {
+        console.error("Error adding new activity:", error);
+      });
+  };
 
   const mapApiResponseToSearchResults = (apiResponse: any): ActivityInfo[] => {
     return apiResponse.map((business: any) => ({
@@ -81,6 +95,16 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
       setDropdownVisible(false);
     }, 100);
   };
+  const openLinkInNewTab = (url: string) => {
+    const newTab = window.open(url, "_blank");
+    if (newTab) {
+      newTab.focus();
+    }
+  };
+  const [currentImage, setCurrentImage] = useState(emptyFav);
+  const toggleImage = () => {
+    setCurrentImage(currentImage === emptyFav ? filledFav : emptyFav);
+  }
 
   return (
     <>
@@ -92,7 +116,7 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
           value={searchTerm}
           onChange={handleSearchChange}
           onBlur={handleBlur}
-          fullWidth={isMobile}
+          
           autoComplete="off"
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -101,7 +125,7 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
             }
           }}
           sx={{
-            width: isMobile ? '140%' : '30vw', // Wider search box, adjust as needed or use fixed value like '500px'
+            width: isMobile ? '120%' : '120%', // Wider search box, adjust as needed or use fixed value like '500px'
             '& .MuiOutlinedInput-root': {
               height: '40px', // Thinner search box, adjust as needed
               borderRadius: '20px', // Keep the rounded corners
@@ -119,27 +143,31 @@ const SearchBar = ({ trip_destination, trip_id , isMobile, sx }: Props) => {
           }}
         />
         {isDropdownVisible && (
-          <Box className={styles.autocompleteDropdownContainer} sx={{ width: '100%' }}>
-            {searchResults.slice(0, 5).map((activity, index) => (
-              <Card key={index} className={`${styles.dropdownItem} ${index === searchResults.length - 1 ? styles.lastDropdownItem : ''}`}>
-                <CardMedia
-                  component="img"
-                  height="100"
-                  image={activity.image_url}
-                  alt={activity.name}
-                  className={styles.dropdownItemImage}
-                />
-                <Box sx={{ flexGrow: 1, m: 1 }}>
-                  <Typography variant="subtitle1" component="div">
-                    {activity.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {"NYC"}
-                  </Typography>
-                </Box>
-              </Card>
-            ))}
-          </Box>
+          <Box className={styles.autocompleteDropdownContainer}>
+          {searchResults.slice(0, 5).map((activity, index) => (
+            <div
+              key={index}
+              className={styles.container} // Use the container class from Review.module.css
+              onClick={() => addActivity(activity)}
+            >
+              <img
+                src={activity.image_url}
+                alt={activity.name}
+                className={styles.image} // Use the image class from Review.module.css
+              />{activity.name}
+              <div className={styles.content}> 
+                <h2 className={styles.title}>{activity.name}</h2> 
+                <div className={styles.rating}> 
+                  {"fk"}
+                </div>
+                <img src="/yelp.svg" alt="Yelp" className={styles.yelpIcon} />
+                <div className={styles.reviewCount}>
+                  Based on {activity.review_count} reviews
+                </div>
+              </div>
+            </div>
+          ))}
+        </Box>
         )}
       </Box>
     </>
