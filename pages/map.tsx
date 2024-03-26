@@ -30,9 +30,9 @@ import {
   RequestType,
 } from "react-geocode";
 
-setKey("AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0");
-setLanguage("en");
-setRegion("es");
+// setKey("AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0");
+// setLanguage("en");
+// setRegion("es");
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
@@ -44,10 +44,6 @@ export default function Map() {
   const { tripId } = router.query;
   const trip_id = tripId as string; 
 
-  useEffect(() => {
-    console.log("Using tripId in Map:", trip_id);
-   
-  }, [trip_id]);
   
   const [office, setOffice] = useState<LatLngLiteral>();
   const [directions, setDirections] = useState<DirectionsResult>();

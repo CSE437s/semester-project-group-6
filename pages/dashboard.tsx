@@ -30,7 +30,6 @@ export default function Dashboard() {
             <AppAppBar mode={'light'} toggleColorMode={function (): void {
                     throw new Error('Function not implemented.');
             } }/>
-            <Trips/>
             <Trending/>
         </main>
         </>

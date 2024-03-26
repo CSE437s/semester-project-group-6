@@ -131,8 +131,9 @@ export default function Trips() {
 
   return (
     <>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Button variant="outlined" onClick={openTripModal}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}> 
+        <Button variant="outlined" onClick={openTripModal} size = 
+        "large">
           Add Trip
         </Button>
 
