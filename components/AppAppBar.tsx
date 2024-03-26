@@ -149,6 +149,9 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 src={logo.src}
                 style={logoStyle}
                 alt="logo of tripify"
+                onClick={() => {
+                  router.push('/dashboard');
+                }}
               />
               <Box
                 sx={{

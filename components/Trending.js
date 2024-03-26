@@ -51,7 +51,7 @@ export default function Trending() {
   return (
     <section className={styles.trending}>
       <div className={styles.heading}>
-        <h2>Trips 2024</h2>
+        <h2>Your Trips</h2>
         <p>Description</p>
       </div>
       <div className={styles.wrapper}>
