@@ -199,7 +199,7 @@ export const ActivityList: React.FC = () => {
             open={deleteModal}
           >
              <div className="deleteModal">
-            <DialogTitle> Delete "{curTripData?.trip_name}" ? </DialogTitle>
+            <DialogTitle> Delete &quot;{curTripData?.trip_name}&quot; ? </DialogTitle>
             <Button color="primary" variant="contained" onClick={deleteTrip}>
               Yes
             </Button>
