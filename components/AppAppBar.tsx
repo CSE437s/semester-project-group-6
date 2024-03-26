@@ -209,7 +209,7 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                       </MenuItem>
                     </Link> */}
 
-                    <Link href="/faq" passHref>
+                    {/* <Link href="/faq" passHref>
                       <MenuItem
                         onClick={() => scrollToSection("faq")}
                         sx={{ py: "6px", px: "12px" }}
@@ -222,7 +222,7 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                           FAQ
                         </Typography>
                       </MenuItem>
-                    </Link>
+                    </Link> */}
                   </Box>
                 </>
               )}
@@ -294,7 +294,7 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                       flexGrow: 1,
                     }}
                   ></Box>
-                  <Link href="/discover" passHref>
+                  {/* <Link href="/discover" passHref>
                     <MenuItem>Discover</MenuItem>
                   </Link>
                   <Link href="/dashboard" passHref>
@@ -305,7 +305,7 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                   </Link>
                   <Link href="/faq" passHref>
                     <MenuItem>FAQ</MenuItem>
-                  </Link>
+                  </Link> */}
                   <Divider />
                   {!isLoading && authUser ? (
                     // User is logged in, show the ProfileSidebar component
