@@ -133,7 +133,7 @@ export const ActivityList: React.FC = () => {
                 <Tab label="Favorites" />
                 <Tab label="Activity Info" />
                 <Tab label="Members" />
-                {curTripData?.trip_owner === (authUser as unknown as User).uid && 
+                {curTripData?.trip_owner === (authUser as unknown as User)?.uid && 
                 <Image
                   src={trashIcon}
                   
