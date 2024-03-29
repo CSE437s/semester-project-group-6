@@ -24,9 +24,8 @@ function loadScript(src, position, id) {
 
 const autocompleteService = { current: null };
 
-export default function PlacesAutocomplete({ tripDestination, setTripDestination }) {
+export default function PlacesAutocomplete({ tripDestination, setTripDestination, placeID, setPlaceID }) {
   const [value, setValue] = React.useState(null);
-  const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState([]);
   const loaded = React.useRef(false);
 
@@ -69,16 +68,19 @@ export default function PlacesAutocomplete({ tripDestination, setTripDestination
     fetch({ input: tripDestination, types: ['(cities)'] }, (results) => {
       if (active) {
         let newOptions = [];
-
+        
         if (value) {
           newOptions = [value];
+          setPlaceID(value.place_id)
         }
 
         if (results) {
           newOptions = [...newOptions, ...results];
         }
-
+        console.log("value")
+        console.log(value)
         setOptions(newOptions);
+        
       }
     });
     // console.log("value" + value + "inputValue:" + inputValue);
@@ -106,6 +108,7 @@ export default function PlacesAutocomplete({ tripDestination, setTripDestination
         setValue(newValue);
       }}
       onInputChange={(event, newInputValue) => {
+        console.log(event.currentTarget);
         setTripDestination(newInputValue);
       }}
       renderInput={(params) => (

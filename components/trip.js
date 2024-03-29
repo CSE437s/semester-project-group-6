@@ -28,6 +28,8 @@ export default function Trips() {
   const [isTripModalOpen, setTripModal] = useState(false);
   const [startDate, setstartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [placeID, setPlaceID] = useState("");
+
 
   const { authUser } = useAuth();
   const db = getDatabase();
@@ -69,6 +71,7 @@ export default function Trips() {
       start_date: startDateObj,
       end_date: endDateObj,
       trip_dest: tripDestination,
+      place_id: placeID,
       participants: [{
         id: authUser.uid,
         ImageURL: stockPhoto.src
@@ -129,7 +132,7 @@ export default function Trips() {
               }}
             />
 
-            <PlacesAutocomplete tripDestination={tripDestination} setTripDestination={setTripDestination}></PlacesAutocomplete>
+            <PlacesAutocomplete placeID={placeID} setPlaceID={setPlaceID} tripDestination={tripDestination} setTripDestination={setTripDestination}></PlacesAutocomplete>
             
             <Button variant= "contained" size="large" onClick={handleAddTrip}>
               Add Trip

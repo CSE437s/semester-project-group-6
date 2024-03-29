@@ -26,13 +26,7 @@ router.post("/addParticipant", async (req, res) => {
     .then((userRecord) => {
       // See the UserRecord reference doc for the contents of userRecord.
       const dbref = ref(admin.database(), `/trips/${trip_id}/participants`);
-
-      const newUserPush = push(dbref, {
-        imageURL: "",
-        id: userRecord.uid,
-      });
-
-
+      dbref.push(userRecord.uid)
       res.json(userRecord);
     })
     .catch((error) => {

@@ -23,7 +23,6 @@ import { Modal } from "@mui/material";
 import { Button, Dialog, DialogTitle } from "@mui/material";
 import { useAuth } from "../../firebase/auth";
 
-
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -35,7 +34,7 @@ type DirectionsResult = google.maps.DirectionsResult;
 type User = {
   email: string;
   uid: string;
-}
+};
 
 export const ActivityList: React.FC = () => {
   const { authUser } = useAuth();
@@ -50,12 +49,12 @@ export const ActivityList: React.FC = () => {
   const [directions, setDirections] = useState<DirectionsResult | null>(
     {} as DirectionsResult
   );
-  
-  console.log(authUser);
+
   useEffect(() => {
     if (tripId) {
       fetchTripData();
     }
+    console.log(curTripData);
   }, [tripId]);
 
   const fetchTripData = async () => {
@@ -75,8 +74,8 @@ export const ActivityList: React.FC = () => {
   const deleteTrip = () => {
     const tripDatabaseRef = ref(db, "trips/" + tripId);
     const deleteTripRef = remove(tripDatabaseRef);
-    alert("Trip Deleted")
-    router.push('/dashboard');
+    alert("Trip Deleted");
+    router.push("/dashboard");
   };
 
   function TabPanel(props: TabPanelProps) {
@@ -133,19 +132,19 @@ export const ActivityList: React.FC = () => {
                 <Tab label="Favorites" />
                 <Tab label="Activity Info" />
                 <Tab label="Members" />
-                {curTripData?.trip_owner === (authUser as unknown as User)?.uid && 
-                <Image
-                  src={trashIcon}
-                  
-                  onClick={() => {
-                    openDelete(!deleteModal);
-                  }}
-                  alt={"delete trip"}
-                  width={30}
-                  height={30}
-                  style={{ marginTop: 10 }}
-                />
-                }
+                {curTripData?.trip_owner ===
+                  (authUser as unknown as User)?.uid && (
+                  <Image
+                    src={trashIcon}
+                    onClick={() => {
+                      openDelete(!deleteModal);
+                    }}
+                    alt={"delete trip"}
+                    width={30}
+                    height={30}
+                    style={{ marginTop: 10 }}
+                  />
+                )}
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
@@ -173,8 +172,19 @@ export const ActivityList: React.FC = () => {
             </TabPanel>
 
             <TabPanel value={value} index={2}>
-              You have {curTripData?.participants.length} members in your
-              current trip
+              {curTripData?.participants &&
+                Object.values(curTripData.participants).map(
+                  (participant, index) => (
+                    <Image
+                      key={index}
+                      src={participant.imageURL} // Assuming imageURL is the property you want to use
+                      alt={participant.id}
+                      className={styles.participant}
+                      width={70}
+                      height={70}
+                    />
+                  )
+                )}
             </TabPanel>
           </Box>
         </div>
@@ -193,21 +203,26 @@ export const ActivityList: React.FC = () => {
           </div>
         </div>
 
-       
-          <Dialog
-            onClose={() => openDelete(!deleteModal)}
-            open={deleteModal}
-          >
-             <div className="deleteModal">
-            <DialogTitle> Delete &quot;{curTripData?.trip_name}&quot; ? </DialogTitle>
+        <Dialog onClose={() => openDelete(!deleteModal)} open={deleteModal}>
+          <div className="deleteModal">
+            <DialogTitle>
+              {" "}
+              Delete &quot;{curTripData?.trip_name}&quot; ?{" "}
+            </DialogTitle>
             <Button color="primary" variant="contained" onClick={deleteTrip}>
               Yes
             </Button>
-            <Button color="error" variant="contained" onClick={() => {openDelete(false)}}>
+            <Button
+              color="error"
+              variant="contained"
+              onClick={() => {
+                openDelete(false);
+              }}
+            >
               No
             </Button>
-            </div>
-          </Dialog>
+          </div>
+        </Dialog>
       </div>
     </>
   );
