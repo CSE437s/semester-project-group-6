@@ -39,7 +39,7 @@ const MapLoader = ({ apiKey, children }) => {
     };
   }, [apiKey]);
 
-  return scriptLoaded ? children : null;
+  return scriptLoaded ? children: null;
 };
 
 export default MapLoader;

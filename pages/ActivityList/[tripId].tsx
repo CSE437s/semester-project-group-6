@@ -191,7 +191,6 @@ export const ActivityList: React.FC = () => {
 
         <div className={styles.mainContent}>
           <div className={styles.mapContainer}>
-            <MapLoader apiKey={"AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0"}>
               <Map
                 tripDest={curTripData ? curTripData.trip_dest : "New York"}
                 setOffice={setOffice}
@@ -199,7 +198,7 @@ export const ActivityList: React.FC = () => {
                 directions={directions}
                 setDirections={setDirections}
               />
-            </MapLoader>
+           
           </div>
         </div>
 
