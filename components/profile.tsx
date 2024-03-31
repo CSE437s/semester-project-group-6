@@ -15,9 +15,9 @@ const ProfileSidebar: React.FC = () => {
   const { signOut, isLoading, authUser } = useAuth();
 
   const sidebarItems = [
-    // { name: 'View Profile', href: '/profile', icon: '🏠' },
+    { name: 'View Profile', href: '/profile', icon: '🏠' },
     { name: 'Trips', href: '/dashboard', icon: '👫' },
-    // { name: 'Friends', href: '/friends', icon: '👫' },
+    //{ name: 'Friends', href: '/friends', icon: '👫' },
     // Add other sidebar items as needed
   ];
     useEffect(() => {
@@ -27,7 +27,6 @@ const ProfileSidebar: React.FC = () => {
       }
     };
 
-    
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {

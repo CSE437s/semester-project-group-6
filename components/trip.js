@@ -74,7 +74,10 @@ export default function Trips() {
       place_id: placeID,
       participants: [{
         id: authUser.uid,
-        ImageURL: stockPhoto.src
+        email: authUser.email,
+        profilePicURL: authUser.profilePicURL,
+        firstName: authUser.firstName,
+        lastName: authUser.lastName
       }],
       activities: []
     });

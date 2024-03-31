@@ -157,8 +157,8 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                       setTripData = {setTripData}
                       fetchTripData = {fetchTripData}
                       sx={{
-                        flexGrow: 1, // Allow search bar to grow and fill available space
-                        maxWidth: "100%", // Ensure it does not exceed the container width
+                        flexGrow: 1, 
+                        maxWidth: "100%", 
                       }}
                     />
                   </>
@@ -171,7 +171,7 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                     sx={{
                       flexGrow: 1,
                       display: "flex",
-                      justifyContent: "flex-end", // Align menu items to the right
+                      justifyContent: "flex-end", 
                     }}
                   >
                     {/* <Link href="/discover" passHref>
