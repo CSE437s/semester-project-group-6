@@ -61,7 +61,7 @@ export default function Trending() {
         {userTrips.length === 0 && (
           <div className={styles.heading}>
             
-            <div>no trips yet? Start your jouney now</div>
+            <div>no trips yet? Start your journey now</div>
           </div>
         )}
 

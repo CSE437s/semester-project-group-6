@@ -9,7 +9,7 @@ import {
 import { LocalizationProvider, DateCalendar } from "@mui/x-date-pickers-pro";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-import { ref, getDatabase, push } from "firebase/database";
+import { ref, getDatabase, push, set } from "firebase/database";
 import { auth } from "../firebase/firebase";
 import { useAuth } from "../firebase/auth";
 import stockPhoto from "../public/f1.png";
@@ -19,6 +19,7 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 import { useLoadScript } from "@react-google-maps/api";
 import PlacesAutocomplete from "./placesAutocomplete"
+const stockProfile = "https://firebasestorage.googleapis.com/v0/b/tripify-93d9a.appspot.com/o/images%2FBeautiful%20China%205k.jpg-3f9b964c-ff0a-48fb-a910-6b64820df9e7?alt=media&token=5edab783-615c-4838-9d8d-c4ca91b39e1c";
 
 
 
@@ -64,30 +65,37 @@ export default function Trips() {
     const endDateObj = startDate.format("YYYY-MM-DD");
 
 
-    // Use the push method to generate a unique key for the new trip
-    const newTripRef = push(tripDatabaseRef, {
+    const userProfile = {
+      uid: authUser.uid,
+      email: authUser.email || 'No email provided',
+      profilePicURL: authUser.profilePicURL || stockProfile,
+      firstName: authUser.firstName || 'Unknown',
+      lastName: authUser.lastName || 'User',
+      // Include any other necessary properties
+    };
+  
+  
+    const newTripRef = push(tripDatabaseRef);
+    set(newTripRef, {
       trip_name: tripTitle,
       trip_owner: authUser.uid,
       start_date: startDateObj,
       end_date: endDateObj,
       trip_dest: tripDestination,
       place_id: placeID,
-      participants: [{
-        id: authUser.uid,
-        email: authUser.email,
-        profilePicURL: authUser.profilePicURL,
-        firstName: authUser.firstName,
-        lastName: authUser.lastName
-      }],
+      participants: [userProfile], // Use the userProfile object
       activities: []
+    }).then(() => {
+      // Handle success, reset form, close modal, etc.
+      setTripTitle("");
+      setTripModal(false);
+      setStartDate(null);
+      setEndDate(null);
+    }).catch((error) => {
+      // Handle any errors here
+      console.error("Error adding new trip: ", error);
     });
-
-    setTripTitle("");
-    setTripModal(false);
-    setstartDate(null)
-    setEndDate(null)
   };
-
 
   return (
     <>

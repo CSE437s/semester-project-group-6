@@ -6,8 +6,6 @@ import { useRouter } from 'next/router';
 import styles from './profile.module.css';
 import { useAuth } from '../firebase/auth';
 
-
-
 const ProfileSidebar: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -17,20 +15,18 @@ const ProfileSidebar: React.FC = () => {
   const sidebarItems = [
     { name: 'View Profile', href: '/profile', icon: '🏠' },
     { name: 'Trips', href: '/dashboard', icon: '👫' },
-    //{ name: 'Friends', href: '/friends', icon: '👫' },
     // Add other sidebar items as needed
   ];
-    useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => { // Type the event parameter as a MouseEvent
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
       }
     };
 
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      // Clean up the event listener
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
@@ -49,7 +45,7 @@ const ProfileSidebar: React.FC = () => {
         onClick={() => setShowDropdown(!showDropdown)}
       >
         <Image
-          src={DefUserImg}
+          src={authUser?.profilePicURL || DefUserImg} // Use authUser's profilePicURL if available, otherwise use default
           alt="User Profile"
           width={50}
           height={50}
@@ -76,7 +72,6 @@ const ProfileSidebar: React.FC = () => {
                 signOut(); 
                 router.push('/');
                 setShowDropdown(false); 
-                
               }} 
               className={styles.dropdownNavItem}
             >
