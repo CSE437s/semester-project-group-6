@@ -22,7 +22,7 @@ import PlacesAutocomplete from "./placesAutocomplete"
 
 
 
-export default function Trips() {
+export default function Trips({setUserTrips}) {
   const [tripTitle, setTripTitle] = useState("");
   const [tripDestination, setTripDestination] = useState("");
   const [isTripModalOpen, setTripModal] = useState(false);
@@ -63,9 +63,7 @@ export default function Trips() {
     const startDateObj = startDate.format("YYYY-MM-DD");
     const endDateObj = startDate.format("YYYY-MM-DD");
 
-
-    // Use the push method to generate a unique key for the new trip
-    const newTripRef = push(tripDatabaseRef, {
+    const newTrip = {
       trip_name: tripTitle,
       trip_owner: authUser.uid,
       start_date: startDateObj,
@@ -76,13 +74,15 @@ export default function Trips() {
         id: authUser.uid,
         ImageURL: stockPhoto.src
       }],
-      activities: []
-    });
+      activities: []};
+    // Use the push method to generate a unique key for the new trip
+    const newTripRef = push(tripDatabaseRef, newTrip);
 
     setTripTitle("");
     setTripModal(false);
     setstartDate(null)
     setEndDate(null)
+    setUserTrips((prev)=> [...prev, newTrip]);
   };
 
 

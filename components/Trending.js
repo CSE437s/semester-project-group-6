@@ -98,11 +98,7 @@ export default function Trending() {
     if (authUser?.uid) {
       fetchUserTrips();
     }
-  }, [authUser]);
-
-  useEffect(() => {
-    console.log(userTrips);
-  }, [userTrips]);
+  }, [authUser, userTrips]);
 
   return (
     <div className={styles.wrapper}>
@@ -139,10 +135,8 @@ export default function Trending() {
             </div>
           </div>
         ))}
-         <Trips></Trips>
+        <Trips setUserTrips={setUserTrips}></Trips>
       </div>
-     
     </div>
-    
   );
 }
