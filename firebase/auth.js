@@ -20,7 +20,7 @@ export default function useFirebaseAuth() {
     setAuthUser({
         uid: user.uid,
         email: user.email,
-        profilePicUrl: user.profilePicUrl,
+        profilePicURL: user.profilePicURL,
         firstName: user.firstName,
         lastName: user.lastName
     });
