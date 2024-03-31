@@ -19,7 +19,10 @@ export default function useFirebaseAuth() {
     }
     setAuthUser({
         uid: user.uid,
-        email: user.email
+        email: user.email,
+        profilePicURL: user.profilePicURL,
+        firstName: user.firstName,
+        lastName: user.lastName
     });
     setIsLoading(false);
   }; 
