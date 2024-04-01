@@ -73,10 +73,6 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
               maxHeight: 40,
               border: "1px solid",
               borderColor: "divider",
-              boxShadow:
-                theme.palette.mode === "light"
-                  ? `0 0 1px rgba(85, 166, 246, 0.1), 1px 1.5px 2px -1px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)`
-                  : "0 0 1px rgba(2, 31, 59, 0.7), 1px 1.5px 2px -1px rgba(2, 31, 59, 0.65), 4px 4px 12px -2.5px rgba(2, 31, 59, 0.65)",
             })}
           >
             <Box
@@ -93,9 +89,7 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
                   src={logo.src}
                   style={logoStyle}
                   alt="logo of tripify"
-                  onClick={() => {
-                    router.push("/dashboard");
-                  }}
+                  onClick={() => router.push("/dashboard")}
                 />
               </Link>
             </Box>
@@ -110,10 +104,7 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
                 <ProfileSidebar profilePicURL={profilePicURL} />
               ) : (
                 <>
-                  <ToggleColorMode
-                    mode={mode}
-                    toggleColorMode={toggleColorMode}
-                  />
+                  <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
                   <Button
                     color="primary"
                     variant="text"
@@ -137,7 +128,7 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
                 </>
               )}
             </Box>
-            <Box sx={{ display: { sm: "", md: "none" } }}>
+            <Box sx={{ display: { xs: "", md: "none" } }}>
               <Button
                 variant="text"
                 color="primary"
@@ -150,29 +141,17 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
               <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
                 <Box
                   sx={{
-                    minWidth: "60dvw",
+                    minWidth: "60vw",
                     p: 2,
                     backgroundColor: "background.paper",
                     flexGrow: 1,
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "end",
-                      flexGrow: 1,
-                    }}
-                  ></Box>
-                  <Divider />
                   {!isLoading && authUser ? (
                     <ProfileSidebar profilePicURL={profilePicURL} />
                   ) : (
                     <>
-                      <ToggleColorMode
-                        mode={mode}
-                        toggleColorMode={toggleColorMode}
-                      />
+                      <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
                       <Button
                         color="primary"
                         variant="outlined"
@@ -203,6 +182,6 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
       </AppBar>
     </div>
   );
-}
+};
 
 export default AppAppBar;
