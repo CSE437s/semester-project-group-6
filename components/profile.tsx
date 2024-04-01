@@ -6,8 +6,8 @@ import { useRouter } from 'next/router';
 import styles from './profile.module.css';
 import { useAuth } from '../firebase/auth';
 
-interface ProfileSidebarProps {
-  profilePicURL: string;
+interface User {
+  photoURL: string;
 }
 
 const ProfileSidebar: React.FC = () => {
@@ -53,7 +53,7 @@ const ProfileSidebar: React.FC = () => {
         onClick={() => setShowDropdown(!showDropdown)}
       >
         <Image
-          src={authUser?.profilePicURL || DefUserImg}
+          src={authUser?.photoURL || DefUserImg}
           alt="User Profile"
           width={50}
           height={50}
