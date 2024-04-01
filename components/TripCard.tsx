@@ -15,8 +15,14 @@ import pin from "../public/pin.svg";
 import { async } from "@firebase/util";
 
 type Participant = {
-  imageURL: string;
-  id: string;
+  uid: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  profilePicURL: string
+
+  // imageURL: string;
+  // id: string;
 };
 
 const TripCard: React.FC<TripCardData & { trip_id: string }> = ({

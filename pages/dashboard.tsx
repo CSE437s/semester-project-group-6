@@ -1,41 +1,57 @@
-import Link from 'next/link';
+import React, { useEffect } from "react";
 import Head from 'next/head';
-import Image from 'next/image';
-import Profile from '../components/profile';
-import Trips from '../components/trip'
-import useAuth from '../firebase/auth'
-import useFirebaseAuth from '../firebase/auth';
-import router from 'next/router';
-import Trending from '../components/Trending'
-import Chat from '../components/Chat';
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import useAuth from '../firebase/auth';
 import AppAppBar from '../components/AppAppBar';
-import { ActivityInfo, TripCardData } from '../CustomTypes';
+import { TripCardData } from '../CustomTypes';
+import Trending from '../components/Trending';
 
 export default function Dashboard() {
-    const {authUser, isLoading} = useAuth();
+    const { authUser, isLoading } = useAuth();
+    const router = useRouter();
+
     useEffect(() => {
         if (!isLoading && !authUser) {
             router.push('/');
         }
-    })
-    
+    }, [isLoading, authUser, router]);
+
+    // Dummy fetchTripData function
+    const fetchTripData = async (tripId: string) => {
+        // Implementation logic for fetching trip data
+    };
+
+    // Dummy setTripData function
+    const setTripData = (data: React.SetStateAction<TripCardData | undefined>) => {
+        // Implementation logic for setting trip data
+    };
+
+    // Placeholder for toggleColorMode function
+    const toggleColorMode = () => {
+        // Implementation logic for toggling color mode
+    };
+
+    // Assuming authUser might have a profilePicURL property
+    const profilePicURL = authUser?.profilePicURL || '';
+
     return (
         <>
-        <Head>
-            <title>Dashboard</title>
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
+            <Head>
+                <title>Dashboard</title>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
 
-        <main>
-            <AppAppBar fetchTripData={{} as (tripId: string) => Promise<void>} setTripData={{} as React.Dispatch<React.SetStateAction<TripCardData | undefined>>} curTripData={{} as TripCardData} mode={'light'} toggleColorMode={function (): void {
-                    throw new Error('Function not implemented.');
-            } }/>
-            <Trending/>
-        </main>
+            <main>
+                <AppAppBar 
+                    fetchTripData={fetchTripData}
+                    setTripData={setTripData}
+                    curTripData={undefined}
+                    mode="light"
+                    toggleColorMode={toggleColorMode}
+                    profilePicURL={profilePicURL}
+                />
+                <Trending />
+            </main>
         </>
-    )
-
-    
-
+    );
 }

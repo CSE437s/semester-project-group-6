@@ -7,6 +7,7 @@ import {v4} from 'uuid';
 import AppAppBar from '../components/AppAppBar.tsx';
 import { updateProfile } from 'firebase/auth';
 import { useAuth } from "../firebase/auth";
+import styles from './profile.module.css';
 
 function App() {
     const [imageUpload, setImageUpload] = useState(null);
@@ -22,7 +23,7 @@ function App() {
         uploadBytes(imageRef, imageUpload).then((snapshot) => {
             getDownloadURL(snapshot.ref).then((url) => {
                 updateProfile(auth.currentUser, {
-                    profilePicURL: url
+                    photoURL: url
                 }).then(() => {
                     alert("Profile picture updated!");
                 }).catch((error) => {
@@ -33,24 +34,28 @@ function App() {
     };
 
     return (
-        <div className = "App">
+        <div className={styles.container}> {/* Applied container style */}
             <AppAppBar />
-            <input 
-            type = "file" 
-            onChange = {(event) => {
-                setImageUpload(event.target.files[0]);
-            }}
-            />
-            <button onClick={uploadImage}>Upload Image</button>
-            {authUser && authUser.profilePicURl && (
-                <div>
-                    <img src={authUser.profilePicURL} alt="Profile" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
-                </div>
+            {authUser && authUser.photoURL && ( // Changed from profilePicURl to photoURL
+                <img 
+                  src={authUser.photoURL} 
+                  alt="Profile" 
+                  className={styles.profileImage} // Applied profileImage style
+                />
             )}
+            <input 
+              type="file" 
+              onChange={(event) => setImageUpload(event.target.files[0])}
+            />
+            <button className={styles.uploadButton} onClick={uploadImage}>
+              Upload Image
+            </button>
+            
         </div>
-    )
+    );
 }
 
 
 export default App;
+
 

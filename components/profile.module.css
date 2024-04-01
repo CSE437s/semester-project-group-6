@@ -5,6 +5,10 @@
   
   .profileImage {
     cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
     /* Adjust size if needed */
   }
   

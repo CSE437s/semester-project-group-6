@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut as authSignOut } from 'firebase/auth';
 import { auth } from './firebase';
+import { getDatabase, ref as dbRef, get } from 'firebase/database';
 
 export default function useFirebaseAuth() {
   const [authUser, setAuthUser] = useState(null);
@@ -11,20 +12,41 @@ export default function useFirebaseAuth() {
     setIsLoading(false);
   };
 
-  const authStateChanged = async (user) => {
+  const authStateChanged = async (authStateUser) => {
     setIsLoading(true);
-    if (!user) {
-        clear();
-        return;
+    if (!authStateUser) {
+      clear();
+      return;
     }
-    setAuthUser({
-        uid: user.uid,
-        email: user.email,
-        profilePicURL: user.profilePicURL,
-        firstName: user.firstName,
-        lastName: user.lastName
+  
+    const db = getDatabase();
+    const userRef = dbRef(db, `users/${authStateUser.uid}`);
+    
+    get(userRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const dbUser = snapshot.val();
+        setAuthUser({
+          uid: authStateUser.uid,
+          email: authStateUser.email,
+          photoURL: dbUser.photoURL || authStateUser.photoURL, 
+          firstName: dbUser.firstName,
+          lastName: dbUser.lastName, 
+        });
+      } else {
+    
+        setAuthUser({
+          uid: authStateUser.uid,
+          email: authStateUser.email,
+          photoURL: authStateUser.photoURL, 
+          firstName: '', 
+          lastName: '', 
+        });
+      }
+      setIsLoading(false);
+    }).catch(error => {
+      console.error("Error fetching user details:", error);
+      setIsLoading(false);
     });
-    setIsLoading(false);
   }; 
 
   const signOut = () => authSignOut(auth).then(clear);

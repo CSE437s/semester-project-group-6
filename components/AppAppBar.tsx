@@ -6,16 +6,26 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import MenuItem from "@mui/material/MenuItem";
+import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import ToggleColorMode from "./ToggleColorMode";
 
 import ProfileSidebar from "./profile";
 import { useAuth } from "../firebase/auth";
+import { EmailAuthProvider, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase/firebase";
 import { useEffect, useState } from "react";
 import logo from "../public/Tripify.png";
 import { useRouter } from "next/router";
+import { TripCardData } from "../CustomTypes";
+import { ref, get } from "firebase/database";
+import { db } from "../firebase/firebase";
+import SearchBar from "./SearchBarYelp";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
-import Drawer from "@mui/material/Drawer";
 
 const logoStyle = {
   width: "140px",
@@ -26,23 +36,56 @@ const logoStyle = {
 interface AppAppBarProps {
   mode: PaletteMode;
   toggleColorMode: () => void;
-  profilePicURL: string;
+  curTripData: TripCardData | undefined;
+  setTripData: React.Dispatch<React.SetStateAction<TripCardData | undefined>>;
+  fetchTripData: (tripId: string) => Promise<void>;
+  photoURL: string;
 }
 
-function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
+function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripData, photoURL }: AppAppBarProps) {
   const [open, setOpen] = React.useState(false);
   const { authUser, isLoading } = useAuth();
-  const router = useRouter();
+  const [login, setLogin] = useState(false);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const uiConfig = {
+    signInFlow: "popup",
+    signInSuccessUrl: "/dashboard",
+    signInOptions: [
+      EmailAuthProvider.PROVIDER_ID,
+      GoogleAuthProvider.PROVIDER_ID,
+    ],
+  };
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
 
-  useEffect(() => {
-    if (!isLoading && !authUser) {
-      router.push('/');
+  const scrollToSection = (sectionId: string) => {
+    const sectionElement = document.getElementById(sectionId);
+    const offset = 128;
+    if (sectionElement) {
+      const targetScroll = sectionElement.offsetTop - offset;
+      sectionElement.scrollIntoView({ behavior: "smooth" });
+      window.scrollTo({
+        top: targetScroll,
+        behavior: "smooth",
+      });
+      setOpen(false);
     }
-  }, [authUser, isLoading]);
+  };
+
+  const router = useRouter();
+  const { tripId } = router.query as { tripId: string };
+
+  useEffect(() => {
+    if (tripId) {
+      fetchTripData(tripId);
+    }
+  }, [tripId]);
+
 
   return (
     <div>
@@ -98,6 +141,92 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
                   }}
                 />
               </Link>
+              <Box
+                sx={{
+                  display: "inline-block",
+                  ml: "30px",
+                  px: 0,
+                }}
+              >
+                {tripId && curTripData && (
+                  <>
+                    <SearchBar
+                      trip_destination={curTripData.trip_dest}
+                      trip_id={tripId}
+                      isMobile={isMobile}
+                      curTripData = {curTripData}
+                      setTripData = {setTripData}
+                      fetchTripData = {fetchTripData}
+                      sx={{
+                        flexGrow: 1, // Allow search bar to grow and fill available space
+                        maxWidth: "100%", // Ensure it does not exceed the container width
+                      }}
+                    />
+                  </>
+                )}
+              </Box>
+             
+              {!isMobile && (
+                <>
+                  <Box
+                    sx={{
+                      flexGrow: 1,
+                      display: "flex",
+                      justifyContent: "flex-end", // Align menu items to the right
+                    }}
+                  >
+                    {/* <Link href="/discover" passHref>
+                      <MenuItem sx={{ py: "6px", px: "12px" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          Discover
+                        </Typography>
+                      </MenuItem>
+                    </Link> */}
+                    {/* <Link href="/dashboard" passHref>
+                      <MenuItem sx={{ py: "6px", px: "12px" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          Trips
+                        </Typography>
+                      </MenuItem>
+                    </Link> */}
+
+                    {/* <Link href="/restaurants" passHref>
+                      <MenuItem sx={{ py: "6px", px: "12px" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          Resturants
+                        </Typography>
+                      </MenuItem>
+                    </Link> */}
+
+                    {/* <Link href="/faq" passHref>
+                      <MenuItem
+                        onClick={() => scrollToSection("faq")}
+                        sx={{ py: "6px", px: "12px" }}
+                      >
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          FAQ
+                        </Typography>
+                      </MenuItem>
+                    </Link> */}
+                  </Box>
+                </>
+              )}
             </Box>
             <Box
               sx={{
@@ -107,8 +236,10 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
               }}
             >
               {!isLoading && authUser ? (
-                <ProfileSidebar profilePicURL={profilePicURL} />
+                // User is logged in, show the ProfileSidebar component
+                <ProfileSidebar />
               ) : (
+                // User is not logged in, show SIGN IN and SIGN UP buttons
                 <>
                   <ToggleColorMode
                     mode={mode}
@@ -119,7 +250,7 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
                     variant="text"
                     size="small"
                     component="a"
-                    href="/sign-in"
+                    href="/material-ui/getting-started/templates/sign-in/"
                     target="_blank"
                   >
                     Sign in
@@ -129,7 +260,7 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
                     variant="contained"
                     size="small"
                     component="a"
-                    href="/sign-up"
+                    href="/material-ui/getting-started/templates/sign-up/"
                     target="_blank"
                   >
                     Sign up
@@ -164,10 +295,24 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
                       flexGrow: 1,
                     }}
                   ></Box>
+                  {/* <Link href="/discover" passHref>
+                    <MenuItem>Discover</MenuItem>
+                  </Link>
+                  <Link href="/dashboard" passHref>
+                    <MenuItem>Trips</MenuItem>
+                  </Link>
+                  <Link href="/resturants" passHref>
+                    <MenuItem>Resturants</MenuItem>
+                  </Link>
+                  <Link href="/faq" passHref>
+                    <MenuItem>FAQ</MenuItem>
+                  </Link> */}
                   <Divider />
                   {!isLoading && authUser ? (
-                    <ProfileSidebar profilePicURL={profilePicURL} />
+                    // User is logged in, show the ProfileSidebar component
+                    <ProfileSidebar photoURL={photoURL} />
                   ) : (
+                    // User is not logged in, show SIGN IN and SIGN UP buttons
                     <>
                       <ToggleColorMode
                         mode={mode}
@@ -177,7 +322,7 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
                         color="primary"
                         variant="outlined"
                         component="a"
-                        href="/sign-in"
+                        href="/material-ui/getting-started/templates/sign-in/"
                         target="_blank"
                         sx={{ width: "100%" }}
                       >
@@ -187,7 +332,7 @@ function AppAppBar({ mode, toggleColorMode, profilePicURL }: AppAppBarProps) {
                         color="primary"
                         variant="contained"
                         component="a"
-                        href="/sign-up"
+                        href="/material-ui/getting-started/templates/sign-up/"
                         target="_blank"
                         sx={{ width: "100%" }}
                       >

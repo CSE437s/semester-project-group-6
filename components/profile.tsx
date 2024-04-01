@@ -1,21 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import DefUserImg from '../public/AnonUser.png';
+const DefUserImg = "https://firebasestorage.googleapis.com/v0/b/tripify-93d9a.appspot.com/o/images%2FBeautiful%20China%205k.jpg-3f9b964c-ff0a-48fb-a910-6b64820df9e7?alt=media&token=5edab783-615c-4838-9d8d-c4ca91b39e1c";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import styles from './profile.module.css';
 import { useAuth } from '../firebase/auth';
 
+interface User {
+  photoURL: string;
+}
+
 const ProfileSidebar: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { signOut, isLoading, authUser } = useAuth();
+
+  const { signOut, isLoading, authUser } = useAuth() as {
+    signOut: Function;
+    isLoading: boolean;
+    authUser: User | null;
+  };
 
   const sidebarItems = [
     { name: 'View Profile', href: '/profile', icon: '🏠' },
     { name: 'Trips', href: '/dashboard', icon: '👫' },
-    // Add other sidebar items as needed
+
   ];
 
   useEffect(() => {
@@ -39,13 +48,12 @@ const ProfileSidebar: React.FC = () => {
 
   return (
     <div className={styles.profileDropdownContainer} ref={dropdownRef}>
-      {/* Profile image that toggles the dropdown */}
       <div 
         className={styles.profileImage}
         onClick={() => setShowDropdown(!showDropdown)}
       >
         <Image
-          src={authUser?.profilePicURL || DefUserImg} // Use authUser's profilePicURL if available, otherwise use default
+          src={authUser?.photoURL || DefUserImg}
           alt="User Profile"
           width={50}
           height={50}
@@ -53,20 +61,16 @@ const ProfileSidebar: React.FC = () => {
         />
       </div>
 
-      {/* Dropdown Menu */}
       {showDropdown && (
         <div className={styles.dropdown}>
-          {/* Dropdown menu items */}
           <nav className={styles.dropdownNav}>
             {sidebarItems.map((item) => (
-              // Using the new Link API without <a> tag
               <Link key={item.name} href={item.href} passHref>
                 <div className={styles.dropdownNavItem}>
                   {item.name}
                 </div>
               </Link>
             ))}
-            {/* Logout item */}
             <div 
               onClick={() => { 
                 signOut(); 
