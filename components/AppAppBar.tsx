@@ -39,10 +39,9 @@ interface AppAppBarProps {
   curTripData: TripCardData | undefined;
   setTripData: React.Dispatch<React.SetStateAction<TripCardData | undefined>>;
   fetchTripData: (tripId: string) => Promise<void>;
-  photoURL: string;
 }
 
-function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripData, photoURL }: AppAppBarProps) {
+function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripData }: AppAppBarProps) {
   const [open, setOpen] = React.useState(false);
   const { authUser, isLoading } = useAuth();
   const [login, setLogin] = useState(false);
@@ -310,7 +309,7 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                   <Divider />
                   {!isLoading && authUser ? (
                     // User is logged in, show the ProfileSidebar component
-                    <ProfileSidebar photoURL={photoURL} />
+                    <ProfileSidebar/>
                   ) : (
                     // User is not logged in, show SIGN IN and SIGN UP buttons
                     <>
