@@ -282,3 +282,4 @@ const generateHouses = async (
     return [];
   }
 };
+

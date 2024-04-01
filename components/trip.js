@@ -23,7 +23,7 @@ const stockProfile = "https://firebasestorage.googleapis.com/v0/b/tripify-93d9a.
 
 
 
-export default function Trips() {
+export default function Trips({setUserTrips}) {
   const [tripTitle, setTripTitle] = useState("");
   const [tripDestination, setTripDestination] = useState("");
   const [isTripModalOpen, setTripModal] = useState(false);
@@ -74,9 +74,7 @@ export default function Trips() {
       // Include any other necessary properties
     };
   
-  
-    const newTripRef = push(tripDatabaseRef);
-    set(newTripRef, {
+    const newTrip = {
       trip_name: tripTitle,
       trip_owner: authUser.uid,
       start_date: startDateObj,
@@ -85,12 +83,16 @@ export default function Trips() {
       place_id: placeID,
       participants: [userProfile], // Use the userProfile object
       activities: []
-    }).then(() => {
+    }
+
+    const newTripRef = push(tripDatabaseRef, newTrip)
+   .then(() => {
       // Handle success, reset form, close modal, etc.
       setTripTitle("");
       setTripModal(false);
       setStartDate(null);
       setEndDate(null);
+      setUserTrips((prev)=> [...prev, newTrip]);
     }).catch((error) => {
       // Handle any errors here
       console.error("Error adding new trip: ", error);
