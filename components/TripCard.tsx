@@ -1,5 +1,5 @@
 // TripCard.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./TripCard.module.css";
 import stockImage from "../public/trip-stock-photo.jpg";
 import stockImage2 from "../public/f1.png";
@@ -12,6 +12,7 @@ import { auth } from "../firebase/firebase";
 import { getAuth, TwitterAuthProvider } from "firebase/auth";
 import addPerson from "../public/person-add.svg";
 import pin from "../public/pin.svg";
+import { async } from "@firebase/util";
 
 type Participant = {
   imageURL: string;
@@ -24,15 +25,48 @@ const TripCard: React.FC<TripCardData & { trip_id: string }> = ({
   start_date,
   end_date,
   participants,
+  place_id,
   trip_dest,
   trip_id,
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [inviteUser, setInviteUser] = useState("");
+  const [imageUrl, setImageUrl] = useState(stockImage.src);
+  const service = new google.maps.places.PlacesService(
+    document.createElement("div")
+  );
 
   const addParticipant = () => {
     setOpenDialog(!openDialog);
   };
+
+  useEffect(() => {
+    const fetchImage = () => {
+      const request = {
+        placeId: place_id,
+        fields: ["photo"],
+      };
+
+      service.getDetails(request, (placeResult, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          if (placeResult?.photos && placeResult.photos.length > 0) {
+            const url = placeResult.photos[0].getUrl({
+              maxWidth: 400,
+              maxHeight: 400,
+            });
+            setImageUrl(url); // Set the image URL
+          } else {
+            console.log("No photos found for this place.");
+            setImageUrl(stockImage.src); // Set the default image URL
+          }
+        } else {
+          console.error("Place details request failed:", status);
+        }
+      });
+    };
+
+    fetchImage(); // Call fetchImage function when the component mounts
+  }, [place_id]);
 
   const sendInvite = async () => {
     try {
@@ -49,17 +83,17 @@ const TripCard: React.FC<TripCardData & { trip_id: string }> = ({
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       if (response.status === 404) {
         alert(data.error); // Display the error message received from the backend
       } else if (response.status === 200) {
-        setInviteUser('');
+        setInviteUser("");
         alert("New user added successfully!");
       }
     } catch (error) {
@@ -67,14 +101,10 @@ const TripCard: React.FC<TripCardData & { trip_id: string }> = ({
       alert("Error sending invitation. Please try again later.");
     }
   };
-  
+
   return (
     <div className={styles.tripCard}>
-      <img
-        src={stockImage.src}
-        alt="Trip Location"
-        className={styles.tripImage}
-      />
+      <img src={imageUrl} alt="Trip Location" className={styles.tripImage} />
       <div className={styles.tripInfo}>
         <h2 className={styles.tripTitle}>{trip_name}</h2>
         <h2 className={styles.tripDest}>📍{trip_dest}</h2>
