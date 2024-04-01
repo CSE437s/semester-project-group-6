@@ -1,6 +1,9 @@
 export type Participant = {
-    imageURL: string;
-    id: string;
+  uid: string;
+  email: string;
+  profilePicURL: string;
+  firstName: string;
+  lastName: string;
   };
 
   export type ActivityInfo = {

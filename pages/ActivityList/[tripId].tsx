@@ -22,6 +22,7 @@ import { width } from "@mui/system";
 import { Modal } from "@mui/material";
 import { Button, Dialog, DialogTitle } from "@mui/material";
 import { useAuth } from "../../firebase/auth";
+import { Label } from "@mui/icons-material";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -175,16 +176,20 @@ export const ActivityList: React.FC = () => {
               {curTripData?.participants &&
                 Object.values(curTripData.participants).map(
                   (participant, index) => (
+                    <>
                     <Image
                       key={index}
-                      src={participant.imageURL} // Assuming imageURL is the property you want to use
-                      alt={participant.id}
+                      src={participant.profilePicURL} // Assuming imageURL is the property you want to use
+                      alt={participant.uid}
                       className={styles.participant}
                       width={70}
                       height={70}
                     />
+                    <h1> {participant.email}</h1>
+                    </>
                   )
                 )}
+
             </TabPanel>
           </Box>
         </div>
