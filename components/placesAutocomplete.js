@@ -108,7 +108,6 @@ export default function PlacesAutocomplete({ tripDestination, setTripDestination
         setValue(newValue);
       }}
       onInputChange={(event, newInputValue) => {
-        console.log(event.currentTarget);
         setTripDestination(newInputValue);
       }}
       renderInput={(params) => (
