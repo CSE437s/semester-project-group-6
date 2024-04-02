@@ -110,11 +110,11 @@ const TripCard: React.FC<TripCardData & { trip_id: string }> = ({
 
   return (
     <div className={styles.tripCard}>
-      <img src={imageUrl} alt="Trip Location" className={styles.tripImage} />
+      <img src={imageUrl} alt= "Trip Location" className={styles.tripImage} />
       <div className={styles.tripInfo}>
         <h2 className={styles.tripTitle}>{trip_name}</h2>
         <h2 className={styles.tripDest}>📍{trip_dest}</h2>
-
+    
         <div className={styles.participants}>
           <Button onClick={addParticipant} className={styles.invite}>
             <img src={addPerson.src} />

@@ -159,7 +159,9 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
             }
           }}
           sx={{
-            width: isMobile ? "120%" : "150%",
+            display: 'flex',
+            flexGrow: 1,
+            width: isMobile ? "100%" : "100%",
             "& .MuiOutlinedInput-root": {
               height: "40px", //
               borderRadius: "20px",

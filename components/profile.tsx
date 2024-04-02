@@ -49,7 +49,6 @@ const ProfileSidebar: React.FC = () => {
   return (
     <div className={styles.profileDropdownContainer} ref={dropdownRef}>
       <div 
-        className={styles.profileImage}
         onClick={() => setShowDropdown(!showDropdown)}
       >
         <Image
@@ -58,6 +57,7 @@ const ProfileSidebar: React.FC = () => {
           width={50}
           height={50}
           layout='fixed'
+          className={styles.profileImage}
         />
       </div>
 
