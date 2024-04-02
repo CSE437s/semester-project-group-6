@@ -125,7 +125,7 @@ export default function Trending() {
               </div>
               <h3 className={styles.cardTitle}>{trip.trip_name}</h3>
               <p className={styles.cardLocation}>📍 {trip.trip_dest}</p>
-              <Image
+              <img
                 src={trip.tripImage || TripStockPhoto}
                 alt={trip.trip_name}
                 className={styles.cardImg}
