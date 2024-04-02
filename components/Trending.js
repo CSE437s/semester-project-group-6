@@ -105,7 +105,7 @@ export default function Trending() {
       {loading && <div>Loading...</div>}
       {!loading && userTrips.length === 0 && (
         <div className={styles.heading}>
-          <div>no trips yet? Start your journey now</div>
+          <div>No trips yet? Start your journey now</div>
         </div>
       )}
 
