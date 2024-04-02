@@ -7,7 +7,7 @@
   left: 0;
   right: 0;
   max-height: 300px;
-  width: 120%; /* Adjusted to match the width of the search bar */
+  width: 100%; /* Adjusted to match the width of the search bar */
   overflow-y: auto;
   z-index: 1000;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
