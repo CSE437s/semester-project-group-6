@@ -68,7 +68,7 @@ export default function Trips({setUserTrips}) {
     const userProfile = {
       uid: authUser.uid,
       email: authUser.email || 'No email provided',
-      photoURL: authUser.photoURL || stockProfile,
+      profilePicURL: authUser.photoURL || stockProfile,
       firstName: authUser.firstName || 'Unknown',
       lastName: authUser.lastName || 'User',
       // Include any other necessary properties
