@@ -202,7 +202,7 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
         {isDropdownVisible && (
           <Box
             className={styles.autocompleteDropdownContainer}
-            sx={{ width: "150%" }}
+            sx={{ width: "100x%" }}
           >
             {searchResults.slice(0, 5).map((activity, index) => (
               <Box

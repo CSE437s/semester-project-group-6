@@ -26,11 +26,20 @@ router.post("/addParticipant", async (req, res) => {
     .then((userRecord) => {
       // See the UserRecord reference doc for the contents of userRecord.
       const dbref = ref(admin.database(), `/trips/${trip_id}/participants`);
-      dbref.push(userRecord.uid)
+      const newUserPush = push(dbref, {
+        uid: userRecord.uid,
+        email: userRecord.email,
+        profilePicURL: userRecord.photoURL,
+        firstName: "Unkown",
+        lastName: "User",
+      });
+
+      console.log(dbref);
+      console.log(`Successfully fetched user data: ${userRecord.uid}`);
+
       res.json(userRecord);
     })
     .catch((error) => {
-      res.status(404).json({ error: error.message });
       console.log("Error fetching user data:", error);
     });
 });
