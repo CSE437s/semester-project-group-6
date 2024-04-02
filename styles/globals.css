@@ -62,7 +62,7 @@ a {
   padding: 0.5rem;
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap");
 
 :root {
   --color-bg: #000;
@@ -78,9 +78,9 @@ a {
 
 body {
   background-color: #fff;
-  font-family: "Roboto", sans-serif;
-  
+  font-family: "Montserrat", sans-serif;
 }
+
 
 
 .layout {
@@ -223,4 +223,28 @@ body {
 
 .combobox-option:hover {
   background-color: #f0f0f0; /* Add a hover effect */
+}
+
+.AddTrip-Button {
+  display: flex;
+  justify-content: center; 
+  align-items: center;    
+  width: 100vw;
+  margin: 0;
+  padding: 0; 
+}
+
+.AddTrip-Button button {
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  margin-top: 0; 
+  margin-bottom: 0; 
+}
+
+.AddTrip-Button button:hover {
+  background-color: grey;
 }
