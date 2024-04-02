@@ -162,7 +162,7 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
 
   return (
     <>
-      <Box sx={{ position: "relative", ...sx }}>
+      <Box sx={{ position: "relative", ...sx } } ref={dropdownRef}>
         <TextField
           id="outlined-basic"
           label="Search"
@@ -171,7 +171,7 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
           onChange={handleSearchChange}
           onBlur={handleBlur}
           autoComplete="off"
-          ref={dropdownRef}
+          
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault(); // prevent the default action

@@ -32,7 +32,6 @@ export default function Dashboard() {
     };
 
     // Assuming authUser might have a profilePicURL property
-    const profilePicURL = authUser?.profilePicURL || '';
 
     return (
         <>
@@ -48,7 +47,6 @@ export default function Dashboard() {
                     curTripData={undefined}
                     mode="light"
                     toggleColorMode={toggleColorMode}
-                    profilePicURL={profilePicURL}
                 />
                 <Trending />
             </main>
