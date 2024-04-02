@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut as authSignOut } from 'firebase/auth';
-import { auth } from './firebase';
+import { auth, app } from './firebase';
 import { getDatabase, ref as dbRef, get } from 'firebase/database';
 
 export default function useFirebaseAuth() {
@@ -19,7 +19,7 @@ export default function useFirebaseAuth() {
       return;
     }
   
-    const db = getDatabase();
+    const db = getDatabase(app);
     const userRef = dbRef(db, `users/${authStateUser.uid}`);
     
     get(userRef).then((snapshot) => {
