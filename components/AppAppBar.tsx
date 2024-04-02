@@ -142,9 +142,25 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
               </Link>
               <Box
                 sx={{
-                  display: "inline-block",
-                  ml: "30px",
-                  px: 0,
+                  display: 'flex',
+                  flexGrow: 1,
+                  ml:"30px",
+                  px:0,
+                  width: isMobile ? "100%" : "100%",
+                  "& .MuiOutlinedInput-root": {
+                    height: "40px", //
+                    borderRadius: "20px",
+                    "& .MuiOutlinedInput-input": {
+                      padding: "10px 14px ",
+                    },
+                    "& .MuiInputLabel-outlined": {
+                      lineHeight: "40px",
+                      transform: "translate(14px, 14px) scale(1)", // Adjust label position
+                    },
+                    "& .MuiInputLabel-shrink": {
+                      transform: "translate(14px, -6px) scale(0.75)", // Adjust label position on focus
+                    },
+                  },
                 }}
               >
                 {tripId && curTripData && (
@@ -164,8 +180,9 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                   </>
                 )}
               </Box>
-             
-              {!isMobile && (
+              
+              
+              {!isMobile &&  (
                 <>
                   <Box
                     sx={{
@@ -223,10 +240,12 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                         </Typography>
                       </MenuItem>
                     </Link> */}
+
                   </Box>
                 </>
               )}
             </Box>
+            
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },

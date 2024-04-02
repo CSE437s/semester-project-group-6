@@ -61,7 +61,7 @@
   border: 2px solid white; /* White border around the participant images */
 }
 
-.invite{
+Button.invite{
   position: absolute;
   top: 30px;
   right: 40px;
@@ -79,7 +79,7 @@
   transition: background-color 0.3s ease;
 }
 
-.invite:hover {
+Button.invite:hover {
   background-color: #cccccc; /* Change to the grey color you prefer */
 }
 
