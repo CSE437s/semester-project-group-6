@@ -1,10 +1,11 @@
 import { ref as firebaseRef, set, push, getDatabase, update } from "firebase/database";
+import {app} from "../firebase/firebase"
 // import stockProfile from "../public/AnonUser.png";
 import stockTrip from "../public/trip-stock-photo.jpg";
 const stockProfile = "https://firebasestorage.googleapis.com/v0/b/tripify-93d9a.appspot.com/o/images%2FBeautiful%20China%205k.jpg-3f9b964c-ff0a-48fb-a910-6b64820df9e7?alt=media&token=5edab783-615c-4838-9d8d-c4ca91b39e1c";
 
 export const createUserProfile = (userId, profileDetails) => {
-  const database = getDatabase();
+  const database = getDatabase(app);
   const userProfileDatabaseRef = firebaseRef(database, `users/${userId}`);
 
   const userProfileData = {

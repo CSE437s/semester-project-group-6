@@ -6,7 +6,7 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ActivityInfo } from "../CustomTypes";
 import Review from "./Review";
 import React from "react";
@@ -34,6 +34,25 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
   const [searchResults, setSearchResults] = useState<ActivityInfo[]>([]);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [favorites, setFavorites] = useState<{ [key: string]: string }>({});
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        
+        dropdownRef.current &&
+        !(dropdownRef.current as HTMLElement).contains(event.target as Node)
+      ) {
+        setDropdownVisible(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+  
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const renderStars = (rating: number) => {
     let stars = "";
@@ -152,6 +171,7 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
           onChange={handleSearchChange}
           onBlur={handleBlur}
           autoComplete="off"
+          ref={dropdownRef}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault(); // prevent the default action

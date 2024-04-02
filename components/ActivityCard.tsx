@@ -20,7 +20,6 @@ const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & {activity_id: 
   useEffect(() => {
     // On mount, check if the activity is favorited.
     const favoriteRef = ref(db, `trips/${trip_id}/activities/${activity_id}`);
-    console.log(favoriteRef);
     const unsubscribe = onValue(favoriteRef, (snapshot) => {
       setIsFavorite(snapshot.exists());
     });

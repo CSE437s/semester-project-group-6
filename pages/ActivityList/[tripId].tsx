@@ -178,7 +178,7 @@ export const ActivityList: React.FC = () => {
                   (participant, index) => (
                     <>
                     <Image
-                      key={index}
+                      key={participant.uid}
                       src={participant.profilePicURL} // Assuming imageURL is the property you want to use
                       alt={participant.uid}
                       className={styles.participant}
