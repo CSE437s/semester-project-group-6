@@ -15,6 +15,10 @@
     border: none;
     cursor: pointer;
     margin-top: 20px;
+    font-size: 15px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border-radius: 8px;
   }
   
   .profileImage {
@@ -22,6 +26,43 @@
     height: 200px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
+    margin-top: 250px;
+  }
+
+  .userName {
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 30px; 
+    margin-bottom: 20px;
+    min-height: 24px; 
+  }
+  
+  .textInput {
+    font-size: 16px;
+    padding: 12px 20px; 
+    width: 100%; 
+    max-width: 300px; 
+    margin-bottom: 20px;
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+  }
+
+  .fileInputContainer {
+    position: relative;
+    display: inline-block;
+  }
+
+  .fileInput {
+    background-color: grey;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
   }
   
