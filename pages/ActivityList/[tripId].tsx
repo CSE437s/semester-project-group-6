@@ -23,6 +23,8 @@ import { Modal } from "@mui/material";
 import { Button, Dialog, DialogTitle } from "@mui/material";
 import { useAuth } from "../../firebase/auth";
 import { Label } from "@mui/icons-material";
+import mapIcon from '../../public/mapIcon.png';
+import listIcon from '../../public/listIcon.png';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -79,6 +81,19 @@ export const ActivityList: React.FC = () => {
     router.push("/dashboard");
   };
 
+
+  const goToMap = () => {
+    router.push('/map'); // Change '/map' to the path of your map.tsx page
+  };
+
+
+  const goToList = () => {
+    router.push('/map'); // Change '/map' to the path of your map.tsx page
+  };
+
+
+
+
   function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
 
@@ -101,6 +116,14 @@ export const ActivityList: React.FC = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const [isMapExpanded, setMapExpanded] = useState(false);
+  const toggleMapSize = () => {
+    if (window.innerWidth < 1020) { // Only allow toggle if the window is narrow
+      setMapExpanded(!isMapExpanded);
+    }
+  };
+  
 
   return (
     <>
@@ -193,9 +216,9 @@ export const ActivityList: React.FC = () => {
             </TabPanel>
           </Box>
         </div>
-
-        <div className={styles.mainContent}>
-          <div className={styles.mapContainer}>
+        <div className={`${styles.mainContent} ${isMapExpanded ? styles.mainContentVisible : styles.mainContentHidden}`}>
+          <div className={`${styles.mapContainer} ${isMapExpanded ? styles.mapContainerExpanded : ''}`}>
+          <div style={{ display: isMapExpanded ? 'block' : 'block' }} className={styles.mainContent}>
               <Map
                 tripDest={curTripData ? curTripData.trip_dest : "New York"}
                 setOffice={setOffice}
@@ -203,7 +226,7 @@ export const ActivityList: React.FC = () => {
                 directions={directions}
                 setDirections={setDirections}
               />
-           
+           </div>
           </div>
         </div>
 
@@ -227,6 +250,15 @@ export const ActivityList: React.FC = () => {
             </Button>
           </div>
         </Dialog>
+        
+        <Button onClick={toggleMapSize} className={styles.mapButton}>
+          <img src={isMapExpanded ? listIcon.src : mapIcon.src} alt={isMapExpanded ? "List" : "Map"} width={20} height={20} />
+          ‎ ‎ {isMapExpanded ? 'List' : 'Map'}
+        </Button>
+              
+
+
+
       </div>
     </>
   );

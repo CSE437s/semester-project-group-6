@@ -41,6 +41,7 @@
     display: flex;
     justify-content: space-between; /* Adjusts items on the main axis */
     margin-top: 100px;
+    width: 100%;
     align-items: flex-start; /* Aligns items at the start of the cross axis */
   }
   
@@ -74,21 +75,52 @@
       padding-left: 100px;
     }
     
+    Button.mapButton{
+      background-color: black;  
+      color: white;            
+      padding: 12px 22px;       
+      border: none;
+      border-radius: 25px;      
+      cursor: pointer;          
+      font-size: 16px;          
+      font-weight: bold;        
+      transition: background-color 0.3s ease; 
+      position: fixed;      /* Fixed position */
+      left: 50%;            /* Starting at the halfway point of the screen horizontally */
+      bottom: 50px;         /* 20px from the bottom of the screen */
+      transform: translateX(-50%);
+    }
+
+    .mainContent,
+    .mainContentHidden,
+    .mainContentVisible {
+      display: block; /* Ensure mainContent is always visible */
+      position: relative; /* Or any position as per your layout needs */
+      width: 100%; /* Take full available width */
+      height: auto; /* Adjust based on content, or set to a fixed height */
+    }
+
+    .mapContainer,
+    .mapContainerExpanded {
+      position: relative; /* Adjust if you need a different positioning */
+      width: 100%; /* Map container takes full width of its parent (mainContent) */
+      height: 800px; /* Set a fixed height or adjust as needed */
+      /* Remove 'position: fixed' from .mapContainer for wide screens if you want it to flow within the document */
+    }
   }
 
-  
-
-  .mainContent {
-    width: 45vw; /* Adjust based on your preference */
-    position: relative; 
-  }
-  
   .mapContainer {
     position: fixed;
-    width: 700px;
-    height: 400px; /* Set a fixed height or adjust as needed */
+    width: 450px;
+    height: 800px; /* Set a fixed height or adjust as needed */
     
+  } 
+
+
+  Button.mapButton:hover {
+    background-color: #333; /* Slightly lighter black on hover */
   }
+  
 
   .activities {
     display: flex;
@@ -99,3 +131,74 @@
   .activities > div { /* Assuming each activity card is wrapped in a div */
     flex: 1 1 calc(50% - 20px); /* Adjust the subtraction value based on your gap */
   }
+
+
+  .mainContentExpanded {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000; /* High z-index to ensure it covers other content */
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+  }
+
+  .mapContainerExpanded {
+    position:fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  .mainContent {
+    width: 45vw; /* Adjust based on your preference */
+    position: relative; 
+  }
+  
+
+  .mainContentHidden {
+    display: none;
+  }
+  
+  .mainContentVisible {
+    display: block; /* Or 'flex', 'grid', etc., depending on your layout */
+  }
+
+
+   /* When window is wide*/
+  @media(min-width: 1020px){
+
+    Button.mapButton{
+      display:none;
+    }
+    .mainContent{
+      flex: 1 1 45vw; /* Adjust the basis and flexibility as needed */
+      max-width: 45vw;
+    }
+    .sidebar {
+      flex: 1 1 55vw; /* Adjust the basis and flexibility as needed */
+      max-width: 55vw; /* Or set a specific max-width */
+    }
+
+    .mainContentHidden,
+    .mainContentVisible {
+      display:block; /* Ensure mainContent is always visible */
+      position: relative; /* Or any position as per your layout needs */
+      width: 450px; /* Take full available width */
+      height: auto; /* Adjust based on content, or set to a fixed height */
+    }
+
+    .mapContainer,
+    .mapContainerExpanded {
+      display :block;
+      position: relative; /* Adjust if you need a different positioning */
+      width: 480px; /* Map container takes full width of its parent (mainContent) */
+      height: 800px; /* Set a fixed height or adjust as needed */
+      /* Remove 'position: fixed' from .mapContainer for wide screens if you want it to flow within the document */
+    }
+
+  }
+
+
+  
+  
