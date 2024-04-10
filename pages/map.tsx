@@ -12,6 +12,7 @@ import { ref, get, child, getDatabase } from "firebase/database";
 import { db } from "../firebase/firebase";
 import { useRouter } from "next/router";
 import styles from "./ActivityList.module.css";
+import { Button } from "@mui/material";
 
 import {
   setKey,
@@ -145,18 +146,6 @@ export default function Map({
   };
 
   return (
-    <div className={styles.container}>
-      {/* <div className="controls">
-        <h1>Where is your place? </h1>
-        <Places
-          setOffice={(position) => {
-            setOffice(position);
-            mapRef.current?.panTo(position);
-          }}
-        />
-        {!office && <p>Enter an address.</p>}
-        {directions && <Distance leg={directions.routes[0].legs[0]} />}
-      </div> */}
       <div className={styles.container}>
         <GoogleMap
           zoom={10}
@@ -206,7 +195,7 @@ export default function Map({
           )}
         </GoogleMap>
       </div>
-    </div>
+      
   );
 }
 

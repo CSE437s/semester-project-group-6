@@ -82,18 +82,6 @@ export const ActivityList: React.FC = () => {
   };
 
 
-  const goToMap = () => {
-    router.push('/map'); // Change '/map' to the path of your map.tsx page
-  };
-
-
-  const goToList = () => {
-    router.push('/map'); // Change '/map' to the path of your map.tsx page
-  };
-
-
-
-
   function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
 
@@ -118,10 +106,9 @@ export const ActivityList: React.FC = () => {
   };
 
   const [isMapExpanded, setMapExpanded] = useState(false);
-  const toggleMapSize = () => {
-    if (window.innerWidth < 1020) { // Only allow toggle if the window is narrow
-      setMapExpanded(!isMapExpanded);
-    }
+  
+  const toggleButton = () => {
+    setMapExpanded(!isMapExpanded);
   };
   
 
@@ -217,8 +204,8 @@ export const ActivityList: React.FC = () => {
           </Box>
         </div>
         <div className={`${styles.mainContent} ${isMapExpanded ? styles.mainContentVisible : styles.mainContentHidden}`}>
-          <div className={`${styles.mapContainer} ${isMapExpanded ? styles.mapContainerExpanded : ''}`}>
-          <div style={{ display: isMapExpanded ? 'block' : 'block' }} className={styles.mainContent}>
+  
+          <div style={{ display: isMapExpanded ? 'block' : 'none' }} className={styles.map}>
               <Map
                 tripDest={curTripData ? curTripData.trip_dest : "New York"}
                 setOffice={setOffice}
@@ -228,7 +215,7 @@ export const ActivityList: React.FC = () => {
               />
            </div>
           </div>
-        </div>
+        
 
         <Dialog onClose={() => openDelete(!deleteModal)} open={deleteModal}>
           <div className="deleteModal">
@@ -250,14 +237,11 @@ export const ActivityList: React.FC = () => {
             </Button>
           </div>
         </Dialog>
-        
-        <Button onClick={toggleMapSize} className={styles.mapButton}>
+
+        <Button onClick={toggleButton} className={styles.mapButton}>
           <img src={isMapExpanded ? listIcon.src : mapIcon.src} alt={isMapExpanded ? "List" : "Map"} width={20} height={20} />
           ‎ ‎ {isMapExpanded ? 'List' : 'Map'}
         </Button>
-              
-
-
 
       </div>
     </>

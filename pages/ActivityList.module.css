@@ -89,6 +89,9 @@
       left: 50%;            /* Starting at the halfway point of the screen horizontally */
       bottom: 50px;         /* 20px from the bottom of the screen */
       transform: translateX(-50%);
+      outline:solid;
+      outline-color: grey;
+      z-index:1000;
     }
 
     .mainContent,
@@ -100,20 +103,23 @@
       height: auto; /* Adjust based on content, or set to a fixed height */
     }
 
-    .mapContainer,
-    .mapContainerExpanded {
-      position: relative; /* Adjust if you need a different positioning */
-      width: 100%; /* Map container takes full width of its parent (mainContent) */
-      height: 800px; /* Set a fixed height or adjust as needed */
-      /* Remove 'position: fixed' from .mapContainer for wide screens if you want it to flow within the document */
+    .container{
+      position: fixed;
+      display:block;
+      top: 0;
+      left: 0;
+      width:100vh;
+      height: 100vh;
+      z-index: 100;
     }
   }
 
   .mapContainer {
-    position: fixed;
-    width: 450px;
-    height: 800px; /* Set a fixed height or adjust as needed */
-    
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 150vh;
+    height: 100vh; /* Set a fixed height or adjust as needed */
   } 
 
 
