@@ -3,11 +3,9 @@ import TripCard from "../../components/TripCard";
 import ActivityCard from "../../components/ActivityCard";
 import { useRouter } from "next/router";
 import styles from "../ActivityList.module.css";
-import { ref, get, getDatabase, remove } from "firebase/database";
+import { ref, get, remove } from "firebase/database";
 import { db } from "../../firebase/firebase";
-import SearchBar from "../../components/SearchBarYelp";
-import { TripCardData, ActivityInfo } from "../../CustomTypes";
-import Link from "next/link";
+import { TripCardData , ActivityInfo} from "../../CustomTypes";
 import NavBar from "../../components/AppAppBar";
 import Map from "../../pages/map";
 import Box from "@mui/material/Box";
@@ -18,13 +16,11 @@ import { geocode } from "react-geocode";
 import MapLoader from "../../components/mapLoader";
 import Image from "next/image";
 import trashIcon from "../../public/trashIcon.png";
-import { width } from "@mui/system";
-import { Modal } from "@mui/material";
 import { Button, Dialog, DialogTitle } from "@mui/material";
 import { useAuth } from "../../firebase/auth";
-import { Label } from "@mui/icons-material";
 import mapIcon from '../../public/mapIcon.png';
 import listIcon from '../../public/listIcon.png';
+import TravelModeSelector from '../../components/travelMode';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -52,6 +48,7 @@ export const ActivityList: React.FC = () => {
   const [directions, setDirections] = useState<DirectionsResult | null>(
     {} as DirectionsResult
   );
+  const [travelMode, setTravelMode] = React.useState<google.maps.TravelMode>(google.maps.TravelMode.DRIVING);
 
   useEffect(() => {
     if (tripId) {
@@ -104,7 +101,6 @@ export const ActivityList: React.FC = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
   const [isMapExpanded, setMapExpanded] = useState(false);
   
   const toggleButton = () => {
@@ -141,7 +137,7 @@ export const ActivityList: React.FC = () => {
                 aria-label="basic tabs example"
               >
                 <Tab label="Favorites" />
-                <Tab label="Activity Info" />
+                <Tab label="Directions" />
                 <Tab label="Members" />
                 {curTripData?.trip_owner ===
                   (authUser as unknown as User)?.uid && (
@@ -158,6 +154,7 @@ export const ActivityList: React.FC = () => {
                 )}
               </Tabs>
             </Box>
+
             <TabPanel value={value} index={0}>
               {/* {numberOfActivities} item */}
               <div className={styles.activities}>
@@ -175,43 +172,50 @@ export const ActivityList: React.FC = () => {
               </div>
             </TabPanel>
 
+
+
             <TabPanel value={value} index={1}>
+              <div>
+                <TravelModeSelector setTravelMode={setTravelMode} currentMode={travelMode}/>
+              </div>
               {!office}
               {directions && directions.routes && (
-                <Distance leg={directions.routes[0].legs[0]} />
+                <Distance leg={directions.routes[0].legs[0]}/>
               )}
             </TabPanel>
 
+
+
+
+
             <TabPanel value={value} index={2}>
               {curTripData?.participants &&
-                Object.values(curTripData.participants).map(
-                  (participant, index) => (
-                    <>
+                Object.values(curTripData.participants).map((participant, index) => (
+                  <div className={styles.participantContainer} key={participant.uid}>
                     <Image
-                      key={participant.uid}
                       src={participant.profilePicURL} // Assuming imageURL is the property you want to use
                       alt={participant.uid}
-                      className={styles.participant}
+                      className={styles.participantImage}
                       width={70}
                       height={70}
                     />
-                    <h1> {participant.email}</h1>
-                    </>
-                  )
-                )}
-
+                    <h1 className={styles.participantEmail}>{participant.email}</h1>
+                  </div>
+                ))}
             </TabPanel>
+
           </Box>
         </div>
         <div className={`${styles.mainContent} ${isMapExpanded ? styles.mainContentVisible : styles.mainContentHidden}`}>
-  
-          <div style={{ display: isMapExpanded ? 'block' : 'none' }} className={styles.map}>
+          <div style={{ display: isMapExpanded ? 'block' : 'block' }} className={styles.map}>
+              
               <Map
                 tripDest={curTripData ? curTripData.trip_dest : "New York"}
                 setOffice={setOffice}
                 office={office}
                 directions={directions}
                 setDirections={setDirections}
+                travelMode={travelMode}
               />
            </div>
           </div>

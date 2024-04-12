@@ -204,6 +204,32 @@
     }
 
   }
+/* ActivityList.module.css */
+.participantContainer {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 10px 0;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.participantImage {
+  flex-shrink: 0; /* Prevents the image from shrinking */
+  border-radius: 50%; /* Makes the image circular */
+  margin-right: 15px;
+}
+
+.participantEmail {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+  overflow: hidden; /* Prevents text overflow */
+  text-overflow: ellipsis; /* Adds an ellipsis to overflowing text */
+  white-space: nowrap; /* Keeps the text on one line */
+  width: 100%; /* Takes up the rest of the space */
+}
 
 
   
