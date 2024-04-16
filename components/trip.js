@@ -30,11 +30,14 @@ export default function Trips({setUserTrips}) {
   const [startDate, setstartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [placeID, setPlaceID] = useState("");
+  const [tripNotes, setTripNotes] = useState("");
+  const [tempNotes, setTempNotes] = useState("");
 
 
   const { authUser } = useAuth();
   const db = getDatabase();
   const tripDatabaseRef = ref(db, "trips/");
+
   const openTripModal = () => {
     setTripModal(!isTripModalOpen);
   };
@@ -44,6 +47,10 @@ export default function Trips({setUserTrips}) {
   //   libraries: ["places"],
   // })
 
+  const handleSaveNotes = () => {
+      setTripNotes(tempNotes);  // Save the temporary notes to the main state
+      alert('Notes saved successfully!');
+  };
 
   const handleAddTrip = () => {
     if (!tripTitle.trim()) {
@@ -82,7 +89,8 @@ export default function Trips({setUserTrips}) {
       trip_dest: tripDestination,
       place_id: placeID,
       participants: [userProfile], // Use the userProfile object
-      activities: []
+      activities: [],
+      trip_notes: tripNotes
     }
 
     const newTripRef = push(tripDatabaseRef, newTrip)
@@ -93,6 +101,7 @@ export default function Trips({setUserTrips}) {
       setStartDate(null);
       setEndDate(null);
       setUserTrips((prev)=> [...prev, newTrip]);
+      setTripNotes("");
     }).catch((error) => {
       // Handle any errors here
       console.error("Error adding new trip: ", error);
@@ -140,6 +149,19 @@ export default function Trips({setUserTrips}) {
 
             <PlacesAutocomplete placeID={placeID} setPlaceID={setPlaceID} tripDestination={tripDestination} setTripDestination={setTripDestination}></PlacesAutocomplete>
             
+            <TextField
+              multiline
+              rows={4}
+              value={tempNotes}
+              onChange={(e) => setTempNotes(e.target.value)}  // Update temporary notes
+              placeholder="Enter your notes here..."
+              variant="outlined"
+              fullWidth
+            />
+            <Button onClick={handleSaveNotes} variant="contained" color="primary">
+              Save Notes
+            </Button>
+
             <Button variant= "contained" size="large" onClick={handleAddTrip}>
               Add Trip
             </Button>

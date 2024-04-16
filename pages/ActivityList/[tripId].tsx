@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, memo, FC } from "react";
 import TripCard from "../../components/TripCard";
 import ActivityCard from "../../components/ActivityCard";
 import { useRouter } from "next/router";
 import styles from "../ActivityList.module.css";
-import { ref, get, remove } from "firebase/database";
+import { ref, get, set, remove } from "firebase/database";
 import { db } from "../../firebase/firebase";
 import { TripCardData , ActivityInfo} from "../../CustomTypes";
 import NavBar from "../../components/AppAppBar";
@@ -21,6 +21,12 @@ import { useAuth } from "../../firebase/auth";
 import mapIcon from '../../public/mapIcon.png';
 import listIcon from '../../public/listIcon.png';
 import TravelModeSelector from '../../components/travelMode';
+import TextField from '@mui/material/TextField';
+
+interface NotesInputProps {
+  editNotes: string;
+  setEditNotes: React.Dispatch<React.SetStateAction<string>>;
+}
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -35,6 +41,7 @@ type User = {
   uid: string;
 };
 
+
 export const ActivityList: React.FC = () => {
   const { authUser } = useAuth();
 
@@ -42,6 +49,8 @@ export const ActivityList: React.FC = () => {
   const { tripId } = router.query as { tripId: string };
   const [curTripData, setTripData] = useState<TripCardData>();
   const [deleteModal, openDelete] = useState(false);
+  const [tripNotes, setTripNotes] = useState("");
+  const [editNotes, setEditNotes] = useState("");
   const [office, setOffice] = useState<LatLngLiteral | null>(
     {} as LatLngLiteral
   );
@@ -56,13 +65,19 @@ export const ActivityList: React.FC = () => {
     }
     console.log(curTripData);
   }, [tripId]);
+  
+  useEffect(() => {
+    setEditNotes(tripNotes);
+  }, [tripNotes]);
 
   const fetchTripData = async () => {
     try {
       const tripDatabaseRef = ref(db, "trips/" + tripId);
       const tripSnapshot = await get(tripDatabaseRef);
       if (tripSnapshot.exists()) {
-        setTripData(tripSnapshot.val());
+        const data = tripSnapshot.val();
+        setTripData(data);
+        setTripNotes(data.trip_notes || "");
       } else {
         console.error(`Trip with ID ${tripId} not found.`);
       }
@@ -78,6 +93,23 @@ export const ActivityList: React.FC = () => {
     router.push("/dashboard");
   };
 
+  
+  const handleSaveNotes = async () => {
+    if (!tripId) {
+      console.error("No trip ID provided");
+      alert("Error: No trip ID found.");
+      return;
+    }
+    setTripNotes(editNotes);
+    const tripNotesRef = ref(db, `trips/${tripId}/trip_notes`);
+    try {
+      await set(tripNotesRef, editNotes);
+      alert('Notes updated successfully!');
+    } catch (error) {
+      console.error('Failed to save notes:', error);
+      alert('Error saving notes.');
+    }
+  };
 
   function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
@@ -138,6 +170,7 @@ export const ActivityList: React.FC = () => {
               >
                 <Tab label="Favorites" />
                 <Tab label="Directions" />
+                <Tab label="Notes"/>
                 <Tab label="Members" />
                 {curTripData?.trip_owner ===
                   (authUser as unknown as User)?.uid && (
@@ -186,9 +219,7 @@ export const ActivityList: React.FC = () => {
 
 
 
-
-
-            <TabPanel value={value} index={2}>
+            <TabPanel value={value} index={3}>
               {curTripData?.participants &&
                 Object.values(curTripData.participants).map((participant, index) => (
                   <div className={styles.participantContainer} key={participant.uid}>
@@ -203,6 +234,30 @@ export const ActivityList: React.FC = () => {
                   </div>
                 ))}
             </TabPanel>
+
+            <TabPanel value={value} index={2}>
+              <TextField
+                multiline
+                fullWidth
+                rows={4}
+                value={editNotes}
+                onChange={(e) => setEditNotes(e.target.value)} 
+                placeholder="Edit trip notes here..."
+                variant="outlined"
+              />
+              <Button 
+                onClick={() => {
+                  setTripNotes(editNotes);
+                  handleSaveNotes(); 
+                }}
+                variant="contained" 
+                color="primary"
+                style={{ marginTop: '10px' }}
+              >
+                Save Notes
+              </Button>
+            </TabPanel>
+
 
           </Box>
         </div>
@@ -219,6 +274,7 @@ export const ActivityList: React.FC = () => {
               />
            </div>
           </div>
+          
         
 
         <Dialog onClose={() => openDelete(!deleteModal)} open={deleteModal}>
@@ -247,6 +303,7 @@ export const ActivityList: React.FC = () => {
           ‎ ‎ {isMapExpanded ? 'List' : 'Map'}
         </Button>
 
+        
       </div>
     </>
   );
