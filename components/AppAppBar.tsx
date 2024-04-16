@@ -45,6 +45,7 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
   const [open, setOpen] = React.useState(false);
   const { authUser, isLoading } = useAuth();
   const [login, setLogin] = useState(false);
+  
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -57,7 +58,9 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
       GoogleAuthProvider.PROVIDER_ID,
     ],
   };
-
+  const goBack = () => {
+    router.back();
+  };
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
@@ -84,7 +87,12 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
       fetchTripData(tripId);
     }
   }, [tripId]);
-
+  let href;
+  if (curTripData?.trip_dest != null){
+    href = `/discover?trip_destination=${encodeURIComponent(curTripData?.trip_dest)}&trip_id=${encodeURIComponent(tripId)}`;
+  } else {
+    href = `/discover?trip_destination=&trip_id=${encodeURIComponent(tripId)}`;
+  }
 
   return (
     <div>
@@ -177,8 +185,53 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                         maxWidth: "100%", // Ensure it does not exceed the container width
                       }}
                     />
+                    
+                    <Link href={href}>
+                      <MenuItem sx={{ py: "6px", px: "12px" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          sx={{ fontWeight: 700 }}
+                        >
+                          Discover
+                        </Typography>
+                      </MenuItem>
+                    </Link>
                   </>
                 )}
+
+
+              {router.pathname === '/discover' && (
+                <>
+                <SearchBar
+                      trip_destination={curTripData?.trip_dest}
+                      trip_id={tripId}
+                      isMobile={isMobile}
+                      curTripData = {curTripData}
+                      setTripData = {setTripData}
+                      fetchTripData = {fetchTripData}
+                      sx={{
+                        flexGrow: 1, // Allow search bar to grow and fill available space
+                        maxWidth: "100%", // Ensure it does not exceed the container width
+                      }}
+                    />
+                <MenuItem sx={{ py: "6px", px: "12px" }}>
+                <Typography
+                  variant="body2"
+                  color="text.primary"
+                  onClick={goBack}
+                  sx={{ fontWeight: 700 }}
+                >
+                Back to Trip
+                </Typography>
+              </MenuItem>
+              
+              </>
+            
+              
+              )}
+
+
               </Box>
               
               
@@ -191,17 +244,6 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                       justifyContent: "flex-end", // Align menu items to the right
                     }}
                   >
-                    {/* <Link href="/discover" passHref>
-                      <MenuItem sx={{ py: "6px", px: "12px" }}>
-                        <Typography
-                          variant="body2"
-                          color="text.primary"
-                          sx={{ fontWeight: 700 }}
-                        >
-                          Discover
-                        </Typography>
-                      </MenuItem>
-                    </Link> */}
                     {/* <Link href="/dashboard" passHref>
                       <MenuItem sx={{ py: "6px", px: "12px" }}>
                         <Typography
@@ -313,9 +355,10 @@ function AppAppBar({ mode, toggleColorMode, curTripData, setTripData, fetchTripD
                       flexGrow: 1,
                     }}
                   ></Box>
-                  {/* <Link href="/discover" passHref>
+                  <Link href="/discover" passHref>
                     <MenuItem>Discover</MenuItem>
                   </Link>
+                  {/*
                   <Link href="/dashboard" passHref>
                     <MenuItem>Trips</MenuItem>
                   </Link>

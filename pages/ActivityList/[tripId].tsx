@@ -96,8 +96,6 @@ export const ActivityList: React.FC = () => {
   }
 
   const [value, setValue] = React.useState(0);
-  const activitiesArray = Object.values(curTripData?.activities || {});
-  const numberOfActivities = activitiesArray.length;
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
