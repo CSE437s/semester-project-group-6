@@ -9,18 +9,21 @@ import { Button } from "@mui/material";
 import { Box, Typography } from "@mui/material";
 import { db } from "../firebase/firebase";
 import { onValue, set, push, ref, remove } from "firebase/database";
+import { useAuth } from '../firebase/auth';
+import { User } from 'firebase/auth';
 
 const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & {activity_id: string} > = (props) => {
   
-  const { name, image_url, rating, review_count, url, location, activity_id, trip_id } = props;
-
+  const { name, image_url, rating, review_count, url, location, activity_id, trip_id, likes } = props;
+  const { authUser } = useAuth() as { authUser: User | null };
   // Use a simple boolean to track favorite status.
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     // On mount, check if the activity is favorited.
-    const favoriteRef = ref(db, `trips/${trip_id}/activities/${activity_id}`);
+    const favoriteRef = ref(db, `trips/${trip_id}/activities/${activity_id}/likes/${authUser?.uid}`);
     const unsubscribe = onValue(favoriteRef, (snapshot) => {
+      console.log(snapshot)
       setIsFavorite(snapshot.exists());
     });
 
@@ -29,15 +32,19 @@ const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & {activity_id: 
   }, [name, trip_id]);
 
   const toggleFavorite = async () => {
-    const favoriteRef = ref(db, `trips/${trip_id}/activities/${activity_id}`);
+    const favoriteRef = ref(db, `trips/${trip_id}/activities/${activity_id}/likes/${authUser?.uid}`);
   
     if (isFavorite) {
       // If already favorited, remove from Firebase.
+      if (Object.keys(likes).length == 1) {
+        await remove(ref(db, `trips/${trip_id}/activities/${activity_id}`));
+      }
       await remove(favoriteRef);
+      
       setIsFavorite(false); // Update local state
     } else {
       // If not favorited, add to Firebase under the specified path.
-      await set(favoriteRef, { name, image_url, rating, review_count, url, location });
+      await set(favoriteRef, true);
       setIsFavorite(true); // Update local state
     }
   };
@@ -86,6 +93,7 @@ const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & {activity_id: 
           e.stopPropagation(); // Prevent other handlers
           toggleFavorite();
         }} className={styles.favorite}>
+          <label> {Object.keys(likes).length} </label>
           <img src={isFavorite ?  filledFav.src : emptyFav.src } alt="Favorite" />
         </Button>
       </div>

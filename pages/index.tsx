@@ -21,10 +21,10 @@ export default function Home() {
     libraries: ["places"],
   });
 
-  const { authUser, isLoading } = useAuth();
+  
   const router = useRouter();
   const [login, setLogin] = useState(false);
-
+  const { authUser, isLoading } = useAuth();
   useEffect(() => {
     if (!isLoading && authUser) {
       router.push('/dashboard');

@@ -18,6 +18,9 @@ import filledFav from "../public/favorite1.png";
 import { db } from "../firebase/firebase";
 import { push, set, ref, remove } from "firebase/database";
 import { TripCardData } from "../CustomTypes";
+import { useAuth } from "../firebase/auth";
+import { UidIdentifier } from "firebase-admin/lib/auth/identifier";
+import { User } from "firebase/auth";
 
 type Props = {
   trip_destination: string | undefined;
@@ -34,8 +37,9 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
   const [searchResults, setSearchResults] = useState<ActivityInfo[]>([]);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [favorites, setFavorites] = useState<{ [key: string]: string }>({});
-
+  
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const { authUser } = useAuth() as { authUser: User | null };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -69,33 +73,37 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
   };
 
   const addActivity = async (activity: ActivityInfo): Promise<string> => {
+    const uid = authUser ? authUser.uid : "defaultValue"
+    const likes = { [uid]: true };
+    activity = { ...activity, likes: likes };
     const newActivityRef = await push(
       ref(db, "trips/" + trip_id + "/activities"),
       activity
     );
+
     return newActivityRef.key as string;
   };
 
-  const deleteActivity = async (key: string) => {
-    await remove(ref(db, "trips/" + trip_id + "/activities/" + key));
-  };
+  // const deleteActivity = async (key: string) => {
+  //   await remove(ref(db, "trips/" + trip_id + "/activities/" + key));
+  // };
 
-  const toggleFavorite = async (activity: ActivityInfo) => {
-    // Check if the activity is already favorited
-    if (favorites[activity.name]) {
-      // Activity is favorited, delete it
-      await deleteActivity(favorites[activity.name]);
-      setFavorites((prev) => {
-        const updated = { ...prev };
-        delete updated[activity.name]; // Remove from favorites
-        return updated;
-      });
-    } else {
-      // Activity is not favorited, add it
-      const key = await addActivity(activity);
-      setFavorites((prev) => ({ ...prev, [activity.name]: key })); // Add to favorites
-    }
-  };
+  // const toggleFavorite = async (activity: ActivityInfo) => {
+  //   // Check if the activity is already favorited
+  //   if (favorites[activity.name]) {
+  //     // Activity is favorited, delete it
+  //     await deleteActivity(favorites[activity.name]);
+  //     setFavorites((prev) => {
+  //       const updated = { ...prev };
+  //       delete updated[activity.name]; // Remove from favorites
+  //       return updated;
+  //     });
+  //   } else {
+  //     // Activity is not favorited, add it
+  //     const key = await addActivity(activity);
+  //     setFavorites((prev) => ({ ...prev, [activity.name]: key })); // Add to favorites
+  //   }
+  // };
 
   const mapApiResponseToSearchResults = (apiResponse: any): ActivityInfo[] => {
     return apiResponse.map((business: any) => ({
@@ -104,7 +112,7 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
       url: business.url,
       review_count: business.review_count,
       rating: business.rating,
-      location: business.location,
+      location: business.location
     }));
   };
 
@@ -262,7 +270,7 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
                   <Button
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent the addActivity from being called
-                      toggleFavorite(activity);
+                      addActivity(activity);
                       fetchTripData(trip_id);
                     }}
                     className={styles.favorite}

@@ -38,8 +38,14 @@ type User = {
 };
 
 export const ActivityList: React.FC = () => {
-  const { authUser } = useAuth();
+  const { authUser, isLoading } = useAuth();
+  useEffect(() => {
+    if (!isLoading && !authUser) {
+      router.push('/');
+    }
+  }, [authUser, isLoading]);
 
+  
   const router = useRouter();
   const { tripId } = router.query as { tripId: string };
   const [curTripData, setTripData] = useState<TripCardData>();
@@ -148,6 +154,8 @@ export const ActivityList: React.FC = () => {
                 )}
               </Tabs>
             </Box>
+            
+            
             <TabPanel value={value} index={0}>
               {/* {numberOfActivities} item */}
               <div className={styles.activities}>

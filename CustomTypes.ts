@@ -13,6 +13,7 @@ export type Participant = {
     image_url: string;
     url: string;  
     location: object;
+    likes: { [uid: string]: boolean }; // Object structure to store users who liked the activity
   }
 
 export type TripCardData = {
