@@ -39,11 +39,18 @@ export default function Trending() {
 
     const fetchImage = (trip) => {
       return new Promise((resolve, reject) => {
+        // Check if trip.place_id is defined and not an empty string
+        if (!trip.place_id) {
+          resolve("https://picsum.photos/seed/picsum/200/300"); // Resolve with the default image URL
+          return; // Exit the function
+        }
+    
         const request = {
           placeId: trip.place_id,
           fields: ["photo"],
         };
-
+    
+        const service = new google.maps.places.PlacesService(document.createElement("div"));
         service.getDetails(request, (placeResult, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             if (placeResult.photos && placeResult.photos.length > 0) {
@@ -63,7 +70,8 @@ export default function Trending() {
         });
       });
     };
-
+    
+    
     const fetchUserTrips = async () => {
       const tripDatabaseRef = ref(db, "trips/");
       const snapshot = await get(tripDatabaseRef);
@@ -100,6 +108,8 @@ export default function Trending() {
     }
   }, [authUser, userTrips]);
 
+
+  
   return (
     <div className={styles.wrapper}>
       {loading && <div>Loading...</div>}

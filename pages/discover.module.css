@@ -1,0 +1,83 @@
+/* Discover.module.css */
+.discoverContainer {
+  margin-top: 50px;
+  padding-left: 200px;
+  padding-right: 200px;
+}
+
+.sliderImage {
+  width: 95%;
+  height: auto;
+  border-radius: 10px; /* Rounded corners */
+}
+
+
+
+.sliderTextOverlay {
+  /* Styles for text overlay */
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: white;
+  padding: 5px 10px;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  border-radius: 5px;
+  /* Other styles as necessary */
+}
+
+Button.favButton{
+  position: absolute;
+  top: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  width: 45px;
+  height: 45px;
+  border: 1px solid lightgrey;
+  border-radius: 50%;
+  background-color: #f0f0f0; /* Light grey background */
+  margin: 10px; /* Adjust margin to position the button inside the card */
+  min-width: 0;
+  cursor: pointer; /* Makes it clear the button is clickable */
+  z-index: 2; 
+}
+
+Button.favButton:hover{
+  background-color: rgb(197, 197, 197); /* Light grey background */
+
+}
+
+.cardStyle {
+  position: relative; /* Make the position relative for absolute positioning of children */
+  width:95%;
+}
+
+.coverImgcontainer {
+  display: flex;
+  justify-content: center; /* Aligns horizontally */
+  align-items: center; /* Aligns vertically */
+  padding-top: 120px; /* Full height of the viewport */
+}
+
+.coverImg{
+  width: 73%;
+  height: 500px;
+  border-radius: 30px;
+  object-fit: cover;
+  overflow: hidden;
+
+}
+
+h2.title{
+  padding-top: 100px;
+  padding-bottom: 10px;
+  font-weight: 600;
+  font-size: 36px;
+}
+
+p.subtitle{
+  padding-bottom: 10px;
+  font-weight: 200;
+  font-size: 18px;
+}

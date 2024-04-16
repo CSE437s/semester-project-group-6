@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, memo, FC } from "react";
 import TripCard from "../../components/TripCard";
 import ActivityCard from "../../components/ActivityCard";
 import { useRouter } from "next/router";
 import styles from "../ActivityList.module.css";
-import { ref, get, getDatabase, remove } from "firebase/database";
+import { ref, get, set, remove } from "firebase/database";
 import { db } from "../../firebase/firebase";
-import SearchBar from "../../components/SearchBarYelp";
-import { TripCardData, ActivityInfo } from "../../CustomTypes";
-import Link from "next/link";
+import { TripCardData , ActivityInfo} from "../../CustomTypes";
 import NavBar from "../../components/AppAppBar";
 import Map from "../../pages/map";
 import Box from "@mui/material/Box";
@@ -18,11 +16,17 @@ import { geocode } from "react-geocode";
 import MapLoader from "../../components/mapLoader";
 import Image from "next/image";
 import trashIcon from "../../public/trashIcon.png";
-import { width } from "@mui/system";
-import { Modal } from "@mui/material";
 import { Button, Dialog, DialogTitle } from "@mui/material";
 import { useAuth } from "../../firebase/auth";
-import { Label } from "@mui/icons-material";
+import mapIcon from '../../public/mapIcon.png';
+import listIcon from '../../public/listIcon.png';
+import TravelModeSelector from '../../components/travelMode';
+import TextField from '@mui/material/TextField';
+
+interface NotesInputProps {
+  editNotes: string;
+  setEditNotes: React.Dispatch<React.SetStateAction<string>>;
+}
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -37,6 +41,7 @@ type User = {
   uid: string;
 };
 
+
 export const ActivityList: React.FC = () => {
   const { authUser, isLoading } = useAuth();
   useEffect(() => {
@@ -50,12 +55,15 @@ export const ActivityList: React.FC = () => {
   const { tripId } = router.query as { tripId: string };
   const [curTripData, setTripData] = useState<TripCardData>();
   const [deleteModal, openDelete] = useState(false);
+  const [tripNotes, setTripNotes] = useState("");
+  const [editNotes, setEditNotes] = useState("");
   const [office, setOffice] = useState<LatLngLiteral | null>(
     {} as LatLngLiteral
   );
   const [directions, setDirections] = useState<DirectionsResult | null>(
     {} as DirectionsResult
   );
+  const [travelMode, setTravelMode] = React.useState<google.maps.TravelMode>(google.maps.TravelMode.DRIVING);
 
   useEffect(() => {
     if (tripId) {
@@ -63,13 +71,19 @@ export const ActivityList: React.FC = () => {
     }
     console.log(curTripData);
   }, [tripId]);
+  
+  useEffect(() => {
+    setEditNotes(tripNotes);
+  }, [tripNotes]);
 
   const fetchTripData = async () => {
     try {
       const tripDatabaseRef = ref(db, "trips/" + tripId);
       const tripSnapshot = await get(tripDatabaseRef);
       if (tripSnapshot.exists()) {
-        setTripData(tripSnapshot.val());
+        const data = tripSnapshot.val();
+        setTripData(data);
+        setTripNotes(data.trip_notes || "");
       } else {
         console.error(`Trip with ID ${tripId} not found.`);
       }
@@ -83,6 +97,24 @@ export const ActivityList: React.FC = () => {
     const deleteTripRef = remove(tripDatabaseRef);
     alert("Trip Deleted");
     router.push("/dashboard");
+  };
+
+  
+  const handleSaveNotes = async () => {
+    if (!tripId) {
+      console.error("No trip ID provided");
+      alert("Error: No trip ID found.");
+      return;
+    }
+    setTripNotes(editNotes);
+    const tripNotesRef = ref(db, `trips/${tripId}/trip_notes`);
+    try {
+      await set(tripNotesRef, editNotes);
+      alert('Notes updated successfully!');
+    } catch (error) {
+      console.error('Failed to save notes:', error);
+      alert('Error saving notes.');
+    }
   };
 
   function TabPanel(props: TabPanelProps) {
@@ -102,11 +134,15 @@ export const ActivityList: React.FC = () => {
   }
 
   const [value, setValue] = React.useState(0);
-  const activitiesArray = Object.values(curTripData?.activities || {});
-  const numberOfActivities = activitiesArray.length;
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  const [isMapExpanded, setMapExpanded] = useState(false);
+  
+  const toggleButton = () => {
+    setMapExpanded(!isMapExpanded);
+  };
+  
 
   return (
     <>
@@ -137,7 +173,8 @@ export const ActivityList: React.FC = () => {
                 aria-label="basic tabs example"
               >
                 <Tab label="Favorites" />
-                <Tab label="Activity Info" />
+                <Tab label="Directions" />
+                <Tab label="Notes"/>
                 <Tab label="Members" />
                 {curTripData?.trip_owner ===
                   (authUser as unknown as User)?.uid && (
@@ -154,8 +191,7 @@ export const ActivityList: React.FC = () => {
                 )}
               </Tabs>
             </Box>
-            
-            
+
             <TabPanel value={value} index={0}>
               {/* {numberOfActivities} item */}
               <div className={styles.activities}>
@@ -173,47 +209,77 @@ export const ActivityList: React.FC = () => {
               </div>
             </TabPanel>
 
+
+
             <TabPanel value={value} index={1}>
+              <div>
+                <TravelModeSelector setTravelMode={setTravelMode} currentMode={travelMode}/>
+              </div>
               {!office}
               {directions && directions.routes && (
-                <Distance leg={directions.routes[0].legs[0]} />
+                <Distance leg={directions.routes[0].legs[0]}/>
               )}
             </TabPanel>
 
-            <TabPanel value={value} index={2}>
+
+
+            <TabPanel value={value} index={3}>
               {curTripData?.participants &&
-                Object.values(curTripData.participants).map(
-                  (participant, index) => (
-                    <>
+                Object.values(curTripData.participants).map((participant, index) => (
+                  <div className={styles.participantContainer} key={participant.uid}>
                     <Image
-                      key={participant.uid}
                       src={participant.profilePicURL} // Assuming imageURL is the property you want to use
                       alt={participant.uid}
-                      className={styles.participant}
+                      className={styles.participantImage}
                       width={70}
                       height={70}
                     />
-                    <h1> {participant.email}</h1>
-                    </>
-                  )
-                )}
-
+                    <h1 className={styles.participantEmail}>{participant.email}</h1>
+                  </div>
+                ))}
             </TabPanel>
+
+            <TabPanel value={value} index={2}>
+              <TextField
+                multiline
+                fullWidth
+                rows={4}
+                value={editNotes}
+                onChange={(e) => setEditNotes(e.target.value)} 
+                placeholder="Edit trip notes here..."
+                variant="outlined"
+              />
+              <Button 
+                onClick={() => {
+                  setTripNotes(editNotes);
+                  handleSaveNotes(); 
+                }}
+                variant="contained" 
+                color="primary"
+                style={{ marginTop: '10px' }}
+              >
+                Save Notes
+              </Button>
+            </TabPanel>
+
+
           </Box>
         </div>
-
-        <div className={styles.mainContent}>
-          <div className={styles.mapContainer}>
+        <div className={`${styles.mainContent} ${isMapExpanded ? styles.mainContentVisible : styles.mainContentHidden}`}>
+          <div style={{ display: isMapExpanded ? 'block' : 'block' }} className={styles.map}>
+              
               <Map
                 tripDest={curTripData ? curTripData.trip_dest : "New York"}
                 setOffice={setOffice}
                 office={office}
                 directions={directions}
                 setDirections={setDirections}
+                travelMode={travelMode}
               />
-           
+           </div>
           </div>
-        </div>
+          
+        
 
         <Dialog onClose={() => openDelete(!deleteModal)} open={deleteModal}>
           <div className="deleteModal">
@@ -235,6 +301,13 @@ export const ActivityList: React.FC = () => {
             </Button>
           </div>
         </Dialog>
+
+        <Button onClick={toggleButton} className={styles.mapButton}>
+          <img src={isMapExpanded ? listIcon.src : mapIcon.src} alt={isMapExpanded ? "List" : "Map"} width={20} height={20} />
+          ‎ ‎ {isMapExpanded ? 'List' : 'Map'}
+        </Button>
+
+        
       </div>
     </>
   );

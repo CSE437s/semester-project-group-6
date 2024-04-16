@@ -1,6 +1,12 @@
-const commutesPerYear = 260 * 2;
+
+import styles from './distance.module.css';
+import Image from 'next/image';
+import carIcon from '../public/google.png';
+
+
+const commutesPerYear = 1 * 2;
 const litresPerKM = 10 / 100;
-const gasLitreCost = 1.5;
+const gasLitreCost = 3.61;
 const litreCostKM = litresPerKM * gasLitreCost;
 const secondsPerDay = 60 * 60 * 24;
 
@@ -9,6 +15,11 @@ type DistanceProps = {
 };
 
 export default function Distance({ leg }: DistanceProps) {
+
+
+  
+
+
   if (!leg.distance || !leg.duration) return null;
 
   const days = Math.floor(
@@ -18,22 +29,27 @@ export default function Distance({ leg }: DistanceProps) {
     (leg.distance.value / 1000) * litreCostKM * commutesPerYear
   );
 
-    return (
-    <div>
-      <p>
-        This activity is <span className="highlight">{leg.distance.text}</span> away
-        from your place! That would take{" "}
-        <span className="highlight">{leg.duration.text}</span> each direction.
-      </p>
-  
-      {/* <p>
-        That&apos;s <span className="highlight">{days} days</span> in your car each
-        year at a cost of{" "}
-        <span className="highlight">
-          ${new Intl.NumberFormat().format(cost)}
-        </span>
-        .
-      </p> */}
+  return (
+    <div className={styles.container}>
+      {/* Display overall distance and duration */}
+      <div className={styles.routeInfo}>
+        <Image src={carIcon} alt="Car Icon" className={styles.icon} />
+        <span className={styles.durationText}>{leg.duration.text}</span>
+        <span className={styles.distanceText}>{leg.distance.text}</span>
+      </div>
+
+      {/* Display step by step instructions */}
+      <div className={styles.stepsContainer}>
+        {leg.steps.map((step, index) => (
+          <div key={index} className={styles.step}>
+            <div dangerouslySetInnerHTML={{ __html: step.instructions }} />
+            <div className={styles.additionalInfo}>
+              {step.distance?.text} - {step.duration?.text}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
+    
   );
 }

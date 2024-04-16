@@ -11,6 +11,9 @@ import Places from "../components/places";
 import { ref, get, child, getDatabase } from "firebase/database";
 import { db } from "../firebase/firebase";
 import { useRouter } from "next/router";
+import styles from "./ActivityList.module.css";
+import { Button } from "@mui/material";
+import { ActivityInfo } from '../CustomTypes';
 
 import {
   setKey,
@@ -40,7 +43,9 @@ type Props = {
   setOffice: React.Dispatch<React.SetStateAction<LatLngLiteral | null>>;
   setDirections: React.Dispatch<React.SetStateAction<DirectionsResult | null>>;
   directions: DirectionsResult | null;
+  travelMode: google.maps.TravelMode;
 };
+
 
 export default function Map({
   tripDest,
@@ -48,6 +53,7 @@ export default function Map({
   setOffice,
   setDirections,
   directions,
+  travelMode
 }: Props) {
   const router = useRouter();
   const { tripId } = router.query;
@@ -110,6 +116,13 @@ export default function Map({
     []
   );
   const onLoad = useCallback((map: any) => (mapRef.current = map), []);
+  
+  useEffect(() => {
+    houses.forEach(house => {
+      fetchDirections(house);
+    });
+  }, [travelMode, houses]);
+
 
   useEffect(() => {
     // Assuming generateHouses is an async function
@@ -133,7 +146,7 @@ export default function Map({
       {
         origin: house,
         destination: office,
-        travelMode: google.maps.TravelMode.DRIVING,
+        travelMode: travelMode,
       },
       (result, status) => {
         if (status === "OK" && result) {
@@ -141,26 +154,15 @@ export default function Map({
         }
       }
     );
+    
   };
 
   return (
-    <div className="container">
-      {/* <div className="controls">
-        <h1>Where is your place? </h1>
-        <Places
-          setOffice={(position) => {
-            setOffice(position);
-            mapRef.current?.panTo(position);
-          }}
-        />
-        {!office && <p>Enter an address.</p>}
-        {directions && <Distance leg={directions.routes[0].legs[0]} />}
-      </div> */}
-      <div className="map">
+      <div className={styles.container}>
         <GoogleMap
           zoom={10}
           center={center}
-          mapContainerClassName="map-container"
+          mapContainerClassName={styles.mapContainer}
           options={options}
           onLoad={onLoad}
         >
@@ -179,7 +181,9 @@ export default function Map({
           <MarkerClusterer>
             {(clusterer) => (
               <>
-                {houses.map((house, index) => (
+                {houses.map((house, index) => {
+                
+                return (
                   <Marker
                     key={index}
                     position={house}
@@ -187,7 +191,8 @@ export default function Map({
                     onClick={() => fetchDirections(house)}
                     icon="https://maps.google.com/mapfiles/kml/paddle/pink-stars.png"
                   />
-                ))}
+                );
+              })}
               </>
             )}
           </MarkerClusterer>
@@ -205,7 +210,7 @@ export default function Map({
           )}
         </GoogleMap>
       </div>
-    </div>
+      
   );
 }
 
