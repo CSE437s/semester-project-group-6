@@ -19,7 +19,7 @@ import trashIcon from "../../public/trashIcon.png";
 import { Button, Dialog, DialogTitle } from "@mui/material";
 import { useAuth } from "../../firebase/auth";
 import mapIcon from "../../public/mapIcon.png";
-import listIcon from "../../public/listIcon.png";
+import listIcon from "../../public/listicon.png";
 import TravelModeSelector from "../../components/travelMode";
 import TextField from "@mui/material/TextField";
 import { Data } from "@react-google-maps/api";

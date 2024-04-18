@@ -1,13 +1,13 @@
-// import StockPhoto from "../public/bike.png";
-// import { ActivityInfo } from "../CustomTypes";
-// import { Reorder } from "framer-motion";
-// import { useState } from "react";
-// import ActivityCard from "../components/ActivityCard";
-// import styles from "../components/planner.module.css"
-// import { style } from "@mui/system";
-// import { Button, Dialog, DialogTitle} from "@mui/material";
+import StockPhoto from "../public/bike.png";
+import { ActivityInfo } from "../CustomTypes";
+import { Reorder } from "framer-motion";
+import { useState } from "react";
+import ActivityCard from "../components/ActivityCard";
+import styles from "../components/planner.module.css"
+import { style } from "@mui/system";
+import { Button, Dialog, DialogTitle} from "@mui/material";
 
-// export default function Planner() {
+export default function Planner() {}
 //   const [ordering, setOrdering] = useState([0, 1, 2, 3]);
 //   const [activityModal, setActivityModal] = useState(false);
 //   const Dummy: ActivityInfo = {
