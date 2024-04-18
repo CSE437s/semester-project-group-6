@@ -30,7 +30,7 @@ export default function Discover() {
   const [hotelResults, setHotelResults] = useState<ActivityInfo[]>([]);
   const [beachResults, setBeachResults] = useState<ActivityInfo[]>([]);
   const [restaurantResults, setRestaurantResults] = useState<ActivityInfo[]>([]);
-  const [curTripData, setTripData] = useState<TripCardData>();
+  const [curTripData, setTripData] = useState<TripCardData>({} as TripCardData);
 
 
 
