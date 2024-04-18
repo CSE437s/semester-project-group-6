@@ -27,8 +27,8 @@ type Props = {
   trip_id: string;
   isMobile: boolean;
   sx?: SxProps<Theme>;
-  curTripData: TripCardData | undefined;
-  setTripData: React.Dispatch<React.SetStateAction<TripCardData | undefined>>;
+  curTripData: TripCardData;
+  setTripData: React.Dispatch<React.SetStateAction<TripCardData>>;
   fetchTripData: (tripId: string) => Promise<void>;
 };
 
@@ -36,7 +36,7 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<ActivityInfo[]>([]);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [favorites, setFavorites] = useState<{ [key: string]: string }>({});
+  const [favorites, setFavorites] = useState<{ [key: string]: ActivityInfo }>({});
   
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const { authUser } = useAuth() as { authUser: User | null };
@@ -72,16 +72,17 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
     return <>{stars}</>;
   };
 
-  const addActivity = async (activity: ActivityInfo): Promise<string> => {
+  const addActivity = async (activity: ActivityInfo) => {
     const uid = authUser ? authUser.uid : "defaultValue"
     const likes = { [uid]: true };
     activity = { ...activity, likes: likes };
-    const newActivityRef = await push(
+    setFavorites((prev: { [key: string]: ActivityInfo }) => ({
+      ...prev,
+      [activity.name]: activity,
+    }));    const newActivityRef = await push(
       ref(db, "trips/" + trip_id + "/activities"),
       activity
     );
-
-    return newActivityRef.key as string;
   };
 
   // const deleteActivity = async (key: string) => {

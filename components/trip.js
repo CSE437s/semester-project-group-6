@@ -69,7 +69,7 @@ export default function Trips({setUserTrips}) {
     }
 
     const startDateObj = startDate.format("YYYY-MM-DD");
-    const endDateObj = startDate.format("YYYY-MM-DD");
+    const endDateObj = endDate.format("YYYY-MM-DD");
 
 
     const userProfile = {

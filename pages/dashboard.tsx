@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { useRouter } from "next/router";
 import useAuth from '../firebase/auth';
 import AppAppBar from '../components/AppAppBar';
-import { TripCardData } from '../CustomTypes';
+import { ActivityInfo, TripCardData } from '../CustomTypes';
 import Trending from '../components/Trending';
 
 export default function Dashboard() {
@@ -22,7 +22,7 @@ export default function Dashboard() {
     };
 
     // Dummy setTripData function
-    const setTripData = (data: React.SetStateAction<TripCardData | undefined>) => {
+    const setTripData = (data: React.SetStateAction<TripCardData>) => {
         // Implementation logic for setting trip data
     };
 
@@ -44,7 +44,7 @@ export default function Dashboard() {
                 <AppAppBar 
                     fetchTripData={fetchTripData}
                     setTripData={setTripData}
-                    curTripData={undefined}
+                    curTripData={{} as TripCardData}
                     mode="light"
                     toggleColorMode={toggleColorMode}
                 />

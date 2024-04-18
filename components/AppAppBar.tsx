@@ -36,8 +36,8 @@ const logoStyle = {
 interface AppAppBarProps {
   mode: PaletteMode;
   toggleColorMode: () => void;
-  curTripData: TripCardData | undefined;
-  setTripData: React.Dispatch<React.SetStateAction<TripCardData | undefined>>;
+  curTripData: TripCardData;
+  setTripData: React.Dispatch<React.SetStateAction<TripCardData>>;
   fetchTripData: (tripId: string) => Promise<void>;
 }
 

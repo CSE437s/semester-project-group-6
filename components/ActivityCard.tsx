@@ -12,9 +12,10 @@ import { onValue, set, push, ref, remove } from "firebase/database";
 import { useAuth } from '../firebase/auth';
 import { User } from 'firebase/auth';
 
-const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & {activity_id: string} > = (props) => {
+const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & { activity_id: string } & { fetchTripData?: () => Promise<void> }> = (props) => {
+
   
-  const { name, image_url, rating, review_count, url, location, activity_id, trip_id, likes } = props;
+  const { name, image_url, rating, review_count, url, location, activity_id, trip_id, likes, fetchTripData } = props;
   const { authUser } = useAuth() as { authUser: User | null };
   // Use a simple boolean to track favorite status.
   const [isFavorite, setIsFavorite] = useState(false);
@@ -23,7 +24,6 @@ const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & {activity_id: 
     // On mount, check if the activity is favorited.
     const favoriteRef = ref(db, `trips/${trip_id}/activities/${activity_id}/likes/${authUser?.uid}`);
     const unsubscribe = onValue(favoriteRef, (snapshot) => {
-      console.log(snapshot)
       setIsFavorite(snapshot.exists());
     });
 
@@ -92,6 +92,9 @@ const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & {activity_id: 
         <Button onClick={(e) => {
           e.stopPropagation(); // Prevent other handlers
           toggleFavorite();
+          if (fetchTripData) {
+            fetchTripData();
+          }
         }} className={styles.favorite}>
           <label> {Object.keys(likes).length} </label>
           <img src={isFavorite ?  filledFav.src : emptyFav.src } alt="Favorite" />

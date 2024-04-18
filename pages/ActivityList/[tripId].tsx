@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, memo, FC } from "react";
+import React, { useState, useEffect, useRef, memo, FC, Suspense } from "react";
 import TripCard from "../../components/TripCard";
 import ActivityCard from "../../components/ActivityCard";
 import { useRouter } from "next/router";
 import styles from "../ActivityList.module.css";
 import { ref, get, set, remove } from "firebase/database";
 import { db } from "../../firebase/firebase";
-import { TripCardData , ActivityInfo} from "../../CustomTypes";
+import { TripCardData, ActivityInfo } from "../../CustomTypes";
 import NavBar from "../../components/AppAppBar";
 import Map from "../../pages/map";
 import Box from "@mui/material/Box";
@@ -18,10 +18,11 @@ import Image from "next/image";
 import trashIcon from "../../public/trashIcon.png";
 import { Button, Dialog, DialogTitle } from "@mui/material";
 import { useAuth } from "../../firebase/auth";
-import mapIcon from '../../public/mapIcon.png';
-import listIcon from '../../public/listIcon.png';
-import TravelModeSelector from '../../components/travelMode';
-import TextField from '@mui/material/TextField';
+import mapIcon from "../../public/mapIcon.png";
+import listIcon from "../../public/listIcon.png";
+import TravelModeSelector from "../../components/travelMode";
+import TextField from "@mui/material/TextField";
+import { Data } from "@react-google-maps/api";
 
 interface NotesInputProps {
   editNotes: string;
@@ -41,29 +42,32 @@ type User = {
   uid: string;
 };
 
-
 export const ActivityList: React.FC = () => {
   const { authUser, isLoading } = useAuth();
   useEffect(() => {
     if (!isLoading && !authUser) {
-      router.push('/');
+      router.push("/");
     }
   }, [authUser, isLoading]);
 
-  
   const router = useRouter();
   const { tripId } = router.query as { tripId: string };
-  const [curTripData, setTripData] = useState<TripCardData>();
+  const [curTripData, setTripData] = useState<TripCardData>({} as TripCardData);
   const [deleteModal, openDelete] = useState(false);
   const [tripNotes, setTripNotes] = useState("");
   const [editNotes, setEditNotes] = useState("");
+  const [dates, setDates] = useState<Date[]>([]);
+  const [isLoadingData, setLoadingData] = useState(true);
+
   const [office, setOffice] = useState<LatLngLiteral | null>(
     {} as LatLngLiteral
   );
   const [directions, setDirections] = useState<DirectionsResult | null>(
     {} as DirectionsResult
   );
-  const [travelMode, setTravelMode] = React.useState<google.maps.TravelMode>(google.maps.TravelMode.DRIVING);
+  const [travelMode, setTravelMode] = React.useState<google.maps.TravelMode>(
+    google.maps.TravelMode.DRIVING
+  );
 
   useEffect(() => {
     if (tripId) {
@@ -71,7 +75,7 @@ export const ActivityList: React.FC = () => {
     }
     console.log(curTripData);
   }, [tripId]);
-  
+
   useEffect(() => {
     setEditNotes(tripNotes);
   }, [tripNotes]);
@@ -82,8 +86,18 @@ export const ActivityList: React.FC = () => {
       const tripSnapshot = await get(tripDatabaseRef);
       if (tripSnapshot.exists()) {
         const data = tripSnapshot.val();
-        setTripData(data);
+        setTripData((prevData) => ({ ...prevData, ...data })); // Use functional update to ensure latest state
         setTripNotes(data.trip_notes || "");
+
+        for (
+          let d = new Date(data.start_date);
+          d <= new Date(data.end_date);
+          d.setDate(d.getDate() + 1)
+        ) {
+          const newDate = new Date(d);
+          setDates((prev) => [...prev, newDate]);
+        }
+        console.log(curTripData);
       } else {
         console.error(`Trip with ID ${tripId} not found.`);
       }
@@ -99,7 +113,6 @@ export const ActivityList: React.FC = () => {
     router.push("/dashboard");
   };
 
-  
   const handleSaveNotes = async () => {
     if (!tripId) {
       console.error("No trip ID provided");
@@ -110,10 +123,10 @@ export const ActivityList: React.FC = () => {
     const tripNotesRef = ref(db, `trips/${tripId}/trip_notes`);
     try {
       await set(tripNotesRef, editNotes);
-      alert('Notes updated successfully!');
+      alert("Notes updated successfully!");
     } catch (error) {
-      console.error('Failed to save notes:', error);
-      alert('Error saving notes.');
+      console.error("Failed to save notes:", error);
+      alert("Error saving notes.");
     }
   };
 
@@ -138,11 +151,10 @@ export const ActivityList: React.FC = () => {
     setValue(newValue);
   };
   const [isMapExpanded, setMapExpanded] = useState(false);
-  
+
   const toggleButton = () => {
     setMapExpanded(!isMapExpanded);
   };
-  
 
   return (
     <>
@@ -173,8 +185,9 @@ export const ActivityList: React.FC = () => {
                 aria-label="basic tabs example"
               >
                 <Tab label="Favorites" />
+                <Tab label="Itinerary" />
                 <Tab label="Directions" />
-                <Tab label="Notes"/>
+                <Tab label="Notes" />
                 <Tab label="Members" />
                 {curTripData?.trip_owner ===
                   (authUser as unknown as User)?.uid && (
@@ -191,7 +204,7 @@ export const ActivityList: React.FC = () => {
                 )}
               </Tabs>
             </Box>
-
+            {/* favorites */}
             <TabPanel value={value} index={0}>
               {/* {numberOfActivities} item */}
               <div className={styles.activities}>
@@ -201,6 +214,7 @@ export const ActivityList: React.FC = () => {
                       <ActivityCard
                         trip_id={tripId}
                         key={activityId}
+                        fetchTripData={fetchTripData}
                         activity_id={activityId}
                         {...activity}
                       />
@@ -209,77 +223,97 @@ export const ActivityList: React.FC = () => {
               </div>
             </TabPanel>
 
-
-
+            {/* Itin */}
             <TabPanel value={value} index={1}>
-              <div>
-                <TravelModeSelector setTravelMode={setTravelMode} currentMode={travelMode}/>
+              <div className={styles.itinContainer}>
+                {dates.length != 0 &&
+                  dates.map((date, index) => (
+                    <div className = {styles.dateButton} key={index}>
+                      <p>{date.toDateString()}</p>
+                    </div>
+                  ))}
               </div>
-              {!office}
-              {directions && directions.routes && (
-                <Distance leg={directions.routes[0].legs[0]}/>
-              )}
-            </TabPanel>
-
-
-
-            <TabPanel value={value} index={3}>
-              {curTripData?.participants &&
-                Object.values(curTripData.participants).map((participant, index) => (
-                  <div className={styles.participantContainer} key={participant.uid}>
-                    <Image
-                      src={participant.profilePicURL} // Assuming imageURL is the property you want to use
-                      alt={participant.uid}
-                      className={styles.participantImage}
-                      width={70}
-                      height={70}
-                    />
-                    <h1 className={styles.participantEmail}>{participant.email}</h1>
-                  </div>
-                ))}
             </TabPanel>
 
             <TabPanel value={value} index={2}>
+              <div>
+                <TravelModeSelector
+                  setTravelMode={setTravelMode}
+                  currentMode={travelMode}
+                />
+              </div>
+              {!office}
+              {directions && directions.routes && (
+                <Distance leg={directions.routes[0].legs[0]} />
+              )}
+            </TabPanel>
+
+            <TabPanel value={value} index={3}>
               <TextField
                 multiline
                 fullWidth
                 rows={4}
                 value={editNotes}
-                onChange={(e) => setEditNotes(e.target.value)} 
+                onChange={(e) => setEditNotes(e.target.value)}
                 placeholder="Edit trip notes here..."
                 variant="outlined"
               />
-              <Button 
+              <Button
                 onClick={() => {
                   setTripNotes(editNotes);
-                  handleSaveNotes(); 
+                  handleSaveNotes();
                 }}
-                variant="contained" 
+                variant="contained"
                 color="primary"
-                style={{ marginTop: '10px' }}
+                style={{ marginTop: "10px" }}
               >
                 Save Notes
               </Button>
             </TabPanel>
-
-
+            {/*  members   */}
+            <TabPanel value={value} index={4}>
+              {curTripData?.participants &&
+                Object.values(curTripData.participants).map(
+                  (participant, index) => (
+                    <div
+                      className={styles.participantContainer}
+                      key={participant.uid}
+                    >
+                      <Image
+                        src={participant.profilePicURL} // Assuming imageURL is the property you want to use
+                        alt={participant.uid}
+                        className={styles.participantImage}
+                        width={70}
+                        height={70}
+                      />
+                      <h1 className={styles.participantEmail}>
+                        {participant.email}
+                      </h1>
+                    </div>
+                  )
+                )}
+            </TabPanel>
           </Box>
         </div>
-        <div className={`${styles.mainContent} ${isMapExpanded ? styles.mainContentVisible : styles.mainContentHidden}`}>
-          <div style={{ display: isMapExpanded ? 'block' : 'block' }} className={styles.map}>
-              
-              <Map
-                tripDest={curTripData ? curTripData.trip_dest : "New York"}
-                setOffice={setOffice}
-                office={office}
-                directions={directions}
-                setDirections={setDirections}
-                travelMode={travelMode}
-              />
-           </div>
+        <div
+          className={`${styles.mainContent} ${
+            isMapExpanded ? styles.mainContentVisible : styles.mainContentHidden
+          }`}
+        >
+          <div
+            style={{ display: isMapExpanded ? "block" : "block" }}
+            className={styles.map}
+          >
+            <Map
+              tripDest={curTripData ? curTripData.trip_dest : "New York"}
+              setOffice={setOffice}
+              office={office}
+              directions={directions}
+              setDirections={setDirections}
+              travelMode={travelMode}
+            />
           </div>
-          
-        
+        </div>
 
         <Dialog onClose={() => openDelete(!deleteModal)} open={deleteModal}>
           <div className="deleteModal">
@@ -303,11 +337,14 @@ export const ActivityList: React.FC = () => {
         </Dialog>
 
         <Button onClick={toggleButton} className={styles.mapButton}>
-          <img src={isMapExpanded ? listIcon.src : mapIcon.src} alt={isMapExpanded ? "List" : "Map"} width={20} height={20} />
-          ‎ ‎ {isMapExpanded ? 'List' : 'Map'}
+          <img
+            src={isMapExpanded ? listIcon.src : mapIcon.src}
+            alt={isMapExpanded ? "List" : "Map"}
+            width={20}
+            height={20}
+          />
+          ‎ ‎ {isMapExpanded ? "List" : "Map"}
         </Button>
-
-        
       </div>
     </>
   );

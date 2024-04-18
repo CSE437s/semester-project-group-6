@@ -1,0 +1,15 @@
+
+.button {
+    border-radius: 100%;
+    background-color: black;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    color: white;
+    font-size: 2rem;
+    
+}
+
+.button > * {
+    
+}
