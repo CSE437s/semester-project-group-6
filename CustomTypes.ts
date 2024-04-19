@@ -25,4 +25,9 @@ export type TripCardData = {
     place_id: string;
     participants: Participant[];
     activities: ActivityInfo[];
+    itinerary: Day[];
+  };
+
+  export type Day = {
+    activities: ActivityInfo
   };

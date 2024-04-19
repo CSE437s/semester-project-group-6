@@ -89,3 +89,7 @@
   background-color: rgb(197, 197, 197); /* Light grey background */
 
 }
+
+.selected {
+  border: solid 5px black;
+}

@@ -35,5 +35,6 @@ yarn-error.log*
 
 #private key
 /node/tripify-93d9a-firebase-adminsdk-utxmm-d231b34b0b.json
+/node/tripplanning-30381-firebase-adminsdk-kla0l-e3e5a9b2fa.json
 
 .env

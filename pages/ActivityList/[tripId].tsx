@@ -23,6 +23,7 @@ import listIcon from "../../public/listicon.png";
 import TravelModeSelector from "../../components/travelMode";
 import TextField from "@mui/material/TextField";
 import { Data } from "@react-google-maps/api";
+import Planner from "../planner";
 
 interface NotesInputProps {
   editNotes: string;
@@ -57,7 +58,7 @@ export const ActivityList: React.FC = () => {
   const [tripNotes, setTripNotes] = useState("");
   const [editNotes, setEditNotes] = useState("");
   const [dates, setDates] = useState<Date[]>([]);
-  const [isLoadingData, setLoadingData] = useState(true);
+  const [itinDate, setItinDate] = useState<Date>({} as Date);
 
   const [office, setOffice] = useState<LatLngLiteral | null>(
     {} as LatLngLiteral
@@ -77,6 +78,21 @@ export const ActivityList: React.FC = () => {
   }, [tripId]);
 
   useEffect(() => {
+    const startDate = new Date(curTripData.start_date);
+    const endDate = new Date(curTripData.end_date);
+    const newDates = [];
+    for (
+      let d = new Date(startDate);
+      d <= endDate;
+      d.setDate(d.getDate() + 1)
+    ) {
+      newDates.push(new Date(d));
+    }
+    setDates(newDates);
+    setItinDate(startDate);
+  }, [curTripData]);
+
+  useEffect(() => {
     setEditNotes(tripNotes);
   }, [tripNotes]);
 
@@ -89,14 +105,6 @@ export const ActivityList: React.FC = () => {
         setTripData((prevData) => ({ ...prevData, ...data })); // Use functional update to ensure latest state
         setTripNotes(data.trip_notes || "");
 
-        for (
-          let d = new Date(data.start_date);
-          d <= new Date(data.end_date);
-          d.setDate(d.getDate() + 1)
-        ) {
-          const newDate = new Date(d);
-          setDates((prev) => [...prev, newDate]);
-        }
         console.log(curTripData);
       } else {
         console.error(`Trip with ID ${tripId} not found.`);
@@ -228,11 +236,21 @@ export const ActivityList: React.FC = () => {
               <div className={styles.itinContainer}>
                 {dates.length != 0 &&
                   dates.map((date, index) => (
-                    <div className = {styles.dateButton} key={index}>
-                      <p>{date.toDateString()}</p>
+                    <div className={styles.itinContainer}>
+                      <div
+                        className={styles.dateButton}
+                        key={index}
+                        onClick={() => {
+                          setItinDate(date);
+                        }}
+                      >
+                        <p>{date.toDateString()}</p>
+                      </div>
                     </div>
                   ))}
               </div>
+              <Planner trip_id = {tripId} fetchTripData={fetchTripData} curDate={itinDate} curTripData={curTripData} ></Planner>
+
             </TabPanel>
 
             <TabPanel value={value} index={2}>
