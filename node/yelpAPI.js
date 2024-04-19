@@ -4,7 +4,8 @@ const router = express.Router();
 router.get("/search-yelp", async (req, res) => {
   console.log(req.query.location);
 
-  const apiKey = "nyP-ph8WigzME5C6Yglre7YnuObZvrrTIwnnuq8elph9qYBpP-xdSRe6qxbF_GxrSYRngSJxfcnjuX1nwHQykIzgykJ5F9m8xn55qH-GjH5mnDlNp4l34UzHC1jdZXYx";
+  const apiKey =
+    "nyP-ph8WigzME5C6Yglre7YnuObZvrrTIwnnuq8elph9qYBpP-xdSRe6qxbF_GxrSYRngSJxfcnjuX1nwHQykIzgykJ5F9m8xn55qH-GjH5mnDlNp4l34UzHC1jdZXYx";
 
   const url = `https://api.yelp.com/v3/businesses/search?location=${req.query.location}&term=${req.query.term}&sort_by=best_match&limit=10`;
   console.log("here");

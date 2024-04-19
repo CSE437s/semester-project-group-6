@@ -7,12 +7,12 @@ const { ref, push } = require("firebase/database");
 
 var admin = require("firebase-admin");
 
-var serviceAccount = require("./tripify-93d9a-firebase-adminsdk-utxmm-d231b34b0b.json");
+var serviceAccount = require("./tripplanning-30381-firebase-adminsdk-kla0l-e3e5a9b2fa.json");
 const { resolve } = require("path");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://tripify-93d9a-default-rtdb.firebaseio.com",
+  databaseURL: "https://tripplanning-30381-default-rtdb.firebaseio.com/",
 });
 
 router.post("/addParticipant", async (req, res) => {
