@@ -22,8 +22,10 @@ interface ItinProps {
 
 const ItineraryCard = (props: ItinProps) => {
   const { activity_id, trip_id, activityinfo, setSelected, selected } = props;
-  const { name, image_url, rating, review_count, url, location, likes } =
-    activityinfo;
+  if (!activityinfo) {
+    return ; // or some other placeholder content
+  }
+  const { name, image_url, rating, review_count, url, location, likes } = activityinfo;
   const { authUser } = useAuth() as { authUser: User | null };
   // Use a simple boolean to track favorite status.
   const [isFavorite, setIsFavorite] = useState(false);
@@ -68,7 +70,7 @@ const ItineraryCard = (props: ItinProps) => {
 
   return (
     <div
-      className={`${styles.activityCard} ${isSelected ? styles.selected : ""}`}
+      className={`${styles.activityCard2} ${isSelected ? styles.selected : ""}`}
       onClick={() => handleSelectItineraryCard()}
     >
       <img
@@ -107,7 +109,7 @@ const ItineraryCard = (props: ItinProps) => {
       </div>
       <div className={styles.favoriteIcon}>
         <Button className={styles.favorite}>
-          <label> {Object.keys(likes).length} </label>
+        <label className={styles.likes}>{likes ? Object.keys(likes).length : 0}</label>
           <img src={isFavorite ? filledFav.src : emptyFav.src} alt="Favorite" />
         </Button>
       </div>

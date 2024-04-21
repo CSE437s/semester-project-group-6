@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  
 }
 
 .activityImage {
@@ -92,4 +93,18 @@
 
 .selected {
   border: solid 5px black;
+}
+
+.activityCard2{
+  position: relative;
+  width: 100%; /* Adjust width as needed */
+  height: 250px;
+  border-radius: 10px;
+  overflow: auto;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
 }

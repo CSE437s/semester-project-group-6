@@ -231,21 +231,67 @@
   width: 100%; /* Takes up the rest of the space */
 }
 
-.itinContainer {
-  display: flex;
-  /* flex-wrap: wrap; */
-  overflow-x: scroll;
-  flex-shrink: 0;
 
+.itinContainer {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  padding: 15px;
+  margin-top: 0px; /* Spacing between each container */
+  margin-bottom: 30px;
+  background-color: #f8f9fa; /* Soft background color */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+  border: 1px solid #e0e0e0; /* Light border for definition */
+  width: 100%;
+}
+
+
+
+.dateButton:hover {
+  background-color:#007BFF;
+  color: white;
+  opacity: 0.8;
 }
 
 .dateButton {
-  background-color: black;
-  color: white;
-  margin: 5px 10px;
-  padding: 10px 10px;
-  border-radius: 40%;
-  min-width: max-content;
+  padding: 10px;
+  margin: 5px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
+
+.selectedDate {
+  background-color: #007BFF; /* Highlight color */
+  color: white; /* Text color for selected date */
+}
+
+
+
+.dateButton:focus, .dateButton:hover {
+  transform: scale(1.05);
+}
+
+.dateButton p {
+  margin: 0;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.activityFlex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around; /* This will space out the cards evenly */
+  padding: 20px;
+}
+
+
+
   
   

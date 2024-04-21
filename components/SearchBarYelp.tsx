@@ -83,6 +83,7 @@ const SearchBar = ({ trip_destination, trip_id, isMobile, sx, curTripData, setTr
       ref(db, "trips/" + trip_id + "/activities"),
       activity
     );
+    
   };
 
   // const deleteActivity = async (key: string) => {

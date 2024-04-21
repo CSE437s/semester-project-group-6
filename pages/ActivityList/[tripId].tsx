@@ -119,6 +119,7 @@ export const ActivityList: React.FC = () => {
     const deleteTripRef = remove(tripDatabaseRef);
     alert("Trip Deleted");
     router.push("/dashboard");
+    
   };
 
   const handleSaveNotes = async () => {
@@ -233,24 +234,27 @@ export const ActivityList: React.FC = () => {
 
             {/* Itin */}
             <TabPanel value={value} index={1}>
+
               <div className={styles.itinContainer}>
                 {dates.length != 0 &&
                   dates.map((date, index) => (
-                    <div className={styles.itinContainer}>
+                    <div key={index}>
                       <div
-                        className={styles.dateButton}
-                        key={index}
+                        className={`${styles.dateButton} ${date.getTime() === itinDate.getTime() ? styles.selectedDate : ''}`}
                         onClick={() => {
                           setItinDate(date);
                         }}
                       >
-                        <p>{date.toDateString()}</p>
+                        <p>Day {index + 1}</p>
+                        {/* <p>{date.toDateString()}</p> */}
                       </div>
                     </div>
                   ))}
               </div>
-              <Planner trip_id = {tripId} fetchTripData={fetchTripData} curDate={itinDate} curTripData={curTripData} ></Planner>
-
+              
+            
+            <Planner trip_id = {tripId} fetchTripData={fetchTripData} curDate={itinDate} curTripData={curTripData} ></Planner> 
+            
             </TabPanel>
 
             <TabPanel value={value} index={2}>

@@ -1,6 +1,5 @@
 import StockPhoto from "../public/bike.png";
 import { ActivityInfo } from "../CustomTypes";
-import { Reorder } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import ItineraryCard from "../components/ItineraryCard";
 import styles from "../components/planner.module.css";
@@ -94,19 +93,18 @@ export default function Planner(props: PlannerProps) {
   return (
     <>
       <div
-        className={styles.button}
+        className={styles.addButton}
         onClick={() => {
           setActivityModal(true);
         }}
       >
-        <p>+</p>
+        <p className={styles.plus}>+</p>
       </div>
-
       <Dialog
         open={activityModal}
         onClose={() => setActivityModal(!activityModal)}
       >
-        <DialogTitle> Add an Activity</DialogTitle>
+        <DialogTitle className={styles.dialogTitle}>Plan your activities</DialogTitle>
 
         <div className={styles.activitySelection}>
           {curTripData?.activities &&
@@ -123,24 +121,25 @@ export default function Planner(props: PlannerProps) {
               )
             )}
         </div>
-        <Button variant="outlined" onClick={addSelected}>
+        <Button variant="outlined" onClick={addSelected} className={styles.button}>
           {" "}
           add
         </Button>
       </Dialog>
-
+      
+      
       {/* <Reorder.Group axis="y" values={ordering} onReorder={setOrdering}> */}
-      {Object.entries(itinerary).map(([activityId, activity], index) => (
-        // <Reorder.Item value={ordering[index]} key={activityId}>
-        <ItineraryCard
-          trip_id={trip_id}
-          key={activityId}
-          activity_id={activityId}
-          activityinfo={activity}
-        />
-        // </Reorder.Item>
-      ))}
-      {/* </Reorder.Group> */}
+      <div className={styles.activityFlex}>
+        {Object.entries(itinerary).map(([activityId, activity], index) => (
+          <ItineraryCard
+            trip_id={trip_id}
+            key={activityId}
+            activity_id={activityId}
+            activityinfo={activity} 
+          />
+        ))}
+      </div>
+    
     </>
   );
 }

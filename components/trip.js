@@ -106,6 +106,7 @@ export default function Trips({setUserTrips}) {
       // Handle any errors here
       console.error("Error adding new trip: ", error);
     });
+
   };
 
   return (
