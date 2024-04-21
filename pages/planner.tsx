@@ -1,16 +1,15 @@
 import StockPhoto from "../public/bike.png";
 import { ActivityInfo } from "../CustomTypes";
 import { Reorder } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ItineraryCard from "../components/ItineraryCard";
 import styles from "../components/planner.module.css";
 import { Button, Dialog, DialogTitle } from "@mui/material";
-import { ref, push, set } from "firebase/database";
+import { ref, push, get } from "firebase/database";
 import { TripCardData } from "../CustomTypes";
 import { useAuth } from "../firebase/auth";
-import {User} from "firebase/auth"
+import { User } from "firebase/auth";
 import { db } from "../firebase/firebase";
-
 
 interface PlannerProps {
   fetchTripData: () => Promise<void>;
@@ -19,11 +18,16 @@ interface PlannerProps {
   trip_id: string;
 }
 
+interface UpdatedItinerary {
+  [activityId: string]: ActivityInfo;
+}
+
 export default function Planner(props: PlannerProps) {
   const { fetchTripData, curDate, curTripData, trip_id } = props;
-  const [ordering, setOrdering] = useState([0, 1, 2, 3]);
+  const [ordering, setOrdering] = useState<number[]>([0, 1, 2, 3]);
   const [activityModal, setActivityModal] = useState(false);
-  const [selected, setSelected] = useState<String[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [itinerary, setItinerary] = useState<UpdatedItinerary>({});
 
   const { authUser } = useAuth() as { authUser: User | null };
   const Dummy: ActivityInfo = {
@@ -35,19 +39,56 @@ export default function Planner(props: PlannerProps) {
     location: {},
     likes: { fdadsa: true },
   };
-    
-  
-  const addSelected = async() => {
+
+  useEffect(() => {
+    const fetchItineraryData = async () => {
+      const updatedItinerary: UpdatedItinerary = {};
+      if (curTripData.itinerary) {
+        for (const [date, itineraryItems] of Object.entries(
+          curTripData.itinerary
+        )) {
+          console.log("curdate" + curDate.toString());
+          console.log(date);
+          if (date === curDate.toString()) {
+            for (const [itinKey, activityKey] of Object.entries(
+              itineraryItems
+            )) {
+              const activityData = await fetchActivityData(activityKey);
+              updatedItinerary[activityKey] = activityData;
+            }
+          }
+        }
+      }
+      setItinerary(updatedItinerary);
+    };
+    fetchItineraryData();
+    console.log(curTripData);
+    console.log(itinerary);
+  }, [curDate]);
+
+  const fetchActivityData = async (
+    activityId: string
+  ): Promise<ActivityInfo> => {
+    const tripDatabaseRef = ref(
+      db,
+      `trips/${trip_id}/activities/${activityId}`
+    );
+    const tripSnapshot = await get(tripDatabaseRef);
+    return tripSnapshot.val();
+  };
+
+  const addSelected = async () => {
     const promises = selected.map(async (selectedItem) => {
-        const newActivityRef = await push(
-          ref(db, "trips/" + trip_id + "/itinerary/" + curDate),
-          selectedItem
-        );
-        return newActivityRef;
-      });
-    
-      await Promise.all(promises);
-  }
+      const newActivityRef = await push(
+        ref(db, `trips/${trip_id}/itinerary/${curDate.toString()}`),
+        selectedItem
+      );
+      return newActivityRef;
+    });
+
+    await Promise.all(promises);
+    fetchTripData();
+  };
 
   const dummies = [Dummy, Dummy, Dummy, Dummy];
   return (
@@ -82,20 +123,24 @@ export default function Planner(props: PlannerProps) {
               )
             )}
         </div>
-        <Button variant="outlined" onClick={addSelected}> add</Button>
+        <Button variant="outlined" onClick={addSelected}>
+          {" "}
+          add
+        </Button>
       </Dialog>
 
-      <Reorder.Group axis="y" values={ordering} onReorder={setOrdering}>
-        {ordering.map((index) => (
-          <Reorder.Item value={index} key={index}>
-            {/* <ItineraryCard
-              trip_id={"adjskf"}
-              activity_id={"" + index}
-              {...dummies[index]}
-            ></ItineraryCard> */}
-          </Reorder.Item>
-        ))}
-      </Reorder.Group>
+      {/* <Reorder.Group axis="y" values={ordering} onReorder={setOrdering}> */}
+      {Object.entries(itinerary).map(([activityId, activity], index) => (
+        // <Reorder.Item value={ordering[index]} key={activityId}>
+        <ItineraryCard
+          trip_id={trip_id}
+          key={activityId}
+          activity_id={activityId}
+          activityinfo={activity}
+        />
+        // </Reorder.Item>
+      ))}
+      {/* </Reorder.Group> */}
     </>
   );
 }

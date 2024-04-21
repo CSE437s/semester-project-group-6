@@ -29,5 +29,5 @@ export type TripCardData = {
   };
 
   export type Day = {
-    activities: ActivityInfo
+    [id: string]: string
   };

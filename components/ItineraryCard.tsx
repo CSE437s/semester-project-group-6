@@ -15,9 +15,9 @@ import { User } from "firebase/auth";
 interface ItinProps {
   trip_id: string;
   activity_id: string;
-  setSelected: React.Dispatch<React.SetStateAction<String[]>>;
-  selected: String[];
   activityinfo: ActivityInfo;
+  setSelected?: React.Dispatch<React.SetStateAction<string[]>>;
+  selected?: string[];
 }
 
 const ItineraryCard = (props: ItinProps) => {
@@ -55,12 +55,14 @@ const ItineraryCard = (props: ItinProps) => {
   };
 
   const handleSelectItineraryCard = () => {
-    setIsSelected(!isSelected);
+    if (setSelected && selected) {
+      setIsSelected(!isSelected);
 
-    if (selected.includes(activity_id)) {
-      setSelected(selected.filter((id) => id !== activity_id));
-    } else {
-      setSelected([...selected, activity_id]);
+      if (selected.includes(activity_id)) {
+        setSelected(selected.filter((id) => id !== activity_id));
+      } else {
+        setSelected([...selected, activity_id]);
+      }
     }
   };
 
