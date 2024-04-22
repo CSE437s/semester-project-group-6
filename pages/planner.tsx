@@ -23,7 +23,7 @@ interface UpdatedItinerary {
 
 export default function Planner(props: PlannerProps) {
   const { fetchTripData, curDate, curTripData, trip_id } = props;
-  const [ordering, setOrdering] = useState<number[]>([0, 1, 2, 3]);
+  const [ordering, setOrdering] = useState<number[]>([]);
   const [activityModal, setActivityModal] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [itinerary, setItinerary] = useState<UpdatedItinerary>({});
@@ -46,9 +46,8 @@ export default function Planner(props: PlannerProps) {
         for (const [date, itineraryItems] of Object.entries(
           curTripData.itinerary
         )) {
-          console.log("curdate" + curDate.toString());
-          console.log(date);
-          if (date === curDate.toString()) {
+          
+          if (date === curDate.toISOString().split('T')[0]) {
             for (const [itinKey, activityKey] of Object.entries(
               itineraryItems
             )) {
@@ -70,25 +69,27 @@ export default function Planner(props: PlannerProps) {
   ): Promise<ActivityInfo> => {
     const tripDatabaseRef = ref(
       db,
-      `trips/${trip_id}/activities/${activityId}`
+      `trips/${trip_id}/itinerary/${curDate.toISOString().split('T')[0]}/${activityId}`
     );
+    
+  
     const tripSnapshot = await get(tripDatabaseRef);
     return tripSnapshot.val();
   };
-
+  
   const addSelected = async () => {
+  
     const promises = selected.map(async (selectedItem) => {
       const newActivityRef = await push(
-        ref(db, `trips/${trip_id}/itinerary/${curDate.toString()}`),
-        selectedItem
+        ref(db, `trips/${trip_id}/itinerary/${curDate.toISOString().split('T')[0]}/${selectedItem}`)
       );
       return newActivityRef;
     });
-
+  
     await Promise.all(promises);
     fetchTripData();
   };
-
+  
   const dummies = [Dummy, Dummy, Dummy, Dummy];
   return (
     <>
@@ -117,6 +118,10 @@ export default function Planner(props: PlannerProps) {
                   key={activityId}
                   activity_id={activityId}
                   activityinfo={activity}
+                  isDeletable={false}
+                  curDate = {curDate}
+                  setItinerary = {setItinerary}
+
                 />
               )
             )}
@@ -128,7 +133,7 @@ export default function Planner(props: PlannerProps) {
       </Dialog>
       
       
-      {/* <Reorder.Group axis="y" values={ordering} onReorder={setOrdering}> */}
+      
       <div className={styles.activityFlex}>
         {Object.entries(itinerary).map(([activityId, activity], index) => (
           <ItineraryCard
@@ -136,6 +141,9 @@ export default function Planner(props: PlannerProps) {
             key={activityId}
             activity_id={activityId}
             activityinfo={activity} 
+            isDeletable={true}
+            curDate = {curDate}
+            setItinerary = {setItinerary}
           />
         ))}
       </div>

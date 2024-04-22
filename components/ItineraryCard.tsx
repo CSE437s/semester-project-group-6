@@ -8,9 +8,10 @@ import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { Box, Typography } from "@mui/material";
 import { db } from "../firebase/firebase";
-import { onValue, set, push, ref, remove } from "firebase/database";
+import { onValue, set, push, ref, remove, get} from "firebase/database";
 import { useAuth } from "../firebase/auth";
 import { User } from "firebase/auth";
+import trashIcon from "../public/trashIcon.png";
 
 interface ItinProps {
   trip_id: string;
@@ -18,13 +19,17 @@ interface ItinProps {
   activityinfo: ActivityInfo;
   setSelected?: React.Dispatch<React.SetStateAction<string[]>>;
   selected?: string[];
+  isDeletable: boolean;
+  curDate: Date;
+  setItinerary: React.Dispatch<React.SetStateAction<UpdatedItinerary>>
+}
+interface UpdatedItinerary {
+  [activityId: string]: ActivityInfo;
 }
 
 const ItineraryCard = (props: ItinProps) => {
-  const { activity_id, trip_id, activityinfo, setSelected, selected } = props;
-  if (!activityinfo) {
-    return ; // or some other placeholder content
-  }
+  const { setItinerary, activity_id, trip_id, activityinfo, setSelected, selected, isDeletable,  curDate } = props;
+ 
   const { name, image_url, rating, review_count, url, location, likes } = activityinfo;
   const { authUser } = useAuth() as { authUser: User | null };
   // Use a simple boolean to track favorite status.
@@ -35,7 +40,7 @@ const ItineraryCard = (props: ItinProps) => {
     // On mount, check if the activity is favorited.
     const favoriteRef = ref(
       db,
-      `trips/${trip_id}/activities/${activity_id}/likes/${authUser?.uid}`
+      `trips/${trip_id}/itinerary/likes/${authUser?.uid}`
     );
     const unsubscribe = onValue(favoriteRef, (snapshot) => {
       setIsFavorite(snapshot.exists());
@@ -68,6 +73,31 @@ const ItineraryCard = (props: ItinProps) => {
     }
   };
 
+  const deleteCard = async () => {
+    const tripDatabaseRef = ref(
+      db,
+      'trips/' + trip_id + '/itinerary/' + curDate.toDateString().split(' ').join('')
+    );
+    const tripSnapshot = await get(tripDatabaseRef);
+    const itineraryData = tripSnapshot.val();
+  
+    if (itineraryData) {
+      // Iterate over the children of the snapshot
+      Object.entries(itineraryData).forEach(async ([key, value]) => {
+        if (value === activity_id) {
+          await remove(ref(db, `${tripDatabaseRef}`)); // Corrected syntax for the reference
+          setItinerary(prevState => {
+            const updatedItinerary = { ...prevState };
+            delete updatedItinerary[key];
+            return updatedItinerary;
+          });
+          return; // Exit the loop after deleting the card
+        }
+      });
+    }
+  };
+    
+  
   return (
     <div
       className={`${styles.activityCard2} ${isSelected ? styles.selected : ""}`}
@@ -107,11 +137,22 @@ const ItineraryCard = (props: ItinProps) => {
         </div>
         <div className={styles.details}></div>
       </div>
+      {isDeletable && <div className={styles.deleteIcon}>
+      <Image
+                    src={trashIcon}
+                    alt={"delete item"}
+                    width={30}
+                    height={30}
+                    onClick ={deleteCard}
+                  />
+        
+        </div>}
       <div className={styles.favoriteIcon}>
         <Button className={styles.favorite}>
         <label className={styles.likes}>{likes ? Object.keys(likes).length : 0}</label>
           <img src={isFavorite ? filledFav.src : emptyFav.src} alt="Favorite" />
         </Button>
+        
       </div>
     </div>
   );
