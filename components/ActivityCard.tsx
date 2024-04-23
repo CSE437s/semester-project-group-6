@@ -82,7 +82,7 @@ const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & { activity_id:
               {renderStars(rating)}
             </Typography>
           </Box>
-          <span className={styles.reviewCount}>{review_count} reviews</span>
+          <span className={styles.reviewCount}>{review_count} reviews<span className={styles.likes}>❤ {likes ? Object.keys(likes).length : 0}</span></span>
         </div>
           <div className={styles.details}>
     
@@ -96,7 +96,6 @@ const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & { activity_id:
             fetchTripData();
           }
         }} className={styles.favorite}>
-          <span> {Object.keys(likes).length} </span>
           <img src={isFavorite ?  filledFav.src : emptyFav.src } alt="Favorite" />
         </Button>
       </div>

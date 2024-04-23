@@ -87,7 +87,23 @@ const ItineraryCard = (props: ItinProps) => {
       }
     }
   };
-
+  const toggleFavorite = async () => {
+    const favoriteRef = ref(db, `trips/${trip_id}/activities/${activity_id}/likes/${authUser?.uid}`);
+  
+    if (isFavorite) {
+      // If already favorited, remove from Firebase.
+      if (Object.keys(likes).length == 1) {
+        await remove(ref(db, `trips/${trip_id}/activities/${activity_id}`));
+      }
+      await remove(favoriteRef);
+      
+      setIsFavorite(false); // Update local state
+    } else {
+      // If not favorited, add to Firebase under the specified path.
+      await set(favoriteRef, true);
+      setIsFavorite(true); // Update local state
+    }
+  };
   const deleteCard = async () => {
     const tripDatabaseRef = ref(
       db,
@@ -151,7 +167,7 @@ const ItineraryCard = (props: ItinProps) => {
               {renderStars(rating)}
             </Typography>
           </Box>
-          <span className={styles.reviewCount}>{review_count} reviews</span>
+          <span className={styles.reviewCount}>{review_count} reviews <span className={styles.likes}>❤ {likes ? Object.keys(likes).length : 0}</span></span>
         </div>
         <div className={styles.details}></div>
       </div>
@@ -166,14 +182,7 @@ const ItineraryCard = (props: ItinProps) => {
           />
         </div>
       )}
-      <div className={styles.favoriteIcon}>
-        <Button className={styles.favorite}>
-          <span className={styles.likes}>
-            {likes ? Object.keys(likes).length : 0}
-          </span>
-          <Image src={isFavorite ? filledFav : emptyFav} alt="Favorite" />
-        </Button>
-      </div>
+      
     </div>
   );
 };
