@@ -24,17 +24,13 @@ import TravelModeSelector from "../../components/travelMode";
 import TextField from "@mui/material/TextField";
 import { Data } from "@react-google-maps/api";
 import Planner from "../planner";
+import TabPanel from "../../components/TabPanel";
 
 interface NotesInputProps {
   editNotes: string;
   setEditNotes: React.Dispatch<React.SetStateAction<string>>;
 }
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
 interface UpdatedItinerary {
   [activityId: string]: ActivityInfo;
 }
@@ -153,21 +149,21 @@ export const ActivityList: React.FC = () => {
     }
   };
 
-  function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
+  // function TabPanel(props: TabPanelProps) {
+  //   const { children, value, index, ...other } = props;
 
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-      </div>
-    );
-  }
+  //   return (
+  //     <div
+  //       role="tabpanel"
+  //       hidden={value !== index}
+  //       id={`simple-tabpanel-${index}`}
+  //       aria-labelledby={`simple-tab-${index}`}
+  //       {...other}
+  //     >
+  //       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+  //     </div>
+  //   );
+  // }
 
   const [value, setValue] = React.useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -311,6 +307,7 @@ export const ActivityList: React.FC = () => {
 
             <TabPanel value={value} index={3}>
               <TextField
+                key={"notesInput"}
                 multiline
                 fullWidth
                 rows={4}
@@ -380,6 +377,7 @@ export const ActivityList: React.FC = () => {
               directions={directions}
               setDirections={setDirections}
               travelMode={travelMode}
+              curTripData = {curTripData}
             />
             {/* } */}
           </div>

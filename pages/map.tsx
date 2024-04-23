@@ -13,7 +13,7 @@ import { db } from "../firebase/firebase";
 import { useRouter } from "next/router";
 import styles from "./ActivityList.module.css";
 import { Button } from "@mui/material";
-import { ActivityInfo } from '../CustomTypes';
+import { ActivityInfo, TripCardData } from '../CustomTypes';
 
 import {
   setKey,
@@ -44,16 +44,19 @@ type Props = {
   setDirections: React.Dispatch<React.SetStateAction<DirectionsResult | null>>;
   directions: DirectionsResult | null;
   travelMode: google.maps.TravelMode;
+  curTripData: TripCardData;
 };
 
 
 export default function Map({
+  
   tripDest,
   office,
   setOffice,
   setDirections,
   directions,
-  travelMode
+  travelMode,
+  curTripData
 }: Props) {
   const router = useRouter();
   const { tripId } = router.query;

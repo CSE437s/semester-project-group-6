@@ -8,7 +8,7 @@ import { useState , useEffect } from "react";
 import { Button } from "@mui/material";
 import { Box, Typography } from "@mui/material";
 import { db } from "../firebase/firebase";
-import { onValue, set, push, ref, remove } from "firebase/database";
+import { onValue, set, push, ref, remove, get } from "firebase/database";
 import { useAuth } from '../firebase/auth';
 import { User } from 'firebase/auth';
 
@@ -17,18 +17,21 @@ const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & { activity_id:
   
   const { name, image_url, rating, review_count, url, location, activity_id, trip_id, likes, fetchTripData } = props;
   const { authUser } = useAuth() as { authUser: User | null };
-  // Use a simple boolean to track favorite status.
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    // On mount, check if the activity is favorited.
-    const favoriteRef = ref(db, `trips/${trip_id}/activities/${activity_id}/likes/${authUser?.uid}`);
-    const unsubscribe = onValue(favoriteRef, (snapshot) => {
-      setIsFavorite(snapshot.exists());
-    });
-
-    // Cleanup on component unmount
-    return () => unsubscribe();
+    const checkFav = async() => {
+      const favoriteRef = ref(
+        db,
+        `trips/${trip_id}/activities/${activity_id}/likes/${authUser?.uid}`
+      );
+      const snapshot = await get(favoriteRef);
+      if(snapshot.exists()) {
+        setIsFavorite(true);
+      }
+      
+     }
+     checkFav();
   }, [name, trip_id]);
 
   const toggleFavorite = async () => {
@@ -38,8 +41,10 @@ const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & { activity_id:
       // If already favorited, remove from Firebase.
       if (Object.keys(likes).length == 1) {
         await remove(ref(db, `trips/${trip_id}/activities/${activity_id}`));
+        if(fetchTripData) fetchTripData();
+      } else {
+        await remove(favoriteRef);
       }
-      await remove(favoriteRef);
       
       setIsFavorite(false); // Update local state
     } else {

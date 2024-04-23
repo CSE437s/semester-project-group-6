@@ -53,13 +53,14 @@ const ItineraryCard = (props: ItinProps) => {
    const checkFav = async() => {
     const favoriteRef = ref(
       db,
-      `trips/${trip_id}/itinerary/likes/${authUser?.uid}`
+      `trips/${trip_id}/activities/${activity_id}/likes/${authUser?.uid}`
     );
     const snapshot = await get(favoriteRef);
     if(snapshot.exists()) {
       setIsFavorite(true);
     }
    }
+   checkFav();
   }, [trip_id]);
 
   const renderStars = (rating: number) => {
@@ -90,6 +91,7 @@ const ItineraryCard = (props: ItinProps) => {
   const toggleFavorite = async () => {
     const favoriteRef = ref(db, `trips/${trip_id}/activities/${activity_id}/likes/${authUser?.uid}`);
   
+    
     if (isFavorite) {
       // If already favorited, remove from Firebase.
       if (Object.keys(likes).length == 1) {
