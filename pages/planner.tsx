@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import ItineraryCard from "../components/ItineraryCard";
 import plannerstyles from "../components/planner.module.css";
 import { Button, Dialog, DialogTitle } from "@mui/material";
-import { ref, push, get } from "firebase/database";
+import { ref, push, get, remove } from "firebase/database";
 import { TripCardData } from "../CustomTypes";
 import { useAuth } from "../firebase/auth";
 import { User } from "firebase/auth";
@@ -44,6 +44,10 @@ export default function Planner(props: PlannerProps) {
             async ([itinKey, activityKey]) => {
               try {
                 const activityData = await fetchActivityData(activityKey);
+                if (activityData === null)  {
+                  await remove(ref(db,`trips/${trip_id}/itinerary/${curDate.toISOString().split('T')[0]}/${itinKey}`));
+                  return;
+                }  
                 updatedItinerary[activityKey] = activityData;
               } catch (error) {
                 console.error('Error fetching activity data:', error);

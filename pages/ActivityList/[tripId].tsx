@@ -24,7 +24,6 @@ import TravelModeSelector from "../../components/travelMode";
 import TextField from "@mui/material/TextField";
 import { Data } from "@react-google-maps/api";
 import Planner from "../planner";
-import ItinMap from "../../components/ItinMap";
 
 interface NotesInputProps {
   editNotes: string;
@@ -82,6 +81,7 @@ export const ActivityList: React.FC = () => {
     if (tripId) {
       fetchTripData();
       console.log("refresh")
+      console.log(itinerary);
     }
   }, [tripId]); 
 
@@ -255,7 +255,7 @@ export const ActivityList: React.FC = () => {
                   dates.map((date, index) => (
                     <div key={index}>
                       <div
-                        className={`${styles.dateButton} ${date.getTime() === itinDate.getTime() ? styles.selectedDate : ''}`}
+                        className={`${styles.dateButton} ${date.toDateString() === itinDate.toDateString() ? styles.selectedDate : ''}`}
                         onClick={() => {
                           setItinDate(date);
                         }}
