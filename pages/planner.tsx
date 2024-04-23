@@ -137,7 +137,7 @@ export default function Planner(props: PlannerProps) {
       
       
       
-      <div className={plannerstyles.activityFlex}>
+      {/* <div className={plannerstyles.activityFlex}>
         <Reorder.Group values={ordering} onReorder ={setOrdering}>
         {Object.entries(itinerary).map(([activityId, activity], index) => (
           <Reorder.Item value = {ordering}>
@@ -156,7 +156,7 @@ export default function Planner(props: PlannerProps) {
         ))}
         </Reorder.Group>
 
-      </div>
+      </div> */}
     
     </>
   );
