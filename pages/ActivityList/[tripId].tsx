@@ -212,19 +212,44 @@ export const ActivityList: React.FC = () => {
                 <Tab label="Directions" />
                 <Tab label="Notes" />
                 <Tab label="Members" />
-                {curTripData?.trip_owner ===
-                  (authUser as unknown as User)?.uid && (
-                  <Image
-                    src={trashIcon}
+                {curTripData?.trip_owner === (authUser as unknown as User)?.uid && (
+                  <div 
+                    style={{
+                      cursor: 'pointer',
+                      position: 'relative',
+                      width: '40px',
+                      height: '40px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      borderRadius: '20%',
+                      backgroundColor: 'rgba(218, 212, 212, 0.7)',
+                      transition: 'background-color 0.3s, transform 0.3s, box-shadow 0.3s',
+                      marginTop: '2px',
+                    }}
                     onClick={() => {
                       openDelete(!deleteModal);
                     }}
-                    alt={"delete trip"}
-                    width={30}
-                    height={30}
-                    style={{ marginTop: 10 }}
-                  />
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255, 0, 0, 0.8)'}
+                    onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgba(218, 212, 212, 0.7)'}
+                    onMouseOver={e => {
+                      e.currentTarget.style.transform = 'scale(1.1)';
+                      e.currentTarget.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+                    }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.transform = 'scale(1.0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    <img
+                      src={trashIcon.src}
+                      alt="Delete trip"
+                      width={30}
+                      height={30}
+                    />
+                  </div>
                 )}
+
               </Tabs>
             </Box>
             {/* favorites */}
