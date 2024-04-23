@@ -46,10 +46,9 @@ export default function Trips({setUserTrips}) {
   //   googleMapsApiKey: 'AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0',
   //   libraries: ["places"],
   // })
-
+  
   const handleSaveNotes = () => {
       setTripNotes(tempNotes);  // Save the temporary notes to the main state
-      alert('Notes saved successfully!');
   };
 
   const handleAddTrip = () => {
@@ -109,6 +108,20 @@ export default function Trips({setUserTrips}) {
 
   };
 
+  const [isAddingTrip, setIsAddingTrip] = useState(false);
+
+  useEffect(() => {
+    if (isAddingTrip && tripNotes) {
+      handleAddTrip();
+      setIsAddingTrip(false); 
+    }
+  }, [tripNotes, isAddingTrip]); 
+  
+  const handleSaveNotesAndAddTrip = () => {
+    setTripNotes(tempNotes); 
+    setIsAddingTrip(true); 
+  };
+
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}> 
@@ -159,11 +172,7 @@ export default function Trips({setUserTrips}) {
               variant="outlined"
               fullWidth
             />
-            <Button onClick={handleSaveNotes} variant="contained" color="primary">
-              Save Notes
-            </Button>
-
-            <Button variant= "contained" size="large" onClick={handleAddTrip}>
+            <Button onClick={handleSaveNotesAndAddTrip} variant="contained" color="primary" size = "large">
               Add Trip
             </Button>
 
