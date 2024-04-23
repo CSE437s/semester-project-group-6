@@ -7,8 +7,7 @@ const { ref, push } = require("firebase/database");
 
 var admin = require("firebase-admin");
 
-var serviceAccount = require("./tripplanning-30381-firebase-adminsdk-kla0l-e3e5a9b2fa.json");
-const { resolve } = require("path");
+var serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
