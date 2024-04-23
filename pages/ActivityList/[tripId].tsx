@@ -24,6 +24,7 @@ import TravelModeSelector from "../../components/travelMode";
 import TextField from "@mui/material/TextField";
 import { Data } from "@react-google-maps/api";
 import Planner from "../planner";
+import ItinMap from "../../components/ItinMap";
 
 interface NotesInputProps {
   editNotes: string;
@@ -34,6 +35,9 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
+}
+interface UpdatedItinerary {
+  [activityId: string]: ActivityInfo;
 }
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
@@ -59,6 +63,10 @@ export const ActivityList: React.FC = () => {
   const [editNotes, setEditNotes] = useState("");
   const [dates, setDates] = useState<Date[]>([]);
   const [itinDate, setItinDate] = useState<Date>({} as Date);
+  const [itinerary, setItinerary] = useState<UpdatedItinerary>({});
+
+
+
 
   const [office, setOffice] = useState<LatLngLiteral | null>(
     {} as LatLngLiteral
@@ -74,8 +82,8 @@ export const ActivityList: React.FC = () => {
     if (tripId) {
       fetchTripData();
     }
-    console.log(curTripData);
-  }, [tripId]);
+  }, [tripId]); 
+
 
   useEffect(() => {
     const startDate = new Date(curTripData.start_date);
@@ -89,8 +97,12 @@ export const ActivityList: React.FC = () => {
       newDates.push(new Date(d));
     }
     setDates(newDates);
-    setItinDate(startDate);
-  }, [curTripData]);
+    //if date is not set
+    // if (Object.entries(itinDate).length === 0) {
+
+    // }
+    setItinDate(startDate)
+  }, [curTripData.start_date, curTripData.end_date]);
 
   useEffect(() => {
     setEditNotes(tripNotes);
@@ -113,6 +125,8 @@ export const ActivityList: React.FC = () => {
       console.error("Error fetching trip data:", error);
     }
   };
+
+  
 
   const deleteTrip = () => {
     const tripDatabaseRef = ref(db, "trips/" + tripId);
@@ -253,7 +267,7 @@ export const ActivityList: React.FC = () => {
               </div>
               
             
-            <Planner trip_id = {tripId} fetchTripData={fetchTripData} curDate={itinDate} curTripData={curTripData} ></Planner> 
+            <Planner itinerary={itinerary} setItinerary={setItinerary} trip_id = {tripId} fetchTripData={fetchTripData} curDate={itinDate} curTripData={curTripData} ></Planner> 
             
             </TabPanel>
 
@@ -326,6 +340,14 @@ export const ActivityList: React.FC = () => {
             style={{ display: isMapExpanded ? "block" : "block" }}
             className={styles.map}
           >
+            {value === 2 ? <ItinMap
+            tripDest={curTripData ? curTripData.trip_dest : "New York"}
+            setOffice={setOffice}
+            office={office}
+            directions={directions}
+            setDirections={setDirections}
+            travelMode={travelMode}/> : 
+
             <Map
               tripDest={curTripData ? curTripData.trip_dest : "New York"}
               setOffice={setOffice}
@@ -334,6 +356,7 @@ export const ActivityList: React.FC = () => {
               setDirections={setDirections}
               travelMode={travelMode}
             />
+            }
           </div>
         </div>
 

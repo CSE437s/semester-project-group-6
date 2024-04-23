@@ -15,6 +15,8 @@ interface PlannerProps {
   curTripData: TripCardData;
   curDate: Date;
   trip_id: string;
+  itinerary: UpdatedItinerary;
+  setItinerary:  React.Dispatch<React.SetStateAction<UpdatedItinerary>>
 }
 
 interface UpdatedItinerary {
@@ -22,75 +24,68 @@ interface UpdatedItinerary {
 }
 
 export default function Planner(props: PlannerProps) {
-  const { fetchTripData, curDate, curTripData, trip_id } = props;
+  const { itinerary, setItinerary, fetchTripData, curDate, curTripData, trip_id } = props;
   const [ordering, setOrdering] = useState<number[]>([]);
   const [activityModal, setActivityModal] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
-  const [itinerary, setItinerary] = useState<UpdatedItinerary>({});
 
   const { authUser } = useAuth() as { authUser: User | null };
-  const Dummy: ActivityInfo = {
-    name: "activity",
-    image_url: StockPhoto.src,
-    rating: 5.0,
-    review_count: 3500,
-    url: "https://mui.com/material-ui/react-card/",
-    location: {},
-    likes: { fdadsa: true },
-  };
 
-  useEffect(() => {
-    const fetchItineraryData = async () => {
-      const updatedItinerary: UpdatedItinerary = {};
-      if (curTripData.itinerary) {
-        for (const [date, itineraryItems] of Object.entries(
-          curTripData.itinerary
-        )) {
-          
-          if (date === curDate.toISOString().split('T')[0]) {
-            for (const [itinKey, activityKey] of Object.entries(
-              itineraryItems
-            )) {
-              const activityData = await fetchActivityData(activityKey);
-              updatedItinerary[activityKey] = activityData;
+ 
+  const fetchItineraryData = async() => {
+  if (curTripData.itinerary) {
+    const updatedItinerary: UpdatedItinerary = {};
+    if (curTripData.itinerary) {
+      for (const [date, itineraryItems] of Object.entries(
+        curTripData.itinerary
+      )) {
+        if (date === curDate.toISOString().split('T')[0]) {
+          const promises = Object.entries(itineraryItems).map(
+            async ([itinKey, activityKey]) => {
+              try {
+                const activityData = await fetchActivityData(activityKey);
+                updatedItinerary[activityKey] = activityData;
+              } catch (error) {
+                console.error('Error fetching activity data:', error);
+              }
             }
-          }
+          );
+          await Promise.all(promises);
         }
       }
-      setItinerary(updatedItinerary);
-    };
+    }
+    setItinerary(updatedItinerary);
+  }
+}
+  useEffect(() => {
     fetchItineraryData();
-    console.log(curTripData);
-    console.log(itinerary);
-  }, [curDate]);
+  }, [curDate, curTripData]);
 
   const fetchActivityData = async (
     activityId: string
   ): Promise<ActivityInfo> => {
     const tripDatabaseRef = ref(
       db,
-      `trips/${trip_id}/itinerary/${curDate.toISOString().split('T')[0]}/${activityId}`
+      `trips/${trip_id}/activities/${activityId}`
     );
-    
-  
     const tripSnapshot = await get(tripDatabaseRef);
     return tripSnapshot.val();
   };
   
   const addSelected = async () => {
-  
-    const promises = selected.map(async (selectedItem) => {
+    const promises = selected.map(async selectedItem => {
       const newActivityRef = await push(
-        ref(db, `trips/${trip_id}/itinerary/${curDate.toISOString().split('T')[0]}/${selectedItem}`)
+        ref(db, `trips/${trip_id}/itinerary/${curDate.toISOString().split('T')[0]}`),
+        selectedItem
       );
       return newActivityRef;
     });
-  
+    
     await Promise.all(promises);
     fetchTripData();
   };
   
-  const dummies = [Dummy, Dummy, Dummy, Dummy];
+
   return (
     <>
       <div
@@ -120,6 +115,7 @@ export default function Planner(props: PlannerProps) {
                   activityinfo={activity}
                   isDeletable={false}
                   curDate = {curDate}
+                  fetchTripData ={fetchTripData}
                   setItinerary = {setItinerary}
 
                 />
@@ -143,6 +139,7 @@ export default function Planner(props: PlannerProps) {
             activityinfo={activity} 
             isDeletable={true}
             curDate = {curDate}
+            fetchTripData={fetchTripData}
             setItinerary = {setItinerary}
           />
         ))}

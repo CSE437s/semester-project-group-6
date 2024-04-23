@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { Box, Typography } from "@mui/material";
 import { db } from "../firebase/firebase";
-import { onValue, set, push, ref, remove, get} from "firebase/database";
+import { onValue, set, push, ref, remove, get } from "firebase/database";
 import { useAuth } from "../firebase/auth";
 import { User } from "firebase/auth";
 import trashIcon from "../public/trashIcon.png";
@@ -21,16 +21,28 @@ interface ItinProps {
   selected?: string[];
   isDeletable: boolean;
   curDate: Date;
-  setItinerary: React.Dispatch<React.SetStateAction<UpdatedItinerary>>
+  fetchTripData: () => Promise<void>;
+  setItinerary: React.Dispatch<React.SetStateAction<UpdatedItinerary>>;
 }
 interface UpdatedItinerary {
   [activityId: string]: ActivityInfo;
 }
 
 const ItineraryCard = (props: ItinProps) => {
-  const { setItinerary, activity_id, trip_id, activityinfo, setSelected, selected, isDeletable,  curDate } = props;
- 
-  const { name, image_url, rating, review_count, url, location, likes } = activityinfo;
+  const {
+    setItinerary,
+    fetchTripData,
+    activity_id,
+    trip_id,
+    activityinfo,
+    setSelected,
+    selected,
+    isDeletable,
+    curDate,
+  } = props;
+
+  const { name, image_url, rating, review_count, url, location, likes } =
+    activityinfo;
   const { authUser } = useAuth() as { authUser: User | null };
   // Use a simple boolean to track favorite status.
   const [isFavorite, setIsFavorite] = useState(false);
@@ -76,28 +88,31 @@ const ItineraryCard = (props: ItinProps) => {
   const deleteCard = async () => {
     const tripDatabaseRef = ref(
       db,
-      'trips/' + trip_id + '/itinerary/' + curDate.toDateString().split(' ').join('')
+      "trips/" + trip_id + "/itinerary/" + curDate.toISOString().split("T")[0]
     );
     const tripSnapshot = await get(tripDatabaseRef);
     const itineraryData = tripSnapshot.val();
-  
+
     if (itineraryData) {
-      // Iterate over the children of the snapshot
       Object.entries(itineraryData).forEach(async ([key, value]) => {
         if (value === activity_id) {
-          await remove(ref(db, `${tripDatabaseRef}`)); // Corrected syntax for the reference
-          setItinerary(prevState => {
-            const updatedItinerary = { ...prevState };
-            delete updatedItinerary[key];
-            return updatedItinerary;
-          });
-          return; // Exit the loop after deleting the card
+          await remove(
+            ref(
+              db,
+              "trips/" +
+                trip_id +
+                "/itinerary/" +
+                curDate.toISOString().split("T")[0] +
+                `/${key}`
+            )
+          );
+          fetchTripData();
+          return;
         }
       });
     }
   };
-    
-  
+
   return (
     <div
       className={`${styles.activityCard2} ${isSelected ? styles.selected : ""}`}
@@ -137,22 +152,24 @@ const ItineraryCard = (props: ItinProps) => {
         </div>
         <div className={styles.details}></div>
       </div>
-      {isDeletable && <div className={styles.deleteIcon}>
-      <Image
-                    src={trashIcon}
-                    alt={"delete item"}
-                    width={30}
-                    height={30}
-                    onClick ={deleteCard}
-                  />
-        
-        </div>}
+      {isDeletable && (
+        <div className={styles.deleteIcon}>
+          <Image
+            src={trashIcon}
+            alt={"delete item"}
+            width={30}
+            height={30}
+            onClick={deleteCard}
+          />
+        </div>
+      )}
       <div className={styles.favoriteIcon}>
         <Button className={styles.favorite}>
-        <label className={styles.likes}>{likes ? Object.keys(likes).length : 0}</label>
+          <span className={styles.likes}>
+            {likes ? Object.keys(likes).length : 0}
+          </span>
           <img src={isFavorite ? filledFav.src : emptyFav.src} alt="Favorite" />
         </Button>
-        
       </div>
     </div>
   );

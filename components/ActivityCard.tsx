@@ -96,7 +96,7 @@ const ActivityCard: React.FC<ActivityInfo & { trip_id: string } & { activity_id:
             fetchTripData();
           }
         }} className={styles.favorite}>
-          <label> {Object.keys(likes).length} </label>
+          <span> {Object.keys(likes).length} </span>
           <img src={isFavorite ?  filledFav.src : emptyFav.src } alt="Favorite" />
         </Button>
       </div>
