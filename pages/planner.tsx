@@ -9,14 +9,12 @@ import { TripCardData } from "../CustomTypes";
 import { useAuth } from "../firebase/auth";
 import { User } from "firebase/auth";
 import { db } from "../firebase/firebase";
-
+import { Reorder } from "framer-motion";
 interface PlannerProps {
   fetchTripData: () => Promise<void>;
   curTripData: TripCardData;
   curDate: Date;
   trip_id: string;
-  // itinerary: UpdatedItinerary;
-  // setItinerary:  React.Dispatch<React.SetStateAction<UpdatedItinerary>>
 }
 
 interface UpdatedItinerary {
@@ -51,6 +49,8 @@ export default function Planner(props: PlannerProps) {
                   return;
                 }  
                 updatedItinerary[activityKey] = activityData;
+                const newOrderingNumber = ordering.length;
+                setOrdering(prevOrdering => [...prevOrdering, newOrderingNumber]);
               } catch (error) {
                 console.error('Error fetching activity data:', error);
               }
@@ -138,18 +138,24 @@ export default function Planner(props: PlannerProps) {
       
       
       <div className={plannerstyles.activityFlex}>
+        <Reorder.Group values={ordering} onReorder ={setOrdering}>
         {Object.entries(itinerary).map(([activityId, activity], index) => (
-          <ItineraryCard
-            trip_id={trip_id}
-            key={activityId}
-            activity_id={activityId}
-            activityinfo={activity} 
-            isDeletable={true}
-            curDate = {curDate}
-            fetchTripData={fetchTripData}
-            setItinerary = {setItinerary}
-          />
+          <Reorder.Item value = {ordering}>
+            <ItineraryCard
+              trip_id={trip_id}
+              key={activityId} 
+              activity_id={activityId}
+              activityinfo={activity} 
+              isDeletable={true}
+              curDate = {curDate}
+              fetchTripData={fetchTripData}
+              setItinerary = {setItinerary}
+            />
+          
+        </Reorder.Item>
         ))}
+        </Reorder.Group>
+
       </div>
     
     </>
