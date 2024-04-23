@@ -114,7 +114,7 @@
 
 .activityCard2{
   position: relative;
-  width: 100%; /* Adjust width as needed */
+  width: 250px; /* Adjust width as needed */
   height: 250px;
   border-radius: 10px;
   overflow: auto;

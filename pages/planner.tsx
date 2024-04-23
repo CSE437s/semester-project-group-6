@@ -15,8 +15,8 @@ interface PlannerProps {
   curTripData: TripCardData;
   curDate: Date;
   trip_id: string;
-  itinerary: UpdatedItinerary;
-  setItinerary:  React.Dispatch<React.SetStateAction<UpdatedItinerary>>
+  // itinerary: UpdatedItinerary;
+  // setItinerary:  React.Dispatch<React.SetStateAction<UpdatedItinerary>>
 }
 
 interface UpdatedItinerary {
@@ -24,10 +24,12 @@ interface UpdatedItinerary {
 }
 
 export default function Planner(props: PlannerProps) {
-  const { itinerary, setItinerary, fetchTripData, curDate, curTripData, trip_id } = props;
+  const { fetchTripData, curDate, curTripData, trip_id } = props;
   const [ordering, setOrdering] = useState<number[]>([]);
   const [activityModal, setActivityModal] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
+  const [itinerary, setItinerary] = useState<UpdatedItinerary>({});
+
 
   const { authUser } = useAuth() as { authUser: User | null };
 

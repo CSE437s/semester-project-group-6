@@ -62,7 +62,7 @@ export const ActivityList: React.FC = () => {
   const [editNotes, setEditNotes] = useState("");
   const [dates, setDates] = useState<Date[]>([]);
   const [itinDate, setItinDate] = useState<Date>({} as Date);
-  const [itinerary, setItinerary] = useState<UpdatedItinerary>({});
+  // const [itinerary, setItinerary] = useState<UpdatedItinerary>({});
 
 
 
@@ -81,7 +81,6 @@ export const ActivityList: React.FC = () => {
     if (tripId) {
       fetchTripData();
       console.log("refresh")
-      console.log(itinerary);
     }
   }, [tripId]); 
 
@@ -268,7 +267,7 @@ export const ActivityList: React.FC = () => {
               </div>
               
             
-            <Planner itinerary={itinerary} setItinerary={setItinerary} trip_id = {tripId} fetchTripData={fetchTripData} curDate={itinDate} curTripData={curTripData} ></Planner> 
+            <Planner trip_id = {tripId} fetchTripData={fetchTripData} curDate={itinDate} curTripData={curTripData} ></Planner> 
             
             </TabPanel>
 
