@@ -2,7 +2,7 @@ import StockPhoto from "../public/bike.png";
 import { ActivityInfo } from "../CustomTypes";
 import React, { useEffect, useState } from "react";
 import ItineraryCard from "../components/ItineraryCard";
-import styles from "../components/planner.module.css";
+import plannerstyles from "../components/planner.module.css";
 import { Button, Dialog, DialogTitle } from "@mui/material";
 import { ref, push, get } from "firebase/database";
 import { TripCardData } from "../CustomTypes";
@@ -89,20 +89,21 @@ export default function Planner(props: PlannerProps) {
   return (
     <>
       <div
-        className={styles.addButton}
+        className={plannerstyles.addButton}
         onClick={() => {
           setActivityModal(true);
         }}
       >
-        <p className={styles.plus}>+</p>
+        <p className={plannerstyles.plus}>+</p>
       </div>
+
       <Dialog
         open={activityModal}
         onClose={() => setActivityModal(!activityModal)}
       >
-        <DialogTitle className={styles.dialogTitle}>Plan your activities</DialogTitle>
+        <DialogTitle className={plannerstyles.dialogTitle}>Plan your activities</DialogTitle>
 
-        <div className={styles.activitySelection}>
+        <div className={plannerstyles.activitySelection}>
           {curTripData?.activities &&
             Object.entries(curTripData.activities).map(
               ([activityId, activity]) => (
@@ -122,7 +123,7 @@ export default function Planner(props: PlannerProps) {
               )
             )}
         </div>
-        <Button variant="outlined" onClick={addSelected} className={styles.button}>
+        <Button variant="outlined" onClick={addSelected} className={plannerstyles.button}>
           {" "}
           add
         </Button>
@@ -130,7 +131,7 @@ export default function Planner(props: PlannerProps) {
       
       
       
-      <div className={styles.activityFlex}>
+      <div className={plannerstyles.activityFlex}>
         {Object.entries(itinerary).map(([activityId, activity], index) => (
           <ItineraryCard
             trip_id={trip_id}

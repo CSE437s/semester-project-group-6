@@ -81,6 +81,7 @@ export const ActivityList: React.FC = () => {
   useEffect(() => {
     if (tripId) {
       fetchTripData();
+      console.log("refresh")
     }
   }, [tripId]); 
 
@@ -340,13 +341,13 @@ export const ActivityList: React.FC = () => {
             style={{ display: isMapExpanded ? "block" : "block" }}
             className={styles.map}
           >
-            {value === 2 ? <ItinMap
+            {/* {value === 2 ? <ItinMap
             tripDest={curTripData ? curTripData.trip_dest : "New York"}
             setOffice={setOffice}
             office={office}
             directions={directions}
             setDirections={setDirections}
-            travelMode={travelMode}/> : 
+            travelMode={travelMode}/> :  */}
 
             <Map
               tripDest={curTripData ? curTripData.trip_dest : "New York"}
@@ -356,7 +357,7 @@ export const ActivityList: React.FC = () => {
               setDirections={setDirections}
               travelMode={travelMode}
             />
-            }
+            {/* } */}
           </div>
         </div>
 

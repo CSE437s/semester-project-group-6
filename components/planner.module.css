@@ -12,21 +12,21 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
 }
-  
+
 .button:hover, .button:focus {
-    background-color: #0056b3; /* Darker shade on hover */
-    transform: scale(1.1); /* Slightly enlarge on hover */
-}
+    background-color: #0056b3; 
+    transform: scale(1.1);
+} 
   
 .button:focus {
-    outline: 2px solid #333; /* Visible focus outline */
+    outline: 2px solid #333; 
     outline-offset: 2px;
 }
 
   .button:active {
-  background-color: #004080; /* Even darker on click */
-  transform: scale(1); /* Return to normal size when clicked */
-}
+  background-color: #004080; 
+  transform: scale(1); 
+} 
 
 .activitySelection {
     display: flex;
@@ -106,4 +106,4 @@ Button.button:hover {
     background-color: #007BFF;
     color: white;
     cursor: pointer;
-  }
+  } 

@@ -2,8 +2,8 @@ import React from "react";
 import styles from "./ActivityCard.module.css";
 import Image from "next/image";
 import { ActivityInfo } from "../CustomTypes";
-import emptyFav from "../public/favorite.png";
-import filledFav from "../public/favorite1.png";
+// import emptyFav from "../public/favorite.png"
+// import filledFav from "../public/favorite1.png";
 import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { Box, Typography } from "@mui/material";
@@ -50,14 +50,17 @@ const ItineraryCard = (props: ItinProps) => {
 
   useEffect(() => {
     // On mount, check if the activity is favorited.
+   const checkFav = async() => {
     const favoriteRef = ref(
       db,
       `trips/${trip_id}/itinerary/likes/${authUser?.uid}`
     );
-    const unsubscribe = onValue(favoriteRef, (snapshot) => {
-      setIsFavorite(snapshot.exists());
-    });
-  }, [name, trip_id]);
+    const snapshot = await get(favoriteRef);
+    if(snapshot.exists()) {
+      setIsFavorite(true);
+    }
+   }
+  }, [trip_id]);
 
   const renderStars = (rating: number) => {
     let stars = "";
@@ -168,7 +171,7 @@ const ItineraryCard = (props: ItinProps) => {
           <span className={styles.likes}>
             {likes ? Object.keys(likes).length : 0}
           </span>
-          <img src={isFavorite ? filledFav.src : emptyFav.src} alt="Favorite" />
+          {/* <img src={isFavorite ? filledFav : emptyFav} alt="Favorite" /> */}
         </Button>
       </div>
     </div>
