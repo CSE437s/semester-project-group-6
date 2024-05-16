@@ -101,6 +101,8 @@ export default function Trips({setUserTrips}) {
       setEndDate(null);
       setUserTrips((prev)=> [...prev, newTrip]);
       setTripNotes("");
+      console.log(newTrip)
+      console.log(newTripRef)
     }).catch((error) => {
       // Handle any errors here
       console.error("Error adding new trip: ", error);
@@ -172,7 +174,7 @@ export default function Trips({setUserTrips}) {
               variant="outlined"
               fullWidth
             />
-            <Button onClick={handleSaveNotesAndAddTrip} variant="contained" color="primary" size = "large">
+            <Button onClick={handleAddTrip} variant="contained" color="primary" size = "large">
               Add Trip
             </Button>
 

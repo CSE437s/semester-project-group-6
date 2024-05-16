@@ -7,7 +7,7 @@ import MapLoader from "../components/mapLoader";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
-      <MapLoader apiKey={"AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0"}>
+      <MapLoader apiKey={"AIzaSyCbkKYCNULOtuN53K1-Jx8qd4tH0gLuiR0"}>
         <AuthUserProvider>
           <Head>
             <title>Tripify</title>

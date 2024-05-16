@@ -29,7 +29,7 @@ import {
 } from "react-geocode";
 import { off } from "process";
 
-setKey("AIzaSyBffWM5IfZJ35qk-UNXUydS8RQTJpeM9x0");
+setKey("AIzaSyCbkKYCNULOtuN53K1-Jx8qd4tH0gLuiR0");
 setLanguage("en");
 setRegion("es");
 
